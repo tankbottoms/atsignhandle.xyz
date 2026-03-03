@@ -88,18 +88,25 @@
      */
     var FPS = 60;
 
-    var IS_HIDPI = window.__forceRes === 1 ? false :
+    var IS_HIDPI = window.__noHdpiSprite ? false :
+        window.__forceRes === 1 ? false :
         window.__forceRes === 2 ? true :
         window.devicePixelRatio > 1;
 
     /** @const */
-    var IS_IOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
-
-    /** @const */
-    var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS;
+    var IS_IOS =
+        /iPad|iPhone|iPod/.test(window.navigator.platform) ||
+        (window.navigator.platform === "MacIntel" &&
+            window.navigator.maxTouchPoints > 1);
 
     /** @const */
     var IS_TOUCH_ENABLED = "ontouchstart" in window;
+
+    /** @const */
+    var IS_MOBILE =
+        /Android/.test(window.navigator.userAgent) ||
+        IS_IOS ||
+        IS_TOUCH_ENABLED;
 
     /**
      * Default game configuration.
@@ -326,7 +333,13 @@
          * Load and decode base 64 encoded sounds.
          */
         loadSounds: function () {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            if (!this.audioContext) {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // Always try to resume within user gesture context (required by Safari)
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
 
             var resourceEl = document.getElementById(
                 this.config.RESOURCE_TEMPLATE_ID
@@ -540,40 +553,11 @@
          */
         playIntro: function () {
             if (!this.activated && !this.crashed) {
-                this.playingIntro = true;
-                this.tRex.playingIntro = true;
-
-                // CSS animation definition.
-                var keyframes =
-                    "@-webkit-keyframes intro { " +
-                    "from { width:" +
-                    Trex.config.WIDTH +
-                    "px }" +
-                    "to { width: " +
-                    this.dimensions.WIDTH +
-                    "px }" +
-                    "}";
-
-                // create a style sheet to put the keyframe rule in
-                // and then place the style sheet in the html head
-                var sheet = document.createElement("style");
-                sheet.innerHTML = keyframes;
-                document.head.appendChild(sheet);
-
-                this.containerEl.addEventListener(
-                    Runner.events.ANIM_END,
-                    this.startGame.bind(this)
-                );
-
-                this.containerEl.style.webkitAnimation =
-                    "intro .4s ease-out 1 both";
+                // Skip intro animation - go directly to playing state
                 this.containerEl.style.width = this.dimensions.WIDTH + "px";
-
-                // if (this.touchController) {
-                //     this.outerContainerEl.appendChild(this.touchController);
-                // }
                 this.playing = true;
                 this.activated = true;
+                this.startGame();
             } else if (this.crashed) {
                 this.restart();
             }
@@ -589,6 +573,8 @@
             this.tRex.playingIntro = false;
             this.containerEl.style.webkitAnimation = "";
             this.playCount++;
+            if (typeof triggerHaptic === 'function') triggerHaptic('gameStart');
+            if (typeof showMobileControls === 'function') showMobileControls();
 
             // Handle tabbing off the page. Pause the current game.
             document.addEventListener(
@@ -670,6 +656,24 @@
                     this.gameOver();
                 }
 
+                // Flying obstacle warning haptic (1-second intervals)
+                if (typeof triggerHaptic === 'function' && hasObstacles) {
+                    var frontObs = this.horizon.obstacles[0];
+                    if (frontObs && frontObs.typeConfig &&
+                        frontObs.typeConfig.type === 'PTERODACTYL' &&
+                        frontObs.xPos > this.tRex.xPos &&
+                        frontObs.xPos < this.dimensions.WIDTH) {
+                        if (!this._flyWarningTime) this._flyWarningTime = 0;
+                        this._flyWarningTime += deltaTime;
+                        if (this._flyWarningTime >= 1000) {
+                            triggerHaptic('flyWarning');
+                            this._flyWarningTime = 0;
+                        }
+                    } else {
+                        this._flyWarningTime = 0;
+                    }
+                }
+
                 var playAchievementSound = this.distanceMeter.update(
                     deltaTime,
                     Math.ceil(this.distanceRan)
@@ -677,6 +681,7 @@
 
                 if (playAchievementSound) {
                     this.playSound(this.soundFx.SCORE);
+                    if (typeof triggerHaptic === 'function') triggerHaptic('score');
                 }
 
                 // Night mode.
@@ -800,6 +805,20 @@
             }
 
             if (e.target != this.detailsButton) {
+                // Two-finger touch = duck (only when already playing)
+                if (e.type == Runner.events.TOUCHSTART && e.touches && e.touches.length >= 2) {
+                    if (this.playing && !this.crashed) {
+                        e.preventDefault();
+                        if (this.tRex.jumping) {
+                            this.tRex.setSpeedDrop();
+                        } else if (!this.tRex.ducking) {
+                            this.tRex.setDuck(true);
+                        }
+                        this._twoFingerDucking = true;
+                    }
+                    return;
+                }
+
                 if (
                     !this.crashed &&
                     (Runner.keycodes.JUMP[e.keyCode] ||
@@ -808,6 +827,8 @@
                     if (!this.playing) {
                         this.loadSounds();
                         this.playing = true;
+                        this.paused = false;
+                        if (typeof hidePauseOverlay === 'function') hidePauseOverlay();
                         this.update();
                         if (window.errorPageController) {
                             errorPageController.trackEasterEgg();
@@ -817,6 +838,7 @@
                     if (!this.tRex.jumping && !this.tRex.ducking) {
                         this.playSound(this.soundFx.BUTTON_PRESS);
                         this.tRex.startJump(this.currentSpeed);
+                        if (typeof triggerHaptic === 'function') triggerHaptic('jump');
                     }
                 }
 
@@ -849,6 +871,7 @@
                 if (this.playing) {
                     this.stop();
                 } else if (this.paused) {
+                    if (typeof hidePauseOverlay === 'function') hidePauseOverlay();
                     this.tRex.reset();
                     this.play();
                 }
@@ -865,6 +888,15 @@
                 Runner.keycodes.JUMP[keyCode] ||
                 e.type == Runner.events.TOUCHEND ||
                 e.type == Runner.events.MOUSEDOWN;
+
+            // Release two-finger duck on touch end
+            if (e.type == Runner.events.TOUCHEND) {
+                if (this._twoFingerDucking && (!e.touches || e.touches.length < 2)) {
+                    this.tRex.speedDrop = false;
+                    this.tRex.setDuck(false);
+                    this._twoFingerDucking = false;
+                }
+            }
 
             if (this.isRunning() && isjumpKey) {
                 this.tRex.endJump();
@@ -929,9 +961,14 @@
         gameOver: function () {
             this.playSound(this.soundFx.HIT);
             vibrate(200);
+            if (typeof triggerHaptic === 'function') {
+                triggerHaptic('die');
+                setTimeout(function() { triggerHaptic('gameEnd'); }, 300);
+            }
+            if (typeof hideMobileControls === 'function') hideMobileControls();
 
-            this.stop();
             this.crashed = true;
+            this.stop();
             this.distanceMeter.acheivement = false;
 
             this.tRex.update(100, Trex.status.CRASHED);
@@ -963,6 +1000,9 @@
             this.paused = true;
             cancelAnimationFrame(this.raqId);
             this.raqId = 0;
+            if (!this.crashed && typeof showPauseOverlay === 'function') {
+                showPauseOverlay();
+            }
         },
 
         play: function () {
@@ -972,6 +1012,7 @@
                 this.tRex.update(0, Trex.status.RUNNING);
                 this.time = getTimeStamp();
                 this.update();
+                if (typeof hidePauseOverlay === 'function') hidePauseOverlay();
             }
         },
 
@@ -990,6 +1031,16 @@
                 this.horizon.reset();
                 this.tRex.reset();
                 this.playSound(this.soundFx.BUTTON_PRESS);
+                if (typeof triggerHaptic === 'function') triggerHaptic('gameStart');
+                if (typeof hidePauseOverlay === 'function') hidePauseOverlay();
+                if (typeof showMobileControls === 'function') showMobileControls();
+                // Reset pause button state
+                var pauseBtn = document.getElementById('mobile-pause-btn');
+                if (pauseBtn) {
+                    var icon = pauseBtn.querySelector('i');
+                    if (icon) icon.className = 'fas fa-pause';
+                    pauseBtn.classList.remove('paused');
+                }
                 this.invert(true);
                 this.update();
             }
@@ -1018,23 +1069,8 @@
             } else {
                 scale = Math.max(1, Math.min(2, scaleHeight, scaleWidth));
             }
-            const scaledCanvasHeight = this.dimensions.HEIGHT * scale;
-            // Positions the game container at 10% of the available vertical window
-            // height minus the game container height.
-            const translateY =
-                Math.ceil(
-                    Math.max(
-                        0,
-                        (windowHeight -
-                            scaledCanvasHeight -
-                            Runner.config.ARCADE_MODE_INITIAL_TOP_POSITION) *
-                            Runner.config.ARCADE_MODE_TOP_POSITION_PERCENT
-                    )
-                ) * window.devicePixelRatio;
-
             const cssScale = scale;
-            this.containerEl.style.transform =
-                "scale(" + cssScale + ") translateY(" + translateY + "px)";
+            this.containerEl.style.transform = "scale(" + cssScale + ")";
         },
 
         /**

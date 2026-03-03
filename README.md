@@ -5,11 +5,15 @@ A Chrome dino-style endless runner starring Banny the banana, deployed on Cloudf
 ## Features
 
 - **4 Themes** -- Pterodactyl, UFO, Birds, and Steamboat Willie, each with unique obstacles and sprites
+- **Haptic feedback** -- iOS (checkbox switch toggle) and Android (navigator.vibrate with PWM modulation), configurable per game event with custom pattern builder
+- **Mobile touch controls** -- Jump, pause, and crouch buttons for touchscreen devices; two-finger touch to duck
+- **Sprite badge cycling** -- Animated preview cycling through all theme hero/villain pairs on page load
 - **Sound toggle** with custom audio support
-- **Resolution control** (1x / 2x / auto) for pixel-perfect rendering
+- **Safari / iOS audio** -- AudioContext resume on user gesture, silent WAV trick for speaker output routing
+- **Resolution control** (1x / 2x / auto) for pixel-perfect rendering; 2x restricted to themes with real 2x sprites
+- **Pause system** -- Desktop overlay (P key or click) and mobile pause button with play/pause icon toggle
 - **Dynamic game description** updates based on active theme (character name + obstacle name)
 - **Tooltips** with touch support for mobile
-- **Pause** with P key
 - **Font Awesome icons** for UI controls
 - **Decentralized hosting** via IPFS and IPNS
 
@@ -40,6 +44,8 @@ bun run deploy
 
 ## Game Controls
 
+### Desktop
+
 | Key | Action |
 |-----|--------|
 | SPACE / UP | Jump |
@@ -47,14 +53,23 @@ bun run deploy
 | ENTER | Restart |
 | P | Pause / Resume |
 
+### Mobile
+
+| Button | Action |
+|--------|--------|
+| J (right) | Jump |
+| Pause (center) | Pause / Resume |
+| Arrow down (left) | Crouch / Speed drop |
+| Two-finger touch | Duck |
+
 ## Themes
 
-| Theme | Character | Obstacles |
-|-------|-----------|-----------|
-| Pterodactyl | Banny | Bongs, pot plants, pterodactyls |
-| UFO | Banny | Bongs, pot plants, UFOs |
-| Birds | Banny | Bongs, pot plants, birds |
-| Steamboat Willie | Willie | Bongs, pot plants, birds |
+| Theme | Character | Obstacles | 2x Available |
+|-------|-----------|-----------|:------------:|
+| UFO | Banny | Bongs, pot plants, UFOs | Yes |
+| Pterodactyl | Banny | Bongs, pot plants, pterodactyls | No |
+| Birds | Banny | Bongs, pot plants, birds | No |
+| Steamboat Willie | Willie | Bongs, pot plants, birds | No |
 
 ## Deployment
 
@@ -81,7 +96,7 @@ ipfs name publish --key=atsignhandle /ipfs/<CID>
 ## Links
 
 - **Live:** [atsignhandle.xyz](https://atsignhandle.xyz)
-- **IPFS:** `bafybeia4ymm2q4ha3dbls5dggjydd3s2byalmtq7lazttouevhomftguxq`
+- **IPFS:** `bafybeiceblz4jybuzm3c5y5l2uqvhwezpjshvuy6uak2gqlojky4qnxpim`
 - **IPNS:** `k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx`
 
 ## License

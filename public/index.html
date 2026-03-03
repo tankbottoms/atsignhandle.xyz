@@ -23,13 +23,14 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
+      touch-action: manipulation;
     }
     .game-info {
       text-align: center;
       padding: 8px 16px;
       margin: 0 auto;
       max-width: 480px;
-      padding-top: 10em;
+      padding-top: 8em;
     }
     .game-desc {
       color: #666;
@@ -76,7 +77,11 @@
       margin: 0 auto 10px;
     }
     .toggle-bar {
-      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
       margin: 6px 0 2px;
       visibility: hidden;
     }
@@ -152,19 +157,215 @@
       margin: 0 auto;
       max-width: 600px;
       padding-top: 10px;
+      touch-action: manipulation;
     }
     #offline-resources {
       display: none;
+    }
+    /* Mobile controls */
+    #mobile-controls {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .mobile-ctrl-btn {
+      position: absolute;
+      pointer-events: auto;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid rgba(100,100,100,0.3);
+      background: rgba(247,247,247,0.25);
+      color: #555;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .mobile-ctrl-btn:active {
+      background: rgba(100,100,100,0.35);
+    }
+    .mobile-ctrl-btn.paused {
+      background: rgba(100,100,100,0.5);
+      border-color: rgba(100,100,100,0.6);
+    }
+    #mobile-jump-btn {
+      right: 10px;
+      bottom: 5em;
+    }
+    #mobile-pause-btn {
+      right: 76px;
+      bottom: 5em;
+    }
+    #mobile-crouch-btn {
+      right: 142px;
+      bottom: 5em;
+    }
+    /* Haptics settings popup */
+    .haptics-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.5);
+    }
+    .haptics-popup.visible {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .haptics-popup-inner {
+      background: #f7f7f7;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      max-width: 380px;
+      width: 92%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 14px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+    .haptics-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .haptics-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 4px;
+      color: #555;
+    }
+    .haptics-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .haptics-row label {
+      width: 85px;
+      flex-shrink: 0;
+      color: #666;
+      font-size: 10px;
+    }
+    .haptics-row select {
+      flex: 1;
+      font-family: monospace;
+      font-size: 10px;
+      padding: 3px 4px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background: #fff;
+    }
+    .haptics-row .hap-test-btn {
+      background: #e8e8e8;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 3px 6px;
+      font-family: monospace;
+      font-size: 9px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .haptics-row .hap-test-btn:hover {
+      background: #ddd;
+    }
+    .haptics-section-title {
+      font-weight: bold;
+      margin: 8px 0 5px;
+      color: #444;
+      font-size: 11px;
+    }
+    .haptics-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 5px;
+    }
+    .haptics-slider-row label {
+      width: 55px;
+      flex-shrink: 0;
+      color: #666;
+      font-size: 10px;
+    }
+    .haptics-slider-row input[type="range"] {
+      flex: 1;
+      height: 4px;
+    }
+    .haptics-slider-row span {
+      width: 38px;
+      text-align: right;
+      font-size: 10px;
+      color: #888;
+    }
+    .haptics-btn-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .haptics-btn-row .toggle-btn {
+      flex: 1;
+    }
+    .haptics-custom-steps {
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      padding: 6px;
+      margin-top: 4px;
+      background: #fff;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .haptics-step {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 3px;
+      font-size: 9px;
+    }
+    .haptics-step input {
+      width: 45px;
+      font-family: monospace;
+      font-size: 9px;
+      padding: 2px 3px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      text-align: center;
+    }
+    .haptics-step button {
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 0 2px;
     }
   </style>
 </head>
 <body class="offline">
   <div class="game-info">
     <p class="game-desc">
-      <span id="character-name">You are Banny the banana.</span><br>
+      <span id="character-name">You are Steamboat Willie.</span><br>
       Jump over bongs and pot plants.<br>
-      Duck under <span id="obstacle-name">pterodactyls</span>.<br>
-      Survive.
+      Duck under <span id="obstacle-name">UFOs</span>.<br>
+      Survive.<br><br>
+      <span id="sprite-pair" style="display:inline-flex;align-items:center;gap:6px;vertical-align:middle">
+        <canvas id="sprite-hero" width="44" height="47" style="width:33px;height:35px;image-rendering:pixelated"></canvas>
+        <span style="color:#999;font-size:9px;font-weight:bold">vs</span>
+        <canvas id="sprite-villain" width="46" height="40" style="width:35px;height:30px;image-rendering:pixelated"></canvas>
+      </span><br><br>
+      <span style="color:#aaa">Choose a banana or Steamboat Willie as your hero, and UFOs, pterodactyls, or birds as villains.</span>
     </p>
     <hr class="section-rule">
     <div class="game-controls">
@@ -176,15 +377,18 @@
     <div class="toggle-bar">
       <button class="toggle-btn" id="toggle-1x" onclick="setResolution(1)"><span class="btn-tooltip">Native 600px resolution</span>1x</button>
       <button class="toggle-btn" id="toggle-auto" onclick="setResolution(0)"><span class="btn-tooltip">Scale to fit window</span>auto</button>
-      <button class="toggle-btn" id="toggle-2x" onclick="setResolution(2)"><span class="btn-tooltip">Force 2x upscale</span>2x</button>
-      <span style="display:inline-block;width:12px"></span>
+      <button class="toggle-btn" id="toggle-2x" onclick="set2xResolution()"><span class="btn-tooltip">Force 2x upscale</span>2x</button>
+      <span style="width:8px"></span>
       <button class="toggle-btn" id="toggle-sound" onclick="toggleSound()"><span class="btn-tooltip">Toggle game sounds</span>sound</button>
       <button class="toggle-btn" id="toggle-custom" onclick="toggleCustomAudio()"><span class="btn-tooltip">Use custom audio by Mark</span>mark</button>
-      <span style="display:inline-block;width:12px"></span>
-      <button class="toggle-btn" id="theme-ufo" onclick="setTheme('ufo')"><span class="btn-tooltip">UFO obstacle theme</span><i class="fas fa-ufo"></i></button>
-      <button class="toggle-btn" id="theme-pterodactyl" onclick="setTheme('pterodactyl')"><span class="btn-tooltip">Pterodactyl obstacle theme</span><span class="emoji-icon">&#x1F996;</span></button>
-      <button class="toggle-btn" id="theme-birds" onclick="setTheme('birds')"><span class="btn-tooltip">Bird obstacle theme</span><i class="fas fa-crow"></i></button>
-      <button class="toggle-btn" id="theme-legal" onclick="setTheme('legal')"><span class="btn-tooltip">Steamboat Willie theme</span><span class="emoji-icon">&#x1F42D;</span></button>
+      <span style="width:8px"></span>
+      <button class="toggle-btn" id="theme-ufo" onclick="setTheme('ufo')"><span class="btn-tooltip">UFO obstacle theme (2x available)</span><i class="fas fa-ufo"></i></button>
+      <button class="toggle-btn" id="theme-pterodactyl" onclick="setTheme('pterodactyl')"><span class="btn-tooltip">Pterodactyl theme (1x only)</span><span class="emoji-icon">&#x1F996;</span></button>
+      <button class="toggle-btn" id="theme-birds" onclick="setTheme('birds')"><span class="btn-tooltip">Bird theme (1x only)</span><i class="fas fa-crow"></i></button>
+      <button class="toggle-btn" id="theme-legal" onclick="setTheme('legal')"><span class="btn-tooltip">Steamboat Willie (1x only, no 2x sprite)</span><span class="emoji-icon">&#x1F42D;</span></button>
+      <span style="flex-basis:100%;height:6px"></span>
+      <button class="toggle-btn" id="toggle-haptics" style="min-width:40px" onclick="toggleHaptics()"><span class="btn-tooltip">Toggle haptic feedback</span><i class="fas fa-mobile-alt"></i></button>
+      <button class="toggle-btn" id="haptics-settings-btn" style="min-width:40px" onclick="openHapticsPopup()"><span class="btn-tooltip">Haptics settings</span><i class="fas fa-cog"></i></button>
     </div>
   </div>
 
@@ -194,9 +398,50 @@
     </div>
   </div>
 
+  <!-- Pause overlay badge -->
+  <div id="pause-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;pointer-events:auto;background:rgba(0,0,0,0.15);cursor:pointer;-webkit-tap-highlight-color:transparent">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);color:#fff;font-family:monospace;font-size:14px;padding:16px 28px;border-radius:6px;text-align:center">
+      <i class="fas fa-pause"></i> PAUSED<br>
+      <span style="font-size:10px;color:#ccc;margin-top:6px;display:inline-block">Press <span style="background:#555;padding:2px 6px;border-radius:2px">P</span> or tap to unpause</span>
+    </div>
+  </div>
+
+  <!-- Mobile controls (shown during gameplay on mobile) -->
+  <div id="mobile-controls">
+    <button id="mobile-jump-btn" class="mobile-ctrl-btn">J</button>
+    <button id="mobile-pause-btn" class="mobile-ctrl-btn"><i class="fas fa-pause"></i></button>
+    <button id="mobile-crouch-btn" class="mobile-ctrl-btn"><i class="fas fa-arrow-down"></i></button>
+  </div>
+
+  <!-- Haptics settings popup -->
+  <div id="haptics-popup" class="haptics-popup">
+    <div class="haptics-popup-inner">
+      <div class="haptics-header">
+        <span>Haptics Settings</span>
+        <button class="haptics-close" onclick="closeHapticsPopup()">&times;</button>
+      </div>
+      <div id="haptics-events-list"></div>
+      <hr class="section-rule" style="margin:8px 0">
+      <div class="haptics-section-title">Custom Pattern Builder</div>
+      <div id="haptics-custom-steps-container">
+        <div class="haptics-custom-steps" id="haptics-steps-list"></div>
+        <div class="haptics-btn-row" style="margin-top:4px">
+          <button class="toggle-btn" onclick="addHapticStep()" style="flex:0 0 auto;padding:3px 8px;font-size:9px">+ Step</button>
+          <button class="toggle-btn" onclick="testCustomPattern()" style="flex:0 0 auto;padding:3px 8px;font-size:9px">Test</button>
+          <button class="toggle-btn" onclick="promptSaveCustom()" style="flex:0 0 auto;padding:3px 8px;font-size:9px">Save As...</button>
+        </div>
+      </div>
+      <hr class="section-rule" style="margin:8px 0">
+      <div class="haptics-btn-row">
+        <button class="toggle-btn" onclick="resetHapticDefaults()">Reset Defaults</button>
+        <button class="toggle-btn" onclick="clearAllHaptics()">Clear All</button>
+      </div>
+    </div>
+  </div>
+
   <div id="offline-resources">
-    <img id="offline-resources-1x" src="assets/100_banny_plus_pterodactyl.png" alt="">
-    <img id="offline-resources-2x" src="assets/200_banny_plus_UFO.png" alt="">
+    <img id="offline-resources-1x" src="" alt="">
+    <img id="offline-resources-2x" src="" alt="">
 <template id="audio-resources">
                     <audio
                         id="offline-sound-press"
@@ -256,18 +501,21 @@
   </style>
 
   <footer class="site-footer">
-    <span>IPFS <a href="https://ipfs.io/ipfs/bafybeiceblz4jybuzm3c5y5l2uqvhwezpjshvuy6uak2gqlojky4qnxpim/" target="_blank" rel="noopener">bafybei...xpim</a></span>
-    <span class="footer-sep">|</span>
     <span>IPNS <a href="https://ipfs.io/ipns/k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx/" target="_blank" rel="noopener">k51qzi...hyx</a></span>
-    <span class="footer-sep">|</span>
-    <span>ENS <a href="https://app.ens.domains/atsignhandle.eth" target="_blank" rel="noopener">atsignhandle.eth</a></span>
-    <span class="footer-sep">|</span>
-    <span>ENS <a href="https://app.ens.domains/tankbottoms.eth" target="_blank" rel="noopener">tankbottoms.eth</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span>IPFS <a href="https://ipfs.io/ipfs/bafybeiceblz4jybuzm3c5y5l2uqvhwezpjshvuy6uak2gqlojky4qnxpim/" target="_blank" rel="noopener">bafybei...xpim</a></span>
+    <br>
+    <span><a href="https://atsignhandle.eth.limo" target="_blank" rel="noopener">atsignhandle.eth</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="https://tankbottoms.eth.limo" target="_blank" rel="noopener">tankbottoms.eth</a></span>
   </footer>
 
   <script src="https://fathom-sveltekit.mark-phillips-f7c.workers.dev/api/tracker/d23a2e4f79e54c0d" defer></script>
 
   <script>
+    // ================================================================
+    // THEME, RESOLUTION & SOUND CONFIGURATION
+    // ================================================================
     var THEME_SPRITES = {
       ufo:         { '1x': 'assets/100_banny_plus_UFO.png',         '2x': 'assets/200_banny_plus_UFO.png' },
       pterodactyl: { '1x': 'assets/100_banny_plus_pterodactyl.png', '2x': 'assets/100_banny_plus_pterodactyl.png' },
@@ -278,7 +526,7 @@
     (function() {
       var saved = sessionStorage.getItem('bannyRes');
       if (saved) window.__forceRes = parseInt(saved, 10);
-      else window.__forceRes = 0;
+      else window.__forceRes = 1;
 
       var soundSaved = sessionStorage.getItem('bannySound');
       window.__soundEnabled = soundSaved !== 'off';
@@ -287,32 +535,142 @@
       window.__customAudio = customSaved === 'on';
 
       var THEME_NAMES = { ufo: 'UFOs', pterodactyl: 'pterodactyls', birds: 'birds', legal: 'UFOs' };
-      var THEME_CHARS = { ufo: 'You are Banny the banana.', pterodactyl: 'You are Banny the banana.', birds: 'You are Banny the banana.', legal: 'You are Steamboat Willie.' };
-      var theme = sessionStorage.getItem('bannyTheme') || 'pterodactyl';
+      var THEME_CHARS = { ufo: 'You are a banana.', pterodactyl: 'You are a banana.', birds: 'You are a banana.', legal: 'You are Steamboat Willie.' };
+      var theme = sessionStorage.getItem('bannyTheme') || 'legal';
       window.__theme = theme;
 
       // Apply sprite src before game loads
-      var sprites = THEME_SPRITES[theme] || THEME_SPRITES.pterodactyl;
+      var sprites = THEME_SPRITES[theme] || THEME_SPRITES.legal;
       var img1x = document.getElementById('offline-resources-1x');
       var img2x = document.getElementById('offline-resources-2x');
       if (img1x) img1x.src = sprites['1x'];
-      if (img2x) img2x.src = sprites['2x'];
+      // If theme has no real 2x sprite (same as 1x), flag it so game uses LDPI coordinates
+      if (sprites['1x'] === sprites['2x']) {
+        if (img2x) img2x.src = sprites['1x'];
+        window.__noHdpiSprite = true;
+      } else {
+        if (img2x) img2x.src = sprites['2x'];
+        window.__noHdpiSprite = false;
+      }
 
       document.addEventListener('DOMContentLoaded', function() {
         var resId = window.__forceRes === 1 ? 'toggle-1x' :
                     window.__forceRes === 2 ? 'toggle-2x' : 'toggle-auto';
         document.getElementById(resId).classList.add('active');
-
-        document.getElementById('obstacle-name').textContent = THEME_NAMES[window.__theme] || 'pterodactyls';
-        document.getElementById('character-name').textContent = THEME_CHARS[window.__theme] || 'You are Banny the banana.';
         if (window.__soundEnabled) document.getElementById('toggle-sound').classList.add('active');
         if (window.__customAudio) document.getElementById('toggle-custom').classList.add('active');
         document.getElementById('theme-' + window.__theme).classList.add('active');
-
         document.querySelector('.toggle-bar').classList.add('ready');
+
+        // Disable 2x on mobile
+        if ('ontouchstart' in window || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          var btn2x = document.getElementById('toggle-2x');
+          if (btn2x) {
+            var tip = btn2x.querySelector('.btn-tooltip');
+            if (tip) tip.textContent = 'Not enough screen space for 2x on mobile';
+            btn2x.style.opacity = '0.5';
+          }
+        }
+
+        // ---- Sprite badge cycling animation ----
+        var charEl = document.getElementById('character-name');
+        var obstEl = document.getElementById('obstacle-name');
+        charEl.textContent = THEME_CHARS[window.__theme] || 'You are Steamboat Willie.';
+        obstEl.textContent = THEME_NAMES[window.__theme] || 'UFOs';
+
+        // Cycle through sprite pairs, then land on current theme
+        var heroCanvas = document.getElementById('sprite-hero');
+        var villainCanvas = document.getElementById('sprite-villain');
+        var heroCtx = heroCanvas.getContext('2d');
+        var villainCtx = villainCanvas.getContext('2d');
+        // TREX region: x:848, y:2, w:44, h:47; PTERODACTYL region: x:134, y:2, w:46, h:40
+        var HERO_X = 848, HERO_Y = 2, HERO_W = 44, HERO_H = 47;
+        var VILL_X = 134, VILL_Y = 2, VILL_W = 46, VILL_H = 40;
+
+        var pairOrder = [
+          { sheet: 'assets/100_banny_plus_UFO.png', char: 'You are a banana.', obs: 'UFOs' },
+          { sheet: 'assets/100_banny_plus_birds.png', char: 'You are a banana.', obs: 'birds' },
+          { sheet: 'assets/100_banny_plus_pterodactyl.png', char: 'You are a banana.', obs: 'pterodactyls' },
+          { sheet: 'assets/100_steamboat_will_plus_UFO.png', char: 'You are Steamboat Willie.', obs: 'UFOs' }
+        ];
+        var currentThemeSheet = (THEME_SPRITES[window.__theme] || THEME_SPRITES.legal)['1x'];
+
+        // Preload all sprite sheets
+        var loadedImages = {};
+        var loadCount = 0;
+        var uniqueSheets = [];
+        pairOrder.forEach(function(p) {
+          if (uniqueSheets.indexOf(p.sheet) === -1) uniqueSheets.push(p.sheet);
+        });
+        uniqueSheets.forEach(function(src) {
+          var img = new Image();
+          img.onload = function() {
+            loadedImages[src] = img;
+            loadCount++;
+            if (loadCount === uniqueSheets.length) startSpriteCycle();
+          };
+          img.src = src;
+        });
+
+        function drawPair(sheetSrc) {
+          var img = loadedImages[sheetSrc];
+          if (!img) return;
+          heroCtx.clearRect(0, 0, HERO_W, HERO_H);
+          heroCtx.drawImage(img, HERO_X, HERO_Y, HERO_W, HERO_H, 0, 0, HERO_W, HERO_H);
+          villainCtx.clearRect(0, 0, VILL_W, VILL_H);
+          villainCtx.drawImage(img, VILL_X, VILL_Y, VILL_W, VILL_H, 0, 0, VILL_W, VILL_H);
+        }
+
+        function startSpriteCycle() {
+          // Build cycle: repeat all pairs 3 times, then land on current theme
+          var cycle = [];
+          for (var r = 0; r < 3; r++) {
+            for (var p = 0; p < pairOrder.length; p++) cycle.push(pairOrder[p]);
+          }
+          // Find the current theme pair and add it as final
+          var finalPair = pairOrder.find(function(p) { return p.sheet === currentThemeSheet; }) || pairOrder[3];
+          cycle.push(finalPair);
+
+          var idx = 0;
+          function cycleStep() {
+            var pair = cycle[idx];
+            drawPair(pair.sheet);
+            charEl.textContent = pair.char;
+            obstEl.textContent = pair.obs;
+            idx++;
+            if (idx < cycle.length) {
+              var delay = 180 + idx * 30;
+              setTimeout(cycleStep, delay);
+            }
+          }
+          // Draw initial immediately, then start cycling
+          drawPair(currentThemeSheet);
+          setTimeout(cycleStep, 600);
+        }
       });
     })();
+    function set2xResolution() {
+      if ('ontouchstart' in window || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // Show tooltip briefly instead of switching
+        var btn = document.getElementById('toggle-2x');
+        if (btn) {
+          btn.classList.add('tooltip-visible');
+          setTimeout(function() { btn.classList.remove('tooltip-visible'); }, 2000);
+        }
+        return;
+      }
+      setResolution(2);
+    }
     function setResolution(mode) {
+      // 2x only available for ufo theme (only one with real 2x sprites)
+      if (mode === 2) {
+        var currentTheme = sessionStorage.getItem('bannyTheme') || 'legal';
+        var sprites = THEME_SPRITES[currentTheme] || THEME_SPRITES.legal;
+        if (sprites['1x'] === sprites['2x']) {
+          // Switch to ufo theme which has 2x assets
+          sessionStorage.setItem('bannyTheme', 'ufo');
+        }
+      }
       sessionStorage.setItem('bannyRes', mode);
       window.location.reload();
     }
@@ -327,11 +685,19 @@
       document.getElementById('toggle-custom').classList.toggle('active', window.__customAudio);
     }
     function setTheme(theme) {
+      var sprites = THEME_SPRITES[theme] || THEME_SPRITES.legal;
+      var currentRes = parseInt(sessionStorage.getItem('bannyRes') || '1', 10);
+      // If choosing a theme without 2x sprites while on 2x, drop to 1x
+      if (currentRes === 2 && sprites['1x'] === sprites['2x']) {
+        sessionStorage.setItem('bannyRes', '1');
+      }
       sessionStorage.setItem('bannyTheme', theme);
       window.location.reload();
     }
 
-    // Touch tooltip support: long-press shows tooltip, release or timeout hides it
+    // ================================================================
+    // TOUCH TOOLTIP SUPPORT
+    // ================================================================
     (function() {
       var tooltipTimer = null;
       var activeBtn = null;
@@ -366,6 +732,662 @@
           btn.addEventListener('touchcancel', hideTooltip);
         });
       });
+    })();
+
+    // ================================================================
+    // HAPTICS ENGINE
+    // ================================================================
+    // Platform detection
+    var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var _isAndroid = /Android/.test(navigator.userAgent);
+    var _hapticEl = null;
+
+    // Haptic patterns using Vibration objects {duration, intensity, delay}
+    // Matches web-haptics library format from https://github.com/lochie/web-haptics
+    var HAPTIC_PRESETS = {
+      success:   { label: 'Success',   pattern: [{ duration: 60, intensity: 0.7 }, { duration: 80, intensity: 1.0, delay: 40 }, { duration: 40, intensity: 0.5, delay: 40 }] },
+      nudge:     { label: 'Nudge',     pattern: [{ duration: 120, intensity: 1.0 }, { duration: 80, intensity: 0.6, delay: 60 }, { duration: 60, intensity: 0.3, delay: 40 }] },
+      error:     { label: 'Error',     pattern: [{ duration: 60, intensity: 1.0 }, { duration: 60, intensity: 1.0, delay: 30 }, { duration: 60, intensity: 1.0, delay: 30 }, { duration: 80, intensity: 0.8, delay: 30 }, { duration: 40, intensity: 0.5, delay: 30 }] },
+      buzz:      { label: 'Buzz',      pattern: [{ duration: 200, intensity: 1.0 }, { duration: 200, intensity: 0.8, delay: 20 }, { duration: 200, intensity: 1.0, delay: 20 }, { duration: 200, intensity: 0.6, delay: 20 }] },
+      warning:   { label: 'Warning',   pattern: [{ duration: 60, intensity: 1.0 }, { duration: 60, intensity: 0.8, delay: 60 }, { duration: 60, intensity: 1.0, delay: 60 }] },
+      light:     { label: 'Light',     pattern: [{ duration: 30, intensity: 0.5 }, { duration: 20, intensity: 0.3, delay: 30 }] },
+      medium:    { label: 'Medium',    pattern: [{ duration: 50, intensity: 0.8 }, { duration: 40, intensity: 0.6, delay: 40 }] },
+      heavy:     { label: 'Heavy',     pattern: [{ duration: 70, intensity: 1.0 }, { duration: 60, intensity: 1.0, delay: 30 }, { duration: 50, intensity: 0.8, delay: 30 }] },
+      soft:      { label: 'Soft',      pattern: [{ duration: 60, intensity: 0.6 }, { duration: 50, intensity: 0.4, delay: 50 }] },
+      rigid:     { label: 'Rigid',     pattern: [{ duration: 20, intensity: 1.0 }, { duration: 20, intensity: 1.0, delay: 15 }, { duration: 20, intensity: 1.0, delay: 15 }] },
+      selection: { label: 'Selection', pattern: [{ duration: 15, intensity: 0.5 }, { duration: 15, intensity: 0.3, delay: 20 }] }
+    };
+
+    var HAPTIC_EVENTS = {
+      jump:       { preset: 'nudge',     label: 'Jump' },
+      die:        { preset: 'buzz',      label: 'Death' },
+      flyWarning: { preset: 'error',     label: 'Duck Warning' },
+      gameStart:  { preset: 'success',   label: 'Game Start' },
+      gameEnd:    { preset: 'success',   label: 'Game End' },
+      score:      { preset: 'selection', label: 'Score Milestone' }
+    };
+
+    window.__hapticsEnabled = true;
+    window.__hapticSettings = null;
+
+    // iOS haptic engine: hidden checkbox with "switch" attribute
+    // iOS Safari provides native haptic feedback when toggling <input type="checkbox" switch>.
+    // By wrapping in a <label> and clicking the label, we trigger system haptics.
+    // Matches https://github.com/lochie/web-haptics implementation.
+    var TOGGLE_MIN = 16;   // ms at intensity 1 (every frame)
+    var TOGGLE_MAX = 184;  // range above min
+    var _hapticLabel = null;
+
+    function ensureHapticElement() {
+      if (_hapticLabel) return;
+      var label = document.createElement('label');
+      label.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0.01;overflow:hidden;z-index:-1;';
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.setAttribute('switch', '');
+      cb.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0.01;appearance:auto;';
+      label.appendChild(cb);
+      document.body.appendChild(label);
+      _hapticLabel = label;
+      _hapticEl = cb;
+    }
+
+    function runIOSHapticPattern(vibrations) {
+      ensureHapticElement();
+      // No cancelAnimationFrame - allow concurrent patterns
+
+      // Build phases from vibrations
+      var phases = [];
+      var offset = 0;
+      for (var i = 0; i < vibrations.length; i++) {
+        var v = vibrations[i];
+        var delay = v.delay || 0;
+        var intensity = typeof v.intensity === 'number' ? Math.max(0, Math.min(1, v.intensity)) : 0.5;
+        var duration = v.duration || 50;
+        if (delay > 0) {
+          phases.push({ start: offset, end: offset + delay, type: 'pause' });
+          offset += delay;
+        }
+        phases.push({ start: offset, end: offset + duration, type: 'vibrate', intensity: intensity });
+        offset += duration;
+      }
+
+      var startTime = null;
+      var lastToggleTime = 0;
+      var totalDuration = offset;
+
+      function runPattern(time) {
+        if (!startTime) startTime = time;
+        var elapsed = time - startTime;
+
+        if (elapsed >= totalDuration) return;
+
+        // Find current phase
+        var currentPhase = null;
+        for (var p = 0; p < phases.length; p++) {
+          if (elapsed >= phases[p].start && elapsed < phases[p].end) {
+            currentPhase = phases[p];
+            break;
+          }
+        }
+
+        if (currentPhase && currentPhase.type === 'vibrate') {
+          var toggleInterval = TOGGLE_MIN + TOGGLE_MAX * (1 - currentPhase.intensity);
+          if (time - lastToggleTime >= toggleInterval || lastToggleTime === 0) {
+            _hapticLabel.click();
+            lastToggleTime = time;
+          }
+        }
+
+        requestAnimationFrame(runPattern);
+      }
+
+      // Initial click immediately (within user gesture context)
+      _hapticLabel.click();
+      lastToggleTime = performance.now();
+      requestAnimationFrame(runPattern);
+    }
+
+    // PWM modulation for Android navigator.vibrate() patterns
+    var PWM_CYCLE = 20;
+    function modulateVibration(duration, intensity) {
+      if (intensity >= 1) return [duration];
+      if (intensity <= 0) return [];
+      var onTime = Math.max(1, Math.round(PWM_CYCLE * intensity));
+      var offTime = PWM_CYCLE - onTime;
+      var result = [];
+      var remaining = duration;
+      while (remaining >= PWM_CYCLE) {
+        result.push(onTime);
+        result.push(offTime);
+        remaining -= PWM_CYCLE;
+      }
+      if (remaining > 0) {
+        var remOn = Math.max(1, Math.round(remaining * intensity));
+        result.push(remOn);
+        var remOff = remaining - remOn;
+        if (remOff > 0) result.push(remOff);
+      }
+      return result;
+    }
+
+    // Convert Vibration[] to navigator.vibrate() flat pattern [vib, pause, vib, ...]
+    function toVibratePattern(vibrations) {
+      var result = [];
+      for (var i = 0; i < vibrations.length; i++) {
+        var v = vibrations[i];
+        var intensity = Math.max(0, Math.min(1, typeof v.intensity === 'number' ? v.intensity : 0.5));
+        var delay = v.delay || 0;
+        if (delay > 0) {
+          if (result.length > 0 && result.length % 2 === 0) {
+            result[result.length - 1] += delay;
+          } else {
+            if (result.length === 0) result.push(0);
+            result.push(delay);
+          }
+        }
+        var modulated = modulateVibration(v.duration, intensity);
+        if (modulated.length === 0) {
+          if (result.length > 0 && result.length % 2 === 0) {
+            result[result.length - 1] += v.duration;
+          } else if (v.duration > 0) {
+            result.push(0);
+            result.push(v.duration);
+          }
+          continue;
+        }
+        for (var m = 0; m < modulated.length; m++) {
+          result.push(modulated[m]);
+        }
+      }
+      return result;
+    }
+
+    // Convert flat number array (custom patterns) to Vibration[]
+    function flatToVibrations(arr) {
+      var vibs = [];
+      for (var i = 0; i < arr.length; i++) {
+        if (i % 2 === 0) {
+          vibs.push({ duration: arr[i], intensity: 0.7 });
+        } else {
+          if (vibs.length > 0) {
+            // This is a pause, apply as delay on next vibration or record it
+          }
+          // Next vibration gets this as delay
+          if (i + 1 < arr.length) {
+            vibs.push({ duration: arr[i + 1], intensity: 0.7, delay: arr[i] });
+            i++; // skip next since we consumed it
+          }
+        }
+      }
+      return vibs.length > 0 ? vibs : [{ duration: 50, intensity: 0.5 }];
+    }
+
+    function loadHapticSettings() {
+      try {
+        var saved = localStorage.getItem('bannyHaptics');
+        if (saved) { window.__hapticSettings = JSON.parse(saved); return; }
+      } catch (e) {}
+      window.__hapticSettings = {};
+      for (var evt in HAPTIC_EVENTS) {
+        window.__hapticSettings[evt] = { preset: HAPTIC_EVENTS[evt].preset };
+      }
+    }
+
+    function saveHapticSettings() {
+      try { localStorage.setItem('bannyHaptics', JSON.stringify(window.__hapticSettings)); } catch (e) {}
+    }
+
+    function getHapticVibrations(eventName) {
+      var settings = window.__hapticSettings;
+      if (!settings || !settings[eventName]) return null;
+      var cfg = settings[eventName];
+      if (cfg.custom) {
+        return Array.isArray(cfg.custom) && typeof cfg.custom[0] === 'number'
+          ? flatToVibrations(cfg.custom) : cfg.custom;
+      }
+      var presetName = cfg.preset;
+      try {
+        var customs = JSON.parse(localStorage.getItem('bannyCustomHaptics') || '{}');
+        if (customs[presetName]) return flatToVibrations(customs[presetName]);
+      } catch(e) {}
+      if (HAPTIC_PRESETS[presetName]) return HAPTIC_PRESETS[presetName].pattern;
+      return null;
+    }
+
+    function triggerHapticDirect(vibrations) {
+      if (!vibrations || vibrations.length === 0) return;
+      // Prefer navigator.vibrate() (works from game loop on Android)
+      if (navigator.vibrate) {
+        navigator.vibrate(toVibratePattern(vibrations));
+      }
+      // Also fire iOS switch haptic (works only in user gesture context)
+      if (_isIOS) {
+        runIOSHapticPattern(vibrations);
+      }
+    }
+
+    function triggerHaptic(eventName) {
+      if (!window.__hapticsEnabled) return;
+      var vibrations = getHapticVibrations(eventName);
+      triggerHapticDirect(vibrations);
+    }
+
+    function toggleHaptics() {
+      window.__hapticsEnabled = !window.__hapticsEnabled;
+      localStorage.setItem('bannyHapticsOn', window.__hapticsEnabled ? 'on' : 'off');
+      document.getElementById('toggle-haptics').classList.toggle('active', window.__hapticsEnabled);
+      // Pulse haptic when turning ON so user feels confirmation
+      if (window.__hapticsEnabled) {
+        triggerHapticDirect(HAPTIC_PRESETS.success.pattern);
+      }
+    }
+
+    // Load haptics state
+    (function() {
+      var hOn = localStorage.getItem('bannyHapticsOn');
+      if (hOn === null && _isAndroid) {
+        // Default haptics off on Android (not supported reliably)
+        window.__hapticsEnabled = false;
+      } else {
+        window.__hapticsEnabled = hOn !== 'off';
+      }
+      loadHapticSettings();
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.__hapticsEnabled) document.getElementById('toggle-haptics').classList.add('active');
+      });
+    })();
+
+    // ================================================================
+    // HAPTICS SETTINGS POPUP
+    // ================================================================
+    function openHapticsPopup() {
+      renderHapticsEvents();
+      resetCustomBuilder();
+      document.getElementById('haptics-popup').classList.add('visible');
+    }
+
+    function closeHapticsPopup() {
+      document.getElementById('haptics-popup').classList.remove('visible');
+    }
+
+    function renderHapticsEvents() {
+      var container = document.getElementById('haptics-events-list');
+      while (container.firstChild) container.removeChild(container.firstChild);
+      var allPresets = Object.keys(HAPTIC_PRESETS);
+      try {
+        var customs = JSON.parse(localStorage.getItem('bannyCustomHaptics') || '{}');
+        for (var cn in customs) { if (allPresets.indexOf(cn) === -1) allPresets.push(cn); }
+      } catch(e) {}
+
+      for (var evt in HAPTIC_EVENTS) {
+        var row = document.createElement('div');
+        row.className = 'haptics-row';
+        var lbl = document.createElement('label');
+        lbl.textContent = HAPTIC_EVENTS[evt].label;
+        row.appendChild(lbl);
+
+        var sel = document.createElement('select');
+        sel.dataset.event = evt;
+        var curPreset = (window.__hapticSettings && window.__hapticSettings[evt])
+          ? window.__hapticSettings[evt].preset : HAPTIC_EVENTS[evt].preset;
+        for (var i = 0; i < allPresets.length; i++) {
+          var opt = document.createElement('option');
+          opt.value = allPresets[i];
+          opt.textContent = HAPTIC_PRESETS[allPresets[i]] ? HAPTIC_PRESETS[allPresets[i]].label : allPresets[i];
+          if (allPresets[i] === curPreset) opt.selected = true;
+          sel.appendChild(opt);
+        }
+        sel.addEventListener('change', function() {
+          var evtName = this.dataset.event;
+          if (!window.__hapticSettings) loadHapticSettings();
+          window.__hapticSettings[evtName] = { preset: this.value };
+          saveHapticSettings();
+        });
+        row.appendChild(sel);
+
+        var testBtn = document.createElement('button');
+        testBtn.className = 'hap-test-btn';
+        testBtn.textContent = 'test';
+        testBtn.dataset.event = evt;
+        testBtn.addEventListener('click', function() {
+          var v = getHapticVibrations(this.dataset.event);
+          if (v) triggerHapticDirect(v);
+        });
+        row.appendChild(testBtn);
+        container.appendChild(row);
+      }
+    }
+
+    // Custom pattern builder
+    var _customSteps = [{ delay: 0, duration: 50, intensity: 5 }];
+
+    function resetCustomBuilder() {
+      _customSteps = [{ delay: 0, duration: 50, intensity: 5 }];
+      renderCustomSteps();
+    }
+
+    function _createStepInput(val, min, max, idx, field) {
+      var inp = document.createElement('input');
+      inp.type = 'number';
+      inp.min = min;
+      inp.max = max;
+      inp.value = val;
+      inp.dataset.idx = idx;
+      inp.dataset.field = field;
+      inp.style.cssText = 'width:45px;font-family:monospace;font-size:9px;padding:2px 3px;border:1px solid #ccc;border-radius:2px;text-align:center';
+      inp.addEventListener('change', function() {
+        _customSteps[parseInt(this.dataset.idx)][this.dataset.field] = parseInt(this.value) || 0;
+      });
+      return inp;
+    }
+
+    function _createStepLabel(text) {
+      var lbl = document.createElement('label');
+      lbl.textContent = text;
+      lbl.style.cssText = 'width:auto;font-size:9px;color:#666';
+      return lbl;
+    }
+
+    function renderCustomSteps() {
+      var list = document.getElementById('haptics-steps-list');
+      while (list.firstChild) list.removeChild(list.firstChild);
+      for (var i = 0; i < _customSteps.length; i++) {
+        var s = _customSteps[i];
+        var row = document.createElement('div');
+        row.className = 'haptics-step';
+
+        var num = document.createElement('span');
+        num.textContent = (i + 1);
+        num.style.cssText = 'color:#999;width:14px;font-size:9px';
+        row.appendChild(num);
+
+        row.appendChild(_createStepLabel('delay'));
+        row.appendChild(_createStepInput(s.delay, 0, 500, i, 'delay'));
+        row.appendChild(_createStepLabel('dur'));
+        row.appendChild(_createStepInput(s.duration, 5, 1000, i, 'duration'));
+        row.appendChild(_createStepLabel('int'));
+        row.appendChild(_createStepInput(s.intensity, 1, 10, i, 'intensity'));
+
+        var delBtn = document.createElement('button');
+        delBtn.textContent = '\u00D7';
+        delBtn.dataset.idx = i;
+        delBtn.style.cssText = 'background:none;border:none;color:#c00;cursor:pointer;font-size:12px;padding:0 2px';
+        delBtn.addEventListener('click', function() {
+          _customSteps.splice(parseInt(this.dataset.idx), 1);
+          if (_customSteps.length === 0) _customSteps.push({ delay: 0, duration: 50, intensity: 5 });
+          renderCustomSteps();
+        });
+        row.appendChild(delBtn);
+        list.appendChild(row);
+      }
+    }
+
+    function addHapticStep() {
+      _customSteps.push({ delay: 50, duration: 50, intensity: 5 });
+      renderCustomSteps();
+    }
+
+    function buildCustomPattern() {
+      var pattern = [];
+      for (var i = 0; i < _customSteps.length; i++) {
+        var s = _customSteps[i];
+        if (i > 0 || s.delay > 0) pattern.push(s.delay);
+        var scaled = Math.round(s.duration * (s.intensity / 5));
+        pattern.push(Math.max(5, scaled));
+      }
+      return pattern;
+    }
+
+    function testCustomPattern() {
+      var vibs = [];
+      for (var i = 0; i < _customSteps.length; i++) {
+        var s = _customSteps[i];
+        vibs.push({
+          duration: s.duration || 50,
+          intensity: (s.intensity || 5) / 10,
+          delay: (i > 0) ? (s.delay || 0) : 0
+        });
+      }
+      triggerHapticDirect(vibs);
+    }
+
+    function promptSaveCustom() {
+      var name = prompt('Name for this haptic pattern:');
+      if (!name || !name.trim()) return;
+      name = name.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+      var pattern = buildCustomPattern();
+      try {
+        var customs = JSON.parse(localStorage.getItem('bannyCustomHaptics') || '{}');
+        customs[name] = pattern;
+        localStorage.setItem('bannyCustomHaptics', JSON.stringify(customs));
+      } catch(e) {}
+      renderHapticsEvents();
+    }
+
+    function resetHapticDefaults() {
+      localStorage.removeItem('bannyHaptics');
+      localStorage.removeItem('bannyCustomHaptics');
+      window.__hapticSettings = {};
+      for (var evt in HAPTIC_EVENTS) {
+        window.__hapticSettings[evt] = { preset: HAPTIC_EVENTS[evt].preset };
+      }
+      renderHapticsEvents();
+      resetCustomBuilder();
+    }
+
+    function clearAllHaptics() {
+      localStorage.removeItem('bannyHaptics');
+      localStorage.removeItem('bannyCustomHaptics');
+      localStorage.removeItem('bannyHapticsOn');
+      window.__hapticSettings = {};
+      for (var evt in HAPTIC_EVENTS) {
+        window.__hapticSettings[evt] = { preset: HAPTIC_EVENTS[evt].preset };
+      }
+      window.__hapticsEnabled = true;
+      document.getElementById('toggle-haptics').classList.add('active');
+      renderHapticsEvents();
+      resetCustomBuilder();
+    }
+
+    // ================================================================
+    // MOBILE CONTROLS
+    // ================================================================
+    var _isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || ('ontouchstart' in window);
+
+    function showMobileControls() {
+      if (!_isMobileDevice) return;
+      var mc = document.getElementById('mobile-controls');
+      if (mc) mc.style.display = 'block';
+    }
+
+    function hideMobileControls() {
+      var mc = document.getElementById('mobile-controls');
+      if (mc) mc.style.display = 'none';
+    }
+
+    // Mobile crouch + pause button handlers
+    document.addEventListener('DOMContentLoaded', function() {
+      var crouchBtn = document.getElementById('mobile-crouch-btn');
+      if (crouchBtn) {
+        crouchBtn.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var runner = window.Runner && Runner.instance_;
+          if (!runner || !runner.playing || runner.crashed) return;
+          if (runner.tRex.jumping) {
+            runner.tRex.setSpeedDrop();
+          } else if (!runner.tRex.ducking) {
+            runner.tRex.setDuck(true);
+          }
+        }, { passive: false });
+        crouchBtn.addEventListener('touchend', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var runner = window.Runner && Runner.instance_;
+          if (!runner) return;
+          runner.tRex.speedDrop = false;
+          runner.tRex.setDuck(false);
+        }, { passive: false });
+      }
+
+      // Mobile jump button
+      var jumpBtn = document.getElementById('mobile-jump-btn');
+      if (jumpBtn) {
+        jumpBtn.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var runner = window.Runner && Runner.instance_;
+          if (!runner || runner.crashed) return;
+          if (!runner.playing) {
+            runner.loadSounds();
+            runner.playing = true;
+            runner.paused = false;
+            if (typeof hidePauseOverlay === 'function') hidePauseOverlay();
+            runner.update();
+          }
+          if (!runner.tRex.jumping && !runner.tRex.ducking) {
+            runner.playSound(runner.soundFx.BUTTON_PRESS);
+            runner.tRex.startJump(runner.currentSpeed);
+            if (typeof triggerHaptic === 'function') triggerHaptic('jump');
+          }
+        }, { passive: false });
+        jumpBtn.addEventListener('touchend', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var runner = window.Runner && Runner.instance_;
+          if (runner && runner.tRex.jumping) runner.tRex.endJump();
+        }, { passive: false });
+      }
+
+      // Mobile pause button
+      var pauseBtn = document.getElementById('mobile-pause-btn');
+      if (pauseBtn) {
+        pauseBtn.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          var runner = window.Runner && Runner.instance_;
+          if (!runner || !runner.activated || runner.crashed) return;
+          var icon = pauseBtn.querySelector('i');
+          if (runner.playing) {
+            runner.stop();
+            if (icon) { icon.className = 'fas fa-play'; }
+            pauseBtn.classList.add('paused');
+          } else if (runner.paused) {
+            runner.tRex.reset();
+            runner.play();
+            if (icon) { icon.className = 'fas fa-pause'; }
+            pauseBtn.classList.remove('paused');
+          }
+        }, { passive: false });
+      }
+
+      // Direct haptic trigger on touch controller for iOS
+      // Fires haptic immediately in touchstart context (user gesture)
+      if (_isIOS) {
+        document.addEventListener('touchstart', function(e) {
+          if (!window.__hapticsEnabled) return;
+          var runner = window.Runner && Runner.instance_;
+          if (!runner || !runner.playing || runner.crashed) return;
+          // Only trigger for game area touches (not buttons)
+          var target = e.target;
+          if (target.closest && (target.closest('#mobile-controls') || target.closest('#haptics-popup') || target.closest('.toggle-bar') || target.closest('.game-info'))) return;
+          // Fire jump haptic directly in user gesture context
+          triggerHapticDirect(getHapticVibrations('jump') || HAPTIC_PRESETS.nudge.pattern);
+        }, { passive: true });
+      }
+    });
+
+    // ================================================================
+    // PAUSE OVERLAY
+    // ================================================================
+    function showPauseOverlay() {
+      if (IS_MOBILE) return;
+      var el = document.getElementById('pause-overlay');
+      if (el) el.style.display = 'block';
+    }
+
+    function hidePauseOverlay() {
+      var el = document.getElementById('pause-overlay');
+      if (el) el.style.display = 'none';
+    }
+
+    function resumeFromPause() {
+      var runner = window.Runner && Runner.instance_;
+      if (!runner || !runner.paused || runner.crashed) return;
+      runner.tRex.reset();
+      runner.play();
+    }
+
+    // Wire pause overlay tap/click
+    document.addEventListener('DOMContentLoaded', function() {
+      var overlay = document.getElementById('pause-overlay');
+      if (overlay) {
+        // Block all touch events from reaching the game while paused
+        overlay.addEventListener('touchstart', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+        }, { passive: false, capture: true });
+        overlay.addEventListener('touchend', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          resumeFromPause();
+        }, { passive: false, capture: true });
+        overlay.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          resumeFromPause();
+        });
+      }
+    });
+
+    // ================================================================
+    // SAFARI / iOS AUDIO WORKAROUND
+    // Resume the game's AudioContext on any user gesture. Safari
+    // requires AudioContext.resume() within a user-initiated event.
+    // An HTML Audio element playing silence forces iOS to use the
+    // "media playback" audio category (routes to speaker, not earpiece).
+    // ================================================================
+    (function() {
+      var audioUnlocked = false;
+      // Base64 encoded 0.1s silent WAV - forces iOS media playback category
+      var SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
+
+      function unlockAudio() {
+        var runner = window.Runner && Runner.instance_;
+        if (runner && runner.audioContext) {
+          var ctx = runner.audioContext;
+          if (ctx.state === 'suspended') {
+            ctx.resume();
+          }
+        }
+        if (!audioUnlocked) {
+          audioUnlocked = true;
+          // Play silent audio via HTML Audio element to switch iOS to speaker output
+          try {
+            var a = new Audio(SILENT_WAV);
+            a.setAttribute('playsinline', '');
+            a.volume = 0.01;
+            a.play().catch(function(){});
+          } catch(e) {}
+          // Also play silent buffer via AudioContext
+          if (runner && runner.audioContext) {
+            var silentBuffer = runner.audioContext.createBuffer(1, 1, 22050);
+            var source = runner.audioContext.createBufferSource();
+            source.buffer = silentBuffer;
+            source.connect(runner.audioContext.destination);
+            source.start(0);
+          }
+        }
+      }
+      var events = ['touchstart', 'touchend', 'click', 'keydown'];
+      for (var i = 0; i < events.length; i++) {
+        document.addEventListener(events[i], unlockAudio, { passive: true, capture: true });
+      }
     })();
   </script>
   <script src="index.js"></script>
