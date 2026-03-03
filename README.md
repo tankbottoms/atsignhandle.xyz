@@ -93,9 +93,12 @@ ipfs add -r --cid-version=1 public
 ipfs name publish --key=atsignhandle /ipfs/<CID>
 ```
 
+A detailed breakdown of all sprite sheet assets, pixel positions, dimensions, and usage context is available at [/spec](https://atsignhandle.xyz/spec).
+
 ## Links
 
 - **Live:** [atsignhandle.xyz](https://atsignhandle.xyz)
+- **ENS:** [atsignhandle.eth.link](https://atsignhandle.eth.link)
 - **IPFS:** `bafybeigd5onpxwdiiplkta3kcogapuaax3bpl3525pxngdxnsczjkkz2sq`
 - **IPNS:** `k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx`
 
