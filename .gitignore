@@ -1,0 +1,9 @@
+node_modules/
+.wrangler/
+.omc/
+.DS_Store
+.env
+.env.*
+dist/
+*.zip
+.claude/
