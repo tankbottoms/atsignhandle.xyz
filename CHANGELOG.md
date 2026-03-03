@@ -31,7 +31,7 @@ Mobile and haptics update.
 ### Deployment
 
 - Cloudflare Workers
-- IPFS pinning (CID: `bafybeiceblz4jybuzm3c5y5l2uqvhwezpjshvuy6uak2gqlojky4qnxpim`)
+- IPFS pinning (CID: `bafybeigd5onpxwdiiplkta3kcogapuaax3bpl3525pxngdxnsczjkkz2sq`)
 - IPNS publishing (key: `k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx`)
 
 ## v1.0.0 -- 2026-03-02

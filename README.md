@@ -96,7 +96,7 @@ ipfs name publish --key=atsignhandle /ipfs/<CID>
 ## Links
 
 - **Live:** [atsignhandle.xyz](https://atsignhandle.xyz)
-- **IPFS:** `bafybeiceblz4jybuzm3c5y5l2uqvhwezpjshvuy6uak2gqlojky4qnxpim`
+- **IPFS:** `bafybeigd5onpxwdiiplkta3kcogapuaax3bpl3525pxngdxnsczjkkz2sq`
 - **IPNS:** `k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx`
 
 ## License
