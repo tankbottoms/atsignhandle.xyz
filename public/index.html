@@ -88,6 +88,11 @@
     .toggle-bar.ready {
       visibility: visible;
     }
+    .control-label {
+      font-size: 10px;
+      color: #888;
+      font-family: monospace;
+    }
     .toggle-btn {
       display: inline-flex;
       align-items: center;
@@ -365,7 +370,7 @@
         <span style="color:#999;font-size:9px;font-weight:bold">vs</span>
         <canvas id="sprite-villain" width="46" height="40" style="width:35px;height:30px;image-rendering:pixelated"></canvas>
       </span><br><br>
-      <span style="color:#aaa">Choose a banana or Steamboat Willie as your hero, and UFOs, pterodactyls, or birds as villains.</span>
+      <span style="color:#aaa">Play as Banny the banana, a color T-Rex, the original Chrome dino T-Rex, or Steamboat Willie. Dodge UFOs, pterodactyls, or birds. Press G for god mode -- because sometimes you just want to be unstoppable.</span>
     </p>
     <hr class="section-rule">
     <div class="game-controls">
@@ -378,17 +383,27 @@
       <button class="toggle-btn" id="toggle-1x" onclick="setResolution(1)"><span class="btn-tooltip">Native 600px resolution</span>1x</button>
       <button class="toggle-btn" id="toggle-auto" onclick="setResolution(0)"><span class="btn-tooltip">Scale to fit window</span>auto</button>
       <button class="toggle-btn" id="toggle-2x" onclick="set2xResolution()"><span class="btn-tooltip">Force 2x upscale</span>2x</button>
+      <span class="control-label">size</span>
       <span style="width:8px"></span>
       <button class="toggle-btn" id="toggle-sound" onclick="toggleSound()"><span class="btn-tooltip">Toggle game sounds</span>sound</button>
       <button class="toggle-btn" id="toggle-custom" onclick="toggleCustomAudio()"><span class="btn-tooltip">Use custom audio by Mark</span>mark</button>
-      <span style="width:8px"></span>
+      <span class="control-label">audio</span>
+      <span style="flex-basis:100%;height:4px"></span>
       <button class="toggle-btn" id="theme-ufo" onclick="setTheme('ufo')"><span class="btn-tooltip">UFO obstacle theme (2x available)</span><i class="fas fa-ufo"></i></button>
-      <button class="toggle-btn" id="theme-pterodactyl" onclick="setTheme('pterodactyl')"><span class="btn-tooltip">Pterodactyl theme (1x only)</span><span class="emoji-icon">&#x1F996;</span></button>
-      <button class="toggle-btn" id="theme-birds" onclick="setTheme('birds')"><span class="btn-tooltip">Bird theme (1x only)</span><i class="fas fa-crow"></i></button>
-      <button class="toggle-btn" id="theme-legal" onclick="setTheme('legal')"><span class="btn-tooltip">Steamboat Willie (1x only, no 2x sprite)</span><span class="emoji-icon">&#x1F42D;</span></button>
-      <span style="flex-basis:100%;height:6px"></span>
+      <button class="toggle-btn" id="theme-pterodactyl" onclick="setTheme('pterodactyl')"><span class="btn-tooltip">Banny + pterodactyl (1x only)</span><span class="emoji-icon">&#x1F34C;</span></button>
+      <button class="toggle-btn" id="theme-birds" onclick="setTheme('birds')"><span class="btn-tooltip">Banny + birds (1x only)</span><i class="fas fa-crow"></i></button>
+      <button class="toggle-btn" id="theme-trex" onclick="setTheme('trex')"><span class="btn-tooltip">Color T-Rex (1x only)</span><span class="emoji-icon">&#x1F995;</span></button>
+      <button class="toggle-btn" id="theme-original" onclick="setTheme('original')"><span class="btn-tooltip">Original Chrome dino T-Rex (1x only)</span><span class="emoji-icon">&#x1F996;</span></button>
+      <button class="toggle-btn" id="theme-legal" onclick="setTheme('legal')"><span class="btn-tooltip">Steamboat Willie (1x only)</span><span class="emoji-icon">&#x1F42D;</span></button>
+      <span class="control-label">themes</span>
+      <span style="flex-basis:100%;height:4px"></span>
+      <a class="toggle-btn" href="/spec" style="text-decoration:none"><span class="btn-tooltip">Sprite sheet specification for designers</span>spec</a>
+      <button class="toggle-btn" id="toggle-mod" onclick="openModPopup()"><span class="btn-tooltip">Toggle god mode (G key). Click for speed control.</span>G</button>
+      <span class="control-label">god mode</span>
+      <span style="width:16px"></span>
       <button class="toggle-btn" id="toggle-haptics" style="min-width:40px" onclick="toggleHaptics()"><span class="btn-tooltip">Toggle haptic feedback</span><i class="fas fa-mobile-alt"></i></button>
       <button class="toggle-btn" id="haptics-settings-btn" style="min-width:40px" onclick="openHapticsPopup()"><span class="btn-tooltip">Haptics settings</span><i class="fas fa-cog"></i></button>
+      <span class="control-label">haptics</span>
     </div>
   </div>
 
@@ -501,9 +516,9 @@
   </style>
 
   <footer class="site-footer">
-    <span>IPNS <a href="https://ipfs.io/ipns/k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx/" target="_blank" rel="noopener">k51qzi...hyx</a></span>
+    <span>IPNS <a href="https://ipfs.io/ipns/k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx/" target="_blank" rel="noopener">k51qzi5uqu5dgodqsvftjebelxaxjia9chta6ht9ubb9xzwg0g6a79zciqthyx</a></span>
     <span class="footer-sep">&middot;</span>
-    <span>IPFS <a href="https://ipfs.io/ipfs/bafybeigd5onpxwdiiplkta3kcogapuaax3bpl3525pxngdxnsczjkkz2sq/" target="_blank" rel="noopener">bafybei...xpim</a></span>
+    <span>IPFS <a href="https://ipfs.io/ipfs/bafybeid7hfqmlawkr7ywilrku27334q6bp2cwpnwrznuikra6hk2ll3yuy/" target="_blank" rel="noopener">bafybeid7hfqmlawkr7ywilrku27334q6bp2cwpnwrznuikra6hk2ll3yuy</a></span>
     <br>
     <span><a href="https://atsignhandle.eth.limo" target="_blank" rel="noopener">atsignhandle.eth</a></span>
     <span class="footer-sep">&middot;</span>
@@ -520,7 +535,9 @@
       ufo:         { '1x': 'assets/100_banny_plus_UFO.png',         '2x': 'assets/200_banny_plus_UFO.png' },
       pterodactyl: { '1x': 'assets/100_banny_plus_pterodactyl.png', '2x': 'assets/100_banny_plus_pterodactyl.png' },
       birds:       { '1x': 'assets/100_banny_plus_birds.png',       '2x': 'assets/100_banny_plus_birds.png' },
-      legal:       { '1x': 'assets/100_steamboat_will_plus_UFO.png', '2x': 'assets/100_steamboat_will_plus_UFO.png' }
+      legal:       { '1x': 'assets/100_steamboat_will_plus_UFO.png', '2x': 'assets/100_steamboat_will_plus_UFO.png' },
+      trex:        { '1x': 'assets/100-t-rex-color-aligned.png', '2x': 'assets/100-t-rex-color-aligned.png' },
+      original:    { '1x': 'assets/offline-sprite-1x-aligned.png', '2x': 'assets/offline-sprite-1x-aligned.png' }
     };
 
     (function() {
@@ -534,8 +551,8 @@
       var customSaved = sessionStorage.getItem('bannyCustomAudio');
       window.__customAudio = customSaved === 'on';
 
-      var THEME_NAMES = { ufo: 'UFOs', pterodactyl: 'pterodactyls', birds: 'birds', legal: 'UFOs' };
-      var THEME_CHARS = { ufo: 'You are a banana.', pterodactyl: 'You are a banana.', birds: 'You are a banana.', legal: 'You are Steamboat Willie.' };
+      var THEME_NAMES = { ufo: 'UFOs', pterodactyl: 'pterodactyls', birds: 'birds', legal: 'UFOs', trex: 'pterodactyls', original: 'pterodactyls' };
+      var THEME_CHARS = { ufo: 'You are a banana.', pterodactyl: 'You are a banana.', birds: 'You are a banana.', legal: 'You are Steamboat Willie.', trex: 'You are a T-Rex.', original: 'You are a T-Rex.' };
       var theme = sessionStorage.getItem('bannyTheme') || 'legal';
       window.__theme = theme;
 
@@ -591,7 +608,9 @@
           { sheet: 'assets/100_banny_plus_UFO.png', char: 'You are a banana.', obs: 'UFOs' },
           { sheet: 'assets/100_banny_plus_birds.png', char: 'You are a banana.', obs: 'birds' },
           { sheet: 'assets/100_banny_plus_pterodactyl.png', char: 'You are a banana.', obs: 'pterodactyls' },
-          { sheet: 'assets/100_steamboat_will_plus_UFO.png', char: 'You are Steamboat Willie.', obs: 'UFOs' }
+          { sheet: 'assets/100_steamboat_will_plus_UFO.png', char: 'You are Steamboat Willie.', obs: 'UFOs' },
+          { sheet: 'assets/100-t-rex-color-aligned.png', char: 'You are a T-Rex.', obs: 'pterodactyls' },
+          { sheet: 'assets/offline-sprite-1x-aligned.png', char: 'You are a T-Rex.', obs: 'pterodactyls' }
         ];
         var currentThemeSheet = (THEME_SPRITES[window.__theme] || THEME_SPRITES.legal)['1x'];
 
@@ -1391,5 +1410,92 @@
     })();
   </script>
   <script src="index.js"></script>
+
+  <!-- ================================================================
+       MOD MENU (G key)
+       ================================================================ -->
+  <div id="mod-popup" class="haptics-popup">
+    <div class="haptics-popup-inner">
+      <div class="haptics-header">
+        <span>Mod Menu</span>
+        <button class="haptics-close" onclick="closeModPopup()">&times;</button>
+      </div>
+      <div class="haptics-row">
+        <label>God Mode</label>
+        <button id="mod-god" class="toggle-btn" style="padding:3px 10px;font-size:10px">OFF</button>
+      </div>
+      <div class="haptics-row" style="flex-wrap:wrap">
+        <label>Speed</label>
+        <input id="mod-speed" type="range" min="1" max="30" value="6" style="flex:1">
+        <span id="mod-speed-val" style="font-size:10px;color:#888;width:20px;text-align:right">6</span>
+      </div>
+      <hr class="section-rule" style="margin:8px 0">
+      <div style="font-size:9px;color:#888;text-align:center">Press G to toggle</div>
+    </div>
+  </div>
+  <script>
+    function openModPopup() { document.getElementById('mod-popup').classList.add('visible'); }
+    function closeModPopup() { document.getElementById('mod-popup').classList.remove('visible'); }
+
+    (function() {
+      var popup = document.getElementById('mod-popup');
+      var godBtn = document.getElementById('mod-god');
+      var speedSlider = document.getElementById('mod-speed');
+      var speedVal = document.getElementById('mod-speed-val');
+      var originalGameOver = null;
+      var godActive = false;
+      var godAudio = new Audio('assets/custom-audio-god-mode.wav');
+
+      var gBtn = document.getElementById('toggle-mod');
+
+      function toggleMod() {
+        toggleGod();
+      }
+
+      function toggleGod() {
+        if (!godActive) {
+          if (typeof Runner !== 'undefined') {
+            originalGameOver = Runner.prototype.gameOver;
+            Runner.prototype.gameOver = function() {};
+            godActive = true;
+            godBtn.textContent = 'ON';
+            godBtn.classList.add('active');
+            gBtn.style.background = '#333';
+            gBtn.style.color = '#fff';
+            godAudio.currentTime = 0;
+            godAudio.play().catch(function() {});
+          }
+        } else {
+          if (originalGameOver) Runner.prototype.gameOver = originalGameOver;
+          godActive = false;
+          godBtn.textContent = 'OFF';
+          godBtn.classList.remove('active');
+          gBtn.style.background = '';
+          gBtn.style.color = '';
+        }
+      }
+
+      function setSpeed() {
+        var v = parseInt(speedSlider.value, 10);
+        speedVal.textContent = v;
+        if (typeof Runner !== 'undefined' && Runner.instance_) {
+          Runner.instance_.setSpeed(v);
+        }
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'g' || e.key === 'G') {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+          toggleMod();
+        }
+      });
+
+      godBtn.addEventListener('click', toggleGod);
+      speedSlider.addEventListener('input', setSpeed);
+      popup.addEventListener('click', function(e) {
+        if (e.target === popup) closeModPopup();
+      });
+    })();
+  </script>
 </body>
 </html>

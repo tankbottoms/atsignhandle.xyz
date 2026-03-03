@@ -36,7 +36,7 @@
         this.distanceMeter = null;
         this.distanceRan = 0;
 
-        this.highestScore = 0;
+        this.highestScore = parseInt(localStorage.getItem('bannyHighScore'), 10) || 0;
 
         this.time = 0;
         this.runningTime = 0;
@@ -451,6 +451,10 @@
                 this.spriteDef.TEXT_SPRITE,
                 this.dimensions.WIDTH
             );
+
+            if (this.highestScore) {
+                this.distanceMeter.setHighScore(this.highestScore);
+            }
 
             // Draw t-rex
             this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
@@ -989,6 +993,7 @@
             if (this.distanceRan > this.highestScore) {
                 this.highestScore = Math.ceil(this.distanceRan);
                 this.distanceMeter.setHighScore(this.highestScore);
+                localStorage.setItem('bannyHighScore', this.highestScore);
             }
 
             // Reset the time clock.
