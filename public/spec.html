@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sprite Spec -- atsignhandle.xyz</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F34C;</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #f7f7f7;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      color: #333;
+      padding: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    h1 { font-size: 20px; margin-bottom: 4px; }
+    .subtitle { color: #888; font-size: 11px; margin-bottom: 24px; }
+    h2 { font-size: 15px; margin: 32px 0 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+    h3 { font-size: 13px; margin: 20px 0 8px; color: #555; }
+    .sheet-section { margin-bottom: 48px; }
+    .sheet-wrap {
+      position: relative;
+      display: inline-block;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin: 8px 0 16px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    .sheet-wrap img { display: block; image-rendering: pixelated; }
+    .sheet-wrap canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+    .region-label {
+      position: absolute;
+      font-size: 8px;
+      color: #fff;
+      background: rgba(0,0,0,0.6);
+      padding: 1px 3px;
+      border-radius: 2px;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .sprite-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+    .sprite-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      width: 180px;
+    }
+    .sprite-card.wide { width: 280px; }
+    .sprite-card.xwide { width: 420px; }
+    .sprite-card canvas {
+      display: block;
+      image-rendering: pixelated;
+      margin: 0 auto 8px;
+      background: repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50% / 8px 8px;
+      border: 1px solid #eee;
+    }
+    .sprite-card .name { font-size: 11px; font-weight: bold; margin-bottom: 4px; }
+    .sprite-card .meta { font-size: 9px; color: #777; line-height: 1.6; }
+    .sprite-card .meta b { color: #444; }
+    .sprite-card .usage {
+      font-size: 9px; color: #996633; margin-top: 4px;
+      padding-top: 4px; border-top: 1px solid #eee;
+    }
+    .diff-note {
+      display: inline-block; background: #fff3cd; border: 1px solid #ffc107;
+      border-radius: 3px; padding: 2px 6px; font-size: 9px; color: #856404; margin: 4px 0;
+    }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 16px; font-size: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-swatch { width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgba(0,0,0,0.2); }
+    table { border-collapse: collapse; font-size: 10px; margin: 8px 0; }
+    th, td { border: 1px solid #ddd; padding: 4px 8px; text-align: left; }
+    th { background: #f0f0f0; font-weight: bold; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .back-link { font-size: 11px; color: #666; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .theme-tabs { display: flex; gap: 4px; margin: 8px 0; }
+    .theme-tab {
+      padding: 4px 12px; border: 1px solid #ccc; border-radius: 3px;
+      background: #e8e8e8; cursor: pointer; font-family: inherit; font-size: 10px;
+    }
+    .theme-tab.active { background: #535353; color: #f7f7f7; border-color: #535353; }
+    .guidelines p { margin-bottom: 6px; }
+    .guidelines code { background: #e8e8e8; padding: 1px 4px; border-radius: 2px; font-size: 9px; }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="/">&larr; Back to game</a>
+  <h1>Sprite Sheet Specification</h1>
+  <p class="subtitle">Designer reference for atsignhandle.xyz -- all sprite positions, dimensions, and game usage</p>
+
+  <h2>Sprite Region Map (1x)</h2>
+  <p style="font-size:10px;color:#777;margin-bottom:8px">
+    All 1x sheets are 1233 x 68 px. Regions below are color-coded.
+    The 2x sheet (UFO only) is 2441 x 130 px with doubled coordinates.
+  </p>
+  <div class="legend" id="legend"></div>
+  <div class="theme-tabs" id="theme-tabs"></div>
+  <div class="sheet-wrap" id="sheet-wrap">
+    <img id="sheet-img" src="" alt="sprite sheet">
+    <canvas id="sheet-overlay"></canvas>
+  </div>
+
+  <h2>Region Reference Table</h2>
+  <div id="region-table-wrap"></div>
+
+  <h2>Extracted Sprites</h2>
+  <p style="font-size:10px;color:#777;margin-bottom:4px">
+    Each sprite shown at 3x zoom. Checkerboard background shows transparency.
+  </p>
+
+  <h3>UI Elements</h3>
+  <div class="sprite-grid" id="grid-ui"></div>
+  <h3>Environment</h3>
+  <div class="sprite-grid" id="grid-env"></div>
+  <h3>Obstacles (Ground)</h3>
+  <div class="sprite-grid" id="grid-obstacles"></div>
+  <h3 id="flying-header">Flying Obstacle</h3>
+  <span class="diff-note">This region changes per theme: pterodactyls / UFOs / birds</span>
+  <div class="sprite-grid" id="grid-flying"></div>
+  <h3 id="char-header">Character</h3>
+  <span class="diff-note">Banny (banana) for UFO/Pterodactyl/Birds themes; Steamboat Willie for Legal theme</span>
+  <div class="sprite-grid" id="grid-char"></div>
+  <h3>Ground / Horizon</h3>
+  <div class="sprite-grid" id="grid-horizon"></div>
+
+  <h2>Theme Comparison</h2>
+  <p style="font-size:10px;color:#777;margin-bottom:8px">
+    Only two sprite regions differ between themes: the flying obstacle and the character.
+    All other regions (restart, cloud, ground obstacles, moon, stars, text, horizon) are shared.
+  </p>
+  <div id="theme-comparison-table"></div>
+
+  <h2>Character Frame Layout</h2>
+  <p style="font-size:10px;color:#777;margin-bottom:8px">
+    The TREX region contains all character animation frames as a horizontal strip.
+    Frame x-offsets are relative to the TREX sprite position (848, 2) in 1x.
+  </p>
+  <div id="char-frame-table"></div>
+
+  <h2>Design Guidelines</h2>
+  <div class="guidelines" style="font-size:10px;color:#555;line-height:1.8;max-width:700px">
+    <p><b>Sheet dimensions:</b> 1x = 1233 x 68 px; 2x = 2441 x 130 px (all positions and sizes doubled).</p>
+    <p><b>Pixel alignment:</b> All sprites must be pixel-aligned. No anti-aliasing at 1x. The game uses <code>image-rendering: pixelated</code>.</p>
+    <p><b>Transparency:</b> Sprites use transparent backgrounds. The sheet background should be fully transparent (PNG-24 with alpha).</p>
+    <p><b>Character width consistency:</b> Standing frames are 44px wide. Ducking frames are 59px wide. These values are hardcoded in <code>Trex.config</code>.</p>
+    <p><b>Collision boxes:</b> Collision detection uses predefined boxes, not sprite edges. Changing sprite art does not change hitboxes unless <code>Trex.collisionBoxes</code> and <code>Obstacle.types[].collisionBoxes</code> are also updated.</p>
+    <p><b>Adding a new theme:</b> Duplicate an existing 1x sheet, replace only the TREX region (x:848) and/or PTERODACTYL region (x:134). Keep all other regions identical. Register in <code>THEME_SPRITES</code> in index.html.</p>
+    <p><b>Steamboat Willie notes:</b> The Willie character is wider than Banny in some frames, which can cause visual clipping at the 44px boundary. Consider adjusting frame positioning for better centering.</p>
+  </div>
+
+  <script>
+    // ================================================================
+    // SPRITE REGION DEFINITIONS
+    // ================================================================
+    var SCALE = 3;
+
+    var COLORS = {
+      RESTART:      'rgba(231, 76, 60, 0.35)',
+      CLOUD:        'rgba(52, 152, 219, 0.35)',
+      FLYING:       'rgba(155, 89, 182, 0.35)',
+      CACTUS_SMALL: 'rgba(46, 204, 113, 0.35)',
+      CACTUS_LARGE: 'rgba(39, 174, 96, 0.35)',
+      MOON:         'rgba(241, 196, 15, 0.35)',
+      STAR:         'rgba(243, 156, 18, 0.35)',
+      TEXT:         'rgba(230, 126, 34, 0.35)',
+      TREX:         'rgba(231, 76, 60, 0.35)',
+      HORIZON:      'rgba(149, 165, 166, 0.35)'
+    };
+    var BORDER_COLORS = {
+      RESTART: '#e74c3c', CLOUD: '#3498db', FLYING: '#9b59b6',
+      CACTUS_SMALL: '#2ecc71', CACTUS_LARGE: '#27ae60', MOON: '#f1c40f',
+      STAR: '#f39c12', TEXT: '#e67e22', TREX: '#e74c3c', HORIZON: '#95a5a6'
+    };
+
+    var REGIONS_1X = [
+      { id: 'RESTART',      x: 2,   y: 2,  w: 36,  h: 32, label: 'RESTART',      color: 'RESTART' },
+      { id: 'CLOUD',        x: 86,  y: 2,  w: 46,  h: 14, label: 'CLOUD',        color: 'CLOUD' },
+      { id: 'FLYING',       x: 134, y: 2,  w: 92,  h: 40, label: 'FLYING (2 frames)', color: 'FLYING' },
+      { id: 'CACTUS_SMALL', x: 228, y: 2,  w: 102, h: 35, label: 'CACTUS_SMALL (6)', color: 'CACTUS_SMALL' },
+      { id: 'CACTUS_LARGE', x: 332, y: 2,  w: 150, h: 50, label: 'CACTUS_LARGE (6)', color: 'CACTUS_LARGE' },
+      { id: 'MOON',         x: 484, y: 2,  w: 160, h: 40, label: 'MOON (7 phases)',   color: 'MOON' },
+      { id: 'STAR',         x: 645, y: 2,  w: 9,   h: 18, label: 'STAR',          color: 'STAR' },
+      { id: 'TEXT',          x: 655, y: 2,  w: 191, h: 25, label: 'TEXT (numbers + GAME OVER)', color: 'TEXT' },
+      { id: 'TREX',          x: 848, y: 2,  w: 382, h: 47, label: 'TREX (character)', color: 'TREX' },
+      { id: 'HORIZON',       x: 2,   y: 54, w: 1200, h: 12, label: 'HORIZON',     color: 'HORIZON' }
+    ];
+    var REGIONS_2X = [
+      { id: 'RESTART',      x: 2,    y: 2,   w: 72,   h: 64 },
+      { id: 'CLOUD',        x: 166,  y: 2,   w: 92,   h: 28 },
+      { id: 'FLYING',       x: 260,  y: 2,   w: 184,  h: 80 },
+      { id: 'CACTUS_SMALL', x: 446,  y: 2,   w: 204,  h: 70 },
+      { id: 'CACTUS_LARGE', x: 652,  y: 2,   w: 300,  h: 100 },
+      { id: 'MOON',         x: 954,  y: 2,   w: 320,  h: 80 },
+      { id: 'STAR',         x: 1276, y: 2,   w: 18,   h: 36 },
+      { id: 'TEXT',          x: 1294, y: 2,   w: 382,  h: 50 },
+      { id: 'TREX',          x: 1678, y: 2,   w: 764,  h: 94 },
+      { id: 'HORIZON',       x: 2,    y: 104, w: 2400, h: 24 }
+    ];
+
+    var SPRITES = {
+      ui: [
+        { name: 'Restart Icon',   x: 2,   y: 2,  w: 36, h: 32, usage: 'Shown centered below "GAME OVER" text when crashed. Tap/click to restart.' },
+        { name: 'Digit Strip',    x: 655, y: 2,  w: 120, h: 13, usage: 'Digits 0-9 (10px each) + "HI" label. Used by DistanceMeter for score and high score display.', wide: true },
+        { name: 'GAME OVER Text', x: 655, y: 15, w: 191, h: 11, usage: 'Displayed centered on canvas when player crashes. Width: 191px.', wide: true }
+      ],
+      env: [
+        { name: 'Cloud',              x: 86,  y: 2,  w: 46,  h: 14, usage: 'Decorative clouds in background. Scroll at BG_CLOUD_SPEED (0.2). Max 6 on screen.' },
+        { name: 'Moon (all phases)',   x: 484, y: 2,  w: 160, h: 40, usage: 'Night mode moon. 7 phases from crescent to full. Phases at x-offsets: [140,120,100,60,40,20,0]. First 3 phases 20px wide, last 4 phases 40px wide.', xwide: true },
+        { name: 'Stars',              x: 645, y: 2,  w: 9,   h: 18, usage: 'Night mode stars. 2 stars stacked vertically (9x9 each). Drawn at random positions in sky.' }
+      ],
+      obstacles: [
+        { name: 'Small Obstacle x1', x: 228, y: 2, w: 17, h: 35, usage: 'Bong/small cactus. Single unit. yPos: 105. minGap: 120. Appears at any speed.' },
+        { name: 'Small Obstacle x2', x: 228, y: 2, w: 34, h: 35, usage: 'Two small obstacles grouped. Appears at speed >= 4.' },
+        { name: 'Small Obstacle x3', x: 228, y: 2, w: 51, h: 35, usage: 'Three small obstacles grouped. Max grouping.' },
+        { name: 'Large Obstacle x1', x: 332, y: 2, w: 25, h: 50, usage: 'Pot plant/large cactus. Single unit. yPos: 90. minGap: 120.' },
+        { name: 'Large Obstacle x2', x: 332, y: 2, w: 50, h: 50, usage: 'Two large obstacles grouped. Appears at speed >= 7.' },
+        { name: 'Large Obstacle x3', x: 332, y: 2, w: 75, h: 50, usage: 'Three large obstacles grouped. Max grouping.' }
+      ],
+      flying: [
+        { name: 'Flying Frame 1', x: 134, y: 2, w: 46, h: 40, usage: 'Flying obstacle frame 1 (wings up). Theme-dependent: pterodactyl, UFO, or bird.' },
+        { name: 'Flying Frame 2', x: 180, y: 2, w: 46, h: 40, usage: 'Flying obstacle frame 2 (wings down). Animates at 6 FPS. Speed offset: +/- 0.8.' }
+      ],
+      char: [
+        { name: 'Standing',     x: 848,  y: 2, w: 44, h: 47, usage: 'Default standing pose. Also used as jump frame. Frame offset: 0.' },
+        { name: 'Blink',        x: 892,  y: 2, w: 44, h: 47, usage: 'Eyes-open blink frame. WAITING alternates [44, 0] at 333ms. Frame offset: 44.' },
+        { name: 'Run Frame 1',  x: 936,  y: 2, w: 44, h: 47, usage: 'Left leg forward. RUNNING alternates [88, 132] at 83ms. Frame offset: 88.' },
+        { name: 'Run Frame 2',  x: 980,  y: 2, w: 44, h: 47, usage: 'Right leg forward. Frame offset: 132.' },
+        { name: 'Intermediate', x: 1024, y: 2, w: 44, h: 47, usage: 'Unused intermediate pose between run and crash. Frame offset: 176.' },
+        { name: 'Crashed',      x: 1068, y: 2, w: 44, h: 47, usage: 'Death pose with X eyes. Single frame. Frame offset: 220.' },
+        { name: 'Duck Frame 1', x: 1112, y: 2, w: 59, h: 47, usage: 'Ducking frame 1. Width: 59px (wider). Collision height: 25px. Frame offset: 264.', wide: true },
+        { name: 'Duck Frame 2', x: 1171, y: 2, w: 59, h: 47, usage: 'Ducking frame 2. DUCKING alternates [264, 323] at 125ms. Frame offset: 323.', wide: true }
+      ],
+      horizon: [
+        { name: 'Horizon Line', x: 2, y: 54, w: 600, h: 12, usage: 'Scrolling ground line. Two segments (600px each) tile seamlessly. Total region: 1200px. yPos: 127.', xwide: true }
+      ]
+    };
+
+    var THEMES = [
+      { id: 'ufo',         label: 'UFO',              file: 'assets/100_banny_plus_UFO.png',         char: 'Banny', flying: 'UFOs' },
+      { id: 'pterodactyl', label: 'Pterodactyl',       file: 'assets/100_banny_plus_pterodactyl.png', char: 'Banny', flying: 'Pterodactyls' },
+      { id: 'birds',       label: 'Birds',             file: 'assets/100_banny_plus_birds.png',       char: 'Banny', flying: 'Birds' },
+      { id: 'legal',       label: 'Steamboat Willie',  file: 'assets/100_steamboat_will_plus_UFO.png', char: 'Willie', flying: 'UFOs' },
+      { id: 'ufo2x',      label: 'UFO (2x)',          file: 'assets/200_banny_plus_UFO.png',         char: 'Banny', flying: 'UFOs', is2x: true }
+    ];
+
+    var currentTheme = 0;
+    var loadedImages = {};
+
+    // ================================================================
+    // SAFE DOM HELPERS
+    // ================================================================
+    function text(str) {
+      return document.createTextNode(str);
+    }
+    function el(tag, attrs, children) {
+      var e = document.createElement(tag);
+      if (attrs) for (var k in attrs) {
+        if (k === 'style') e.style.cssText = attrs[k];
+        else if (k === 'className') e.className = attrs[k];
+        else e.setAttribute(k, attrs[k]);
+      }
+      if (children) {
+        if (typeof children === 'string') e.textContent = children;
+        else if (Array.isArray(children)) children.forEach(function(c) { if (c) e.appendChild(c); });
+        else e.appendChild(children);
+      }
+      return e;
+    }
+
+    // ================================================================
+    // RENDERING
+    // ================================================================
+    function loadImage(src, cb) {
+      if (loadedImages[src]) return cb(loadedImages[src]);
+      var img = new Image();
+      img.onload = function() { loadedImages[src] = img; cb(img); };
+      img.src = src;
+    }
+
+    function renderLegend() {
+      var container = document.getElementById('legend');
+      container.textContent = '';
+      for (var key in COLORS) {
+        var item = el('span', { className: 'legend-item' }, [
+          el('span', { className: 'legend-swatch', style: 'background:' + BORDER_COLORS[key] }),
+          text(key)
+        ]);
+        container.appendChild(item);
+      }
+    }
+
+    function renderTabs() {
+      var container = document.getElementById('theme-tabs');
+      container.textContent = '';
+      for (var i = 0; i < THEMES.length; i++) {
+        (function(idx) {
+          var btn = el('button', { className: 'theme-tab' + (idx === currentTheme ? ' active' : '') }, THEMES[idx].label);
+          btn.addEventListener('click', function() { switchTheme(idx); });
+          container.appendChild(btn);
+        })(i);
+      }
+    }
+
+    function renderSheet() {
+      var theme = THEMES[currentTheme];
+      loadImage(theme.file, function(img) {
+        var displayScale = theme.is2x ? 1 : 2;
+        var sheetImg = document.getElementById('sheet-img');
+        sheetImg.src = theme.file;
+        sheetImg.style.width = (img.width * displayScale) + 'px';
+        sheetImg.style.height = (img.height * displayScale) + 'px';
+
+        var overlay = document.getElementById('sheet-overlay');
+        overlay.width = img.width * displayScale;
+        overlay.height = img.height * displayScale;
+        var ctx = overlay.getContext('2d');
+        ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+        var regions = theme.is2x ? REGIONS_2X : REGIONS_1X;
+        var wrap = document.getElementById('sheet-wrap');
+        var oldLabels = wrap.querySelectorAll('.region-label');
+        for (var j = 0; j < oldLabels.length; j++) oldLabels[j].remove();
+
+        for (var i = 0; i < regions.length; i++) {
+          var r = regions[i];
+          var rx = r.x * displayScale;
+          var ry = r.y * displayScale;
+          var rw = r.w * displayScale;
+          var rh = r.h * displayScale;
+
+          var colorKey = REGIONS_1X[i].color;
+          ctx.fillStyle = COLORS[colorKey];
+          ctx.fillRect(rx, ry, rw, rh);
+          ctx.strokeStyle = BORDER_COLORS[colorKey];
+          ctx.lineWidth = 1;
+          ctx.strokeRect(rx + 0.5, ry + 0.5, rw - 1, rh - 1);
+
+          var lbl = el('span', {
+            className: 'region-label',
+            style: 'left:' + rx + 'px;top:' + Math.max(0, ry - 12) + 'px'
+          }, REGIONS_1X[i].label);
+          wrap.appendChild(lbl);
+        }
+      });
+    }
+
+    function extractSprite(img, sx, sy, sw, sh, scale) {
+      var c = document.createElement('canvas');
+      c.width = sw * scale;
+      c.height = sh * scale;
+      c.style.width = (sw * scale) + 'px';
+      c.style.height = (sh * scale) + 'px';
+      var ctx = c.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw * scale, sh * scale);
+      return c;
+    }
+
+    function renderSpriteGrid(gridId, sprites) {
+      var theme = THEMES[currentTheme];
+      loadImage(theme.file, function(img) {
+        var grid = document.getElementById(gridId);
+        grid.textContent = '';
+        var offsetScale = theme.is2x ? 2 : 1;
+
+        for (var i = 0; i < sprites.length; i++) {
+          var s = sprites[i];
+          var card = el('div', { className: 'sprite-card' + (s.xwide ? ' xwide' : s.wide ? ' wide' : '') });
+
+          var sx = s.x * offsetScale;
+          var sy = s.y * offsetScale;
+          var sw = s.w * offsetScale;
+          var sh = s.h * offsetScale;
+          var displayScale = theme.is2x ? 2 : SCALE;
+          card.appendChild(extractSprite(img, sx, sy, sw, sh, displayScale));
+
+          card.appendChild(el('div', { className: 'name' }, s.name));
+
+          var posText = 'Position: (' + s.x + ', ' + s.y + ')';
+          if (theme.is2x) posText += '  2x: (' + sx + ', ' + sy + ')';
+          var sizeText = 'Size: ' + s.w + ' x ' + s.h + ' px';
+          if (theme.is2x) sizeText += '  2x: ' + sw + ' x ' + sh;
+          var sheetText = 'Sheet: ' + theme.file.split('/').pop();
+
+          var meta = el('div', { className: 'meta' }, [
+            el('b', null, 'Position: '), text('(' + s.x + ', ' + s.y + ')'),
+            (theme.is2x ? (function() { var sp = el('span'); sp.textContent = '  2x: (' + sx + ', ' + sy + ')'; return sp; })() : null),
+            el('br'),
+            el('b', null, 'Size: '), text(s.w + ' x ' + s.h + ' px'),
+            (theme.is2x ? (function() { var sp = el('span'); sp.textContent = '  2x: ' + sw + ' x ' + sh; return sp; })() : null),
+            el('br'),
+            el('b', null, 'Sheet: '), text(theme.file.split('/').pop())
+          ]);
+          card.appendChild(meta);
+
+          card.appendChild(el('div', { className: 'usage' }, s.usage));
+          grid.appendChild(card);
+        }
+      });
+    }
+
+    function renderRegionTable() {
+      var wrap = document.getElementById('region-table-wrap');
+      wrap.textContent = '';
+      var usages = {
+        RESTART: 'Restart button shown on game over screen',
+        CLOUD: 'Decorative background clouds',
+        FLYING: 'Theme-specific flying obstacle (2 animation frames)',
+        CACTUS_SMALL: 'Small ground obstacle (bong), up to 3 grouped',
+        CACTUS_LARGE: 'Large ground obstacle (pot plant), up to 3 grouped',
+        MOON: 'Night mode moon with 7 phases',
+        STAR: '2 night mode stars (9x9 each, stacked)',
+        TEXT: 'Score digits 0-9, "HI" label, "GAME OVER" text',
+        TREX: 'Player character (8 frames: stand, blink, run x2, unused, crash, duck x2)',
+        HORIZON: 'Scrolling ground line (2x 600px segments)'
+      };
+      var table = el('table');
+      var thead = el('thead', null, [
+        el('tr', null, [
+          el('th', null, 'Region'), el('th', null, '1x Position'), el('th', null, '1x Size'),
+          el('th', null, '2x Position'), el('th', null, '2x Size'), el('th', null, 'Game Usage')
+        ])
+      ]);
+      table.appendChild(thead);
+      var tbody = el('tbody');
+      for (var i = 0; i < REGIONS_1X.length; i++) {
+        var r1 = REGIONS_1X[i];
+        var r2 = REGIONS_2X[i];
+        tbody.appendChild(el('tr', null, [
+          el('td', null, r1.id),
+          el('td', { className: 'num' }, '(' + r1.x + ', ' + r1.y + ')'),
+          el('td', { className: 'num' }, r1.w + ' x ' + r1.h),
+          el('td', { className: 'num' }, '(' + r2.x + ', ' + r2.y + ')'),
+          el('td', { className: 'num' }, r2.w + ' x ' + r2.h),
+          el('td', null, usages[r1.id] || '')
+        ]));
+      }
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+    }
+
+    function renderThemeTable() {
+      var wrap = document.getElementById('theme-comparison-table');
+      wrap.textContent = '';
+      var table = el('table');
+      table.appendChild(el('thead', null, [
+        el('tr', null, [
+          el('th', null, 'Theme'), el('th', null, 'Sheet File'),
+          el('th', null, 'Character'), el('th', null, 'Flying Obstacle'), el('th', null, '2x Available')
+        ])
+      ]));
+      var data = [
+        ['UFO', '100_banny_plus_UFO.png', 'Banny (banana)', 'UFOs', 'Yes (200_banny_plus_UFO.png)'],
+        ['Pterodactyl', '100_banny_plus_pterodactyl.png', 'Banny (banana)', 'Pterodactyls', 'No'],
+        ['Birds', '100_banny_plus_birds.png', 'Banny (banana)', 'Birds', 'No'],
+        ['Steamboat Willie', '100_steamboat_will_plus_UFO.png', 'Steamboat Willie', 'UFOs', 'No']
+      ];
+      var tbody = el('tbody');
+      for (var i = 0; i < data.length; i++) {
+        var row = data[i];
+        tbody.appendChild(el('tr', null, [
+          el('td', null, row[0]), el('td', null, row[1]), el('td', null, row[2]),
+          el('td', null, row[3]), el('td', null, row[4])
+        ]));
+      }
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+    }
+
+    function renderCharFrameTable() {
+      var wrap = document.getElementById('char-frame-table');
+      wrap.textContent = '';
+      var table = el('table');
+      table.appendChild(el('thead', null, [
+        el('tr', null, [
+          el('th', null, 'Frame'), el('th', null, 'X Offset'), el('th', null, 'Width'),
+          el('th', null, 'Height'), el('th', null, 'Animation'), el('th', null, 'Notes')
+        ])
+      ]));
+      var frames = [
+        ['0', '0', '44', '47', 'Standing / Jump', 'Default pose, also used during jump'],
+        ['1', '44', '44', '47', 'Blink (eyes open)', 'WAITING animation alternates [44, 0]'],
+        ['2', '88', '44', '47', 'Running frame 1', 'Left leg forward'],
+        ['3', '132', '44', '47', 'Running frame 2', 'Right leg forward; RUNNING alternates [88, 132]'],
+        ['4', '176', '44', '47', '(Unused)', 'Intermediate pose between running and crashed'],
+        ['5', '220', '44', '47', 'Crashed', 'Death pose with X eyes, single frame'],
+        ['6', '264', '59', '47', 'Ducking frame 1', 'Wider sprite; collision box height 25px'],
+        ['7', '323', '59', '47', 'Ducking frame 2', 'DUCKING alternates [264, 323]']
+      ];
+      var tbody = el('tbody');
+      for (var i = 0; i < frames.length; i++) {
+        var f = frames[i];
+        tbody.appendChild(el('tr', null, [
+          el('td', null, f[0]),
+          el('td', { className: 'num' }, f[1]),
+          el('td', { className: 'num' }, f[2]),
+          el('td', { className: 'num' }, f[3]),
+          el('td', null, f[4]),
+          el('td', null, f[5])
+        ]));
+      }
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+    }
+
+    function renderAll() {
+      renderTabs();
+      renderSheet();
+      renderSpriteGrid('grid-ui', SPRITES.ui);
+      renderSpriteGrid('grid-env', SPRITES.env);
+      renderSpriteGrid('grid-obstacles', SPRITES.obstacles);
+      renderSpriteGrid('grid-flying', SPRITES.flying);
+      renderSpriteGrid('grid-char', SPRITES.char);
+      renderSpriteGrid('grid-horizon', SPRITES.horizon);
+
+      var theme = THEMES[currentTheme];
+      document.getElementById('flying-header').textContent = 'Flying Obstacle (' + theme.flying + ')';
+      document.getElementById('char-header').textContent = 'Character (' + theme.char + ')';
+    }
+
+    function switchTheme(idx) {
+      currentTheme = idx;
+      renderAll();
+    }
+
+    // Init
+    renderLegend();
+    renderRegionTable();
+    renderThemeTable();
+    renderCharFrameTable();
+    renderAll();
+  </script>
+</body>
+</html>
