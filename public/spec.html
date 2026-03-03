@@ -53,12 +53,15 @@
     }
     .sprite-card.wide { width: 280px; }
     .sprite-card.xwide { width: 420px; }
-    .sprite-card canvas {
+    .sprite-card { overflow: hidden; }
+    .sprite-card img.sprite-extract {
       display: block;
       image-rendering: pixelated;
       margin: 0 auto 8px;
       background: repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50% / 8px 8px;
       border: 1px solid #eee;
+      max-width: 100%;
+      height: auto;
     }
     .sprite-card .name { font-size: 11px; font-weight: bold; margin-bottom: 4px; }
     .sprite-card .meta { font-size: 9px; color: #777; line-height: 1.6; }
@@ -355,12 +358,15 @@
       var c = document.createElement('canvas');
       c.width = sw * scale;
       c.height = sh * scale;
-      c.style.width = (sw * scale) + 'px';
-      c.style.height = (sh * scale) + 'px';
       var ctx = c.getContext('2d');
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw * scale, sh * scale);
-      return c;
+      var out = new Image();
+      out.className = 'sprite-extract';
+      out.width = sw * scale;
+      out.height = sh * scale;
+      out.src = c.toDataURL();
+      return out;
     }
 
     function renderSpriteGrid(gridId, sprites) {
