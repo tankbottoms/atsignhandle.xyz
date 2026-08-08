@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  atsignhandle.xyz previously returned 404 for /sitemap.xml, and the only robots.txt
+  being served was Cloudflare's managed AI-content-signals commentary, which contains
+  no Sitemap: line. Nothing pointed a crawler anywhere.
+
+  One URL is the honest answer. The site is a single page: public/index.html has no
+  internal links to any other HTML, and the only other root-level pages — spec.html
+  (a sprite spec) and test-audio-haptics.html (a test harness) — both return 307 in
+  production and are development artifacts, not content.
+
+  Deliberately NOT listed: the six content-hash directories under public/ that hold
+  stale copies of an unrelated forensic document. They are excluded in robots.txt;
+  see the note there.
+
+  The origin below is hard-coded rather than derived from the request, matching the
+  <link rel="canonical"> already present in public/index.html. www.atsignhandle.xyz
+  and the workers.dev hostname serve the same assets, so a request-derived origin
+  would have each alias advertise itself and consolidate nothing.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://atsignhandle.xyz/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

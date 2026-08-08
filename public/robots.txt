@@ -1,0 +1,43 @@
+# atsignhandle.xyz — crawl policy.
+#
+# Indexing is welcome here, including by AI/LLM crawlers: GPTBot, OAI-SearchBot,
+# ChatGPT-User, ClaudeBot, Claude-Web, anthropic-ai, PerplexityBot, Perplexity-User,
+# Google-Extended, Applebot, Applebot-Extended, Amazonbot, CCBot, Bytespider,
+# Meta-ExternalAgent, cohere-ai, DuckAssistBot and YouBot are all permitted by the
+# "User-agent: *" record below.
+#
+# They are named in this comment rather than in records of their own on purpose. A
+# crawler obeys exactly ONE group — the most specific one matching its token — and
+# ignores "User-agent: *" completely once a group names it. Giving each bot its own
+# "Allow: /" record would therefore have exempted every one of them from the
+# Disallow lines below, which is the opposite of what those lines are for.
+#
+# Cloudflare's managed "AI content signals" feature may append its own block to this
+# file at the edge. That block is explanatory comment only — it sets no
+# Content-Signal directives — so it neither grants nor restricts anything. This
+# record is the site's actual position.
+
+User-agent: *
+Allow: /
+
+# Stale build directories — excluded from crawling.
+#
+# public/ retains six content-hash directories from earlier deploys, each holding a
+# full copy of an unrelated document ("Forensic Analysis — Cane Securities Fraud").
+# All six are live and publicly reachable, none carries a <link rel="canonical">, and
+# they are near-identical to one another. Left crawlable they would form a six-way
+# duplicate set on a domain whose actual subject is the game at "/", and they would
+# compete with the canonical copies of that document on their own origins.
+#
+# These paths are untracked in git, so a Disallow is the reversible way to take them
+# out of the index without deleting anything. If they are genuinely obsolete the real
+# fix is to remove the directories from public/ and redeploy, after which these lines
+# can go as well.
+Disallow: /085ca9f3eff4/
+Disallow: /232c949cd6fa/
+Disallow: /53da119c2284/
+Disallow: /a4e40045f513/
+Disallow: /a4f2b9e1c7d3/
+Disallow: /c3ff4db11ca5/
+
+Sitemap: https://atsignhandle.xyz/sitemap.xml
