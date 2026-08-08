@@ -20,24 +20,14 @@
 User-agent: *
 Allow: /
 
-# Stale build directories — excluded from crawling.
+# Six content-hash build directories that used to sit here (085ca9f3eff4, 232c949cd6fa,
+# 53da119c2284, a4e40045f513, a4f2b9e1c7d3, c3ff4db11ca5) held stale copies of an
+# unrelated document and have been retired out of public/. They now return 410 Gone
+# from the Worker.
 #
-# public/ retains six content-hash directories from earlier deploys, each holding a
-# full copy of an unrelated document ("Forensic Analysis — Cane Securities Fraud").
-# All six are live and publicly reachable, none carries a <link rel="canonical">, and
-# they are near-identical to one another. Left crawlable they would form a six-way
-# duplicate set on a domain whose actual subject is the game at "/", and they would
-# compete with the canonical copies of that document on their own origins.
-#
-# These paths are untracked in git, so a Disallow is the reversible way to take them
-# out of the index without deleting anything. If they are genuinely obsolete the real
-# fix is to remove the directories from public/ and redeploy, after which these lines
-# can go as well.
-Disallow: /085ca9f3eff4/
-Disallow: /232c949cd6fa/
-Disallow: /53da119c2284/
-Disallow: /a4e40045f513/
-Disallow: /a4f2b9e1c7d3/
-Disallow: /c3ff4db11ca5/
+# They are deliberately NOT listed as Disallow. A Disallow on a removed URL is
+# counterproductive: it stops the crawler fetching the path, so it never observes the
+# 410 and the URL lingers in the index on its last-known state. Leaving them crawlable
+# is what gets them dropped.
 
 Sitemap: https://atsignhandle.xyz/sitemap.xml
