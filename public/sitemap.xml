@@ -4,10 +4,12 @@
   being served was Cloudflare's managed AI-content-signals commentary, which contains
   no Sitemap: line. Nothing pointed a crawler anywhere.
 
-  One URL is the honest answer. The site is a single page: public/index.html has no
-  internal links to any other HTML, and the only other root-level pages — spec.html
-  (a sprite spec) and test-audio-haptics.html (a test harness) — both return 307 in
-  production and are development artifacts, not content.
+  Two URLs. The root is the game. /products is the entity's product and services page —
+  the destination a payment receipt or a card statement lookup lands on, so it has to be
+  indexable and reachable without going through the game.
+
+  Still not listed: spec.html (a sprite spec) and test-audio-haptics.html (a test harness),
+  which both return 307 in production and are development artifacts, not content.
 
   Deliberately NOT listed: the six content-hash directories under public/ that hold
   stale copies of an unrelated forensic document. They are excluded in robots.txt;
@@ -23,5 +25,10 @@
     <loc>https://atsignhandle.xyz/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://atsignhandle.xyz/products</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
 </urlset>
