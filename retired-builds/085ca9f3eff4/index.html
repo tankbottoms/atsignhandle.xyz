@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forensic Analysis — Cane Securities Fraud</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #08090c;
+  --bg-elevated: #0d1016;
+  --bg-card: #13171f;
+  --bg-card-hover: #1a1f29;
+  --accent-crimson: #dc2f3f;
+  --accent-crimson-dim: #a6232f;
+  --accent-amber: #e8a838;
+  --accent-amber-dim: #b8862a;
+  --accent-slate: #5d7a94;
+  --accent-slate-dim: #4a6177;
+  --text: #b8c2d1;
+  --text-dim: #6b7789;
+  --text-bright: #f4f6f9;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --svg-node-bg: #13171f;
+  --svg-grid: #1a1f29;
+  --svg-axis: #2a3140;
+  --border-subtle: rgba(255,255,255,0.06);
+  --glow-crimson: rgba(220, 47, 63, 0.15);
+  --glow-amber: rgba(232, 168, 56, 0.12);
+}
+[data-theme="light"] {
+  --bg: #f8f7f4;
+  --bg-elevated: #fff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0efec;
+  --accent-crimson: #c01c28;
+  --accent-crimson-dim: #9a1820;
+  --accent-amber: #b8860b;
+  --accent-amber-dim: #946b08;
+  --accent-slate: #5d7a94;
+  --accent-slate-dim: #4a6177;
+  --text: #2d3140;
+  --text-dim: #6b7789;
+  --text-bright: #0d1016;
+  --svg-node-bg: #ffffff;
+  --svg-grid: #e5e4e0;
+  --svg-axis: #ccc5b9;
+  --border-subtle: rgba(0,0,0,0.06);
+  --glow-crimson: rgba(192, 28, 40, 0.08);
+  --glow-amber: rgba(184, 134, 11, 0.06);
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+.hero, .section-intro, .explainer-box, .step, #closing, .math-highlight, .theme-toggle {
+  transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(220, 47, 63, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(232, 168, 56, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+[data-theme="light"] body::before {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(192, 28, 40, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(184, 134, 11, 0.03) 0%, transparent 50%);
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: overlay;
+}
+[data-theme="light"] body::after { opacity: 0.015; }
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+}
+.hero__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  font-weight: 500;
+}
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  font-weight: 600;
+  color: var(--text-bright);
+  line-height: 1.15;
+  max-width: 920px;
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  letter-spacing: -0.02em;
+}
+.hero__subtitle {
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+  color: var(--text-dim);
+  max-width: 680px;
+  margin-bottom: 3.5rem;
+  opacity: 0;
+  line-height: 1.75;
+  font-weight: 400;
+}
+.hero__stats {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+}
+.hero__stat { text-align: center; }
+.hero__stat-value {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--accent-crimson);
+  display: block;
+  letter-spacing: -0.01em;
+}
+.hero__stat-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 0.25rem;
+}
+.hero__stat-value a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.hero__scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.6; }
+}
+
+.section-intro {
+  text-align: center;
+  padding: 7rem 2rem 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.section-intro__number {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  color: var(--accent-amber);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.section-intro__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.01em;
+}
+.section-intro__desc {
+  color: var(--text-dim);
+  font-size: 1rem;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.scroll-section {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+}
+.scroll-section__graphic {
+  position: sticky;
+  top: 0;
+  width: 52%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg) 100%);
+}
+.scroll-section__graphic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, var(--glow-crimson) 0%, transparent 60%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.scroll-section__graphic svg { width: 100%; height: 100%; max-height: 80vh; position: relative; z-index: 1; overflow: visible; }
+.scroll-section__steps { width: 48%; padding: 45vh 3rem; }
+.step {
+  min-height: 45vh;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  opacity: 0.12;
+  transition: opacity 0.6s ease, border-color 0.4s ease, background 0.4s ease, transform 0.4s ease;
+  transform: translateX(8px);
+}
+.step.is-active { 
+  opacity: 1; 
+  border-color: var(--accent-slate-dim); 
+  background: var(--bg-card-hover); 
+  transform: translateX(0);
+}
+.step__label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  margin-bottom: 0.6rem;
+}
+.step__title { 
+  font-family: var(--font-display); 
+  font-size: 1.35rem; 
+  font-weight: 600; 
+  color: var(--text-bright); 
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.01em;
+}
+.step__body { color: var(--text-dim); font-size: 0.92rem; line-height: 1.75; }
+.step__body strong { color: var(--text); font-weight: 600; }
+.step__body .mono { font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-slate); }
+.step__body .red { color: var(--accent-crimson); font-weight: 600; }
+.step__body .gold { color: var(--accent-amber); font-weight: 600; }
+.step__body .blue { color: var(--accent-slate); font-weight: 600; }
+
+.explainer-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 2rem 2.25rem;
+  margin: 2.5rem auto;
+  max-width: 900px;
+}
+.explainer-box h3 {
+  color: var(--text-bright);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.explainer-box h3::before {
+  content: '?';
+  background: var(--accent-amber);
+  color: var(--bg);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  flex-shrink: 0;
+}
+.explainer-box p { color: var(--text-dim); margin-bottom: 0.85rem; font-size: 0.94rem; line-height: 1.75; }
+.explainer-box p:last-child { margin-bottom: 0; }
+
+.math-highlight {
+  background: var(--glow-amber);
+  border: 1px solid var(--accent-amber-dim);
+  border-radius: 3px;
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-amber);
+}
+.math-stack { line-height: 1.9; }
+.math-stack .math-row { display: flex; align-items: baseline; gap: 0.8em; }
+.math-stack .math-op { width: 1em; text-align: right; flex-shrink: 0; font-weight: 700; color: var(--accent-amber); }
+.math-stack .math-num { min-width: 7.2em; text-align: right; flex-shrink: 0; font-weight: 500; font-size: 0.88em; }
+.math-stack .math-desc { color: var(--text-dim); font-size: 0.74em; padding-left: 0.4em; }
+.math-stack .math-hr { border: none; border-top: 1px solid var(--accent-amber-dim); margin: 0.25rem 0 0.1rem; }
+.math-stack .math-hr.double { border-top: 3px double var(--accent-amber-dim); }
+.math-stack .math-result .math-num { color: var(--accent-crimson); font-size: 1.15em; font-weight: 700; }
+.hero__stats { flex-wrap: wrap; justify-content: center; max-width: 860px; }
+
+#closing {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5rem 2rem;
+  max-width: 780px;
+  margin: 0 auto;
+}
+#closing h2 { 
+  font-family: var(--font-display); 
+  font-size: 2rem; 
+  font-weight: 600; 
+  color: var(--text-bright); 
+  margin-bottom: 1.75rem; 
+  letter-spacing: -0.01em;
+}
+#closing p { color: var(--text-dim); font-size: 1rem; line-height: 1.85; margin-bottom: 1.1rem; }
+#closing .case-ref { 
+  font-family: var(--font-mono); 
+  font-size: 0.75rem; 
+  color: var(--accent-slate); 
+  margin-top: 2.5rem; 
+  line-height: 1.8;
+}
+
+[data-theme="light"] .explainer-box {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .explainer-box h3::before {
+  color: #fff;
+}
+[data-theme="light"] .step {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+[data-theme="light"] .step.is-active {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+[data-theme="light"] .math-highlight {
+  background: rgba(184, 134, 11, 0.06);
+}
+[data-theme="light"] .scroll-section__graphic {
+  background: linear-gradient(135deg, #fff 0%, #f8f7f4 100%);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 10000;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: background 0.3s, border-color 0.3s, transform 0.2s;
+  backdrop-filter: blur(8px);
+}
+.theme-toggle:hover {
+  transform: scale(1.08);
+  border-color: var(--accent-amber-dim);
+}
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon { position: absolute; transition: opacity 0.3s, transform 0.3s; }
+.theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+.theme-toggle .icon-moon { opacity: 1; transform: rotate(0) scale(1); }
+[data-theme="light"] .theme-toggle .icon-sun { opacity: 1; transform: rotate(0) scale(1); }
+[data-theme="light"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+
+/* Narrow desktop / large tablet: give the graphic pane more breathing room */
+@media (max-width: 1100px) {
+  .scroll-section__graphic { width: 50%; }
+  .scroll-section__steps { width: 50%; padding: 40vh 2rem; }
+}
+
+/* Tablet: stack layout — steps first, diagram below in end-state */
+@media (max-width: 900px) {
+  .scroll-section { flex-direction: column-reverse; }
+  .scroll-section__graphic {
+    width: 100%;
+    height: auto;
+    min-height: 420px;
+    position: static;
+    padding: 1rem;
+  }
+  .scroll-section__graphic svg { width: 100%; height: auto; }
+  .scroll-section__steps { width: 100%; padding: 2rem 1.5rem; }
+  .step { min-height: auto; opacity: 1 !important; transform: none !important; border-color: var(--accent-slate-dim); background: var(--bg-card-hover); margin-bottom: 1rem; }
+  /* Entity diagram needs extra height for 5 rows with doubled offshore gap */
+  #section-transform .scroll-section__graphic { min-height: 800px; }
+  /* Donut needs square-ish space with breathing room */
+  #section-ownership .scroll-section__graphic { min-height: 440px; padding-top: 2rem; padding-bottom: 2rem; }
+  /* Sankey needs height for 3-column layout with breathing room */
+  #section-money .scroll-section__graphic { min-height: 480px; padding-top: 2rem; padding-bottom: 2rem; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .scroll-section { flex-direction: column-reverse; }
+  .scroll-section__graphic {
+    width: 100%;
+    height: auto;
+    min-height: 380px;
+    position: static;
+    padding: 0.75rem;
+  }
+  .scroll-section__graphic svg { width: 100%; height: auto; }
+  .scroll-section__steps { width: 100%; padding: 1.5rem 1.25rem; }
+  .step { min-height: auto; opacity: 1 !important; transform: none !important; border-color: var(--accent-slate-dim); background: var(--bg-card-hover); margin-bottom: 1rem; }
+  .hero__stats { gap: 1.5rem; }
+  .hero__stat-value { font-size: 1.5rem; }
+  .explainer-box { margin: 1.5rem; padding: 1.5rem; }
+  .hero__title { font-size: 2.25rem; }
+  #viz-transform { overflow: visible; }
+  /* Entity diagram — tall for 5-row layout with doubled offshore gap */
+  #section-transform .scroll-section__graphic { min-height: 800px; }
+  /* Donut — proportional with breathing room */
+  #section-ownership .scroll-section__graphic { min-height: 420px; padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  /* Cert timeline — extra top space */
+  #section-certs .scroll-section__graphic { min-height: 380px; padding-top: 2.5rem; }
+  /* Sankey — taller with breathing room */
+  #section-money .scroll-section__graphic { min-height: 460px; padding-top: 1.5rem; padding-bottom: 1.5rem; }
+}
+
+/* Footnotes */
+.footnotes-section { max-width: 900px; margin: 3rem auto; padding: 0 2rem; }
+.footnotes-section h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; color: var(--text-bright); margin-bottom: 1rem; }
+.footnotes-section ol { padding-left: 1.5rem; }
+.footnotes-section li { color: var(--text-dim); font-size: 0.85rem; line-height: 1.75; margin-bottom: 0.5rem; }
+.footnotes-section li a { color: var(--accent-slate); text-decoration: underline; text-underline-offset: 2px; }
+sup a.fn-ref { color: var(--accent-slate); text-decoration: none; font-size: 0.7em; font-weight: 600; }
+sup a.fn-ref:hover { text-decoration: underline; }
+
+/* Statute table */
+.statute-table { width: 100%; border-collapse: collapse; }
+.statute-table td { padding: 0.5rem 0.75rem; vertical-align: top; border: none; font-size: 0.92rem; line-height: 1.75; color: var(--text-dim); }
+.statute-table td:first-child { white-space: nowrap; font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-slate); width: 18em; }
+.statute-table tr { border-bottom: 1px solid var(--border-subtle); }
+@media (max-width: 768px) {
+  .statute-table tr { display: flex; flex-direction: column; padding: 0.5rem 0; }
+  .statute-table td:first-child { white-space: normal; width: auto; padding-bottom: 0.15rem; font-weight: 600; }
+  .statute-table td:last-child { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+  <span class="icon-moon">&#9790;</span>
+  <span class="icon-sun">&#9728;</span>
+</button>
+
+<section class="hero">
+  <div class="hero__label">Forensic Analysis</div>
+  <h1 class="hero__title">The Anatomy of a<br>Decades-Long Securities Fraud</h1>
+  <p class="hero__subtitle">
+    How Attorney Kyleen E. Cane funneled stock through four corporate shell transformations,
+    diluted public shareholders by 99.35%, and liquidated $6.4 million offshore — undetected for over 20 years.
+  </p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <span class="hero__stat-value">$49.3M</span>
+      <span class="hero__stat-label">Medicare Billing</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value">$6.4M</span>
+      <span class="hero__stat-label">Securities Liquidated</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value">$4.8M</span>
+      <span class="hero__stat-label">CARES Act Relief</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value"><a href="https://www.sec.gov/Archives/edgar/data/878146/000107579301500095/" target="_blank" rel="noopener">Jun 28, 2001</a></span>
+      <span class="hero__stat-label">Identity Backdated</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value">26 yrs</span>
+      <span class="hero__stat-label">Racketeering Enterprise</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value">12+</span>
+      <span class="hero__stat-label">Shell Entities</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value">1,335</span>
+      <span class="hero__stat-label">False SEC Filings</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value">21</span>
+      <span class="hero__stat-label">False SOX Certifications</span>
+    </div>
+    <div class="hero__stat">
+      <span class="hero__stat-value">99.35%</span>
+      <span class="hero__stat-label">Shareholder Dilution</span>
+    </div>
+  </div>
+  <div class="hero__scroll-hint">Scroll to explore the evidence ↓</div>
+  <div style="position:absolute;bottom:12px;right:18px;font-family:var(--font-mono);font-size:0.65em;color:var(--text-dim);opacity:0.45;letter-spacing:0.05em;">v0.3.0-wip</div>
+</section>
+
+<!-- ============ SECTION 0: CONCEPTS ============ -->
+<div class="section-intro" id="intro-concepts">
+  <div class="section-intro__number">Background</div>
+  <h2 class="section-intro__title">Understanding the Mechanics</h2>
+  <p class="section-intro__desc">Essential concepts that make this fraud possible — explained for judges, law enforcement, and the public.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>What is CEDE & CO and the Depository Trust Company (DTC)?</h3>
+  <p><strong>CEDE & CO.</strong> is the nominee name used by Cede & Company, which is a subsidiary of the Depository Trust Company (DTC). DTC is the largest securities depository in the world, holding over $50 trillion in securities for banks, brokers, and investors.</p>
+  <p>When you buy or sell stocks through a broker, you never actually receive physical certificates. Instead, DTC holds the "master" certificates, and your broker maintains records showing your beneficial ownership. This is why the documents reference "deposits" into DTC — these are shares being converted from physical certificates into electronic book-entry form that can be traded on public markets.</p>
+  <p><strong>The significance here:</strong> When Cane deposited 36 sequential certificates (Nos. 2029–5323) totaling 2,249,825 shares into DTC, she was making private, hidden stock publicly tradeable. The sequential certificate numbers prove these came from a single controlled source — the Cane family.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>What is a CUSIP Number?</h3>
+  <p>A <strong>CUSIP</strong> (Committee on Uniform Securities Identification Procedures) is a unique 9-character identifier assigned to every publicly traded security in North America. Think of it as a "fingerprint" for stocks and bonds.</p>
+  <p><strong>Why this matters:</strong> A CUSIP number makes a private company's stock an <em>official asset class</em>. Once a company has a CUSIP, institutional investors, pension funds, and foreign entities can theoretically hold or trade it. This is exactly what ICOs did with cryptocurrencies — they created digital tokens that could be traded on exchanges.</p>
+  <p>By transforming worthless private stock (Tele-Lawyer) through a series of public shells, Cane gave her hidden stock position a CUSIP number — making it a tradeable commodity with real market value, despite having no legitimate business behind it.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>What is Registration S?</h3>
+  <p><strong>Regulation S</strong> is an SEC rule that allows companies to sell securities to foreign investors without registering with the SEC. The key provision: shares sold under Reg S can be "resold" into the U.S. market after a holding period.</p>
+  <p><strong>The abuse:</strong> This is the critical link that Cane exploited. By registering shares under Reg S, she could legally transfer stock to offshore nominees in Bermuda (LOM Securities), who would then hold until the restriction period expired. At that point, the shares would become freely tradeable in the U.S. market — but the original beneficial owner (Cane) would receive the proceeds offshore, tax-free.</p>
+  <p>This is the "registration" the original Dynamic Associates implemented immediately — it was the first step in building a mechanism to launder stock into offshore cash.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>The Shell Selling Business Model</h3>
+  <p><strong>Why would anyone pay $250,000–$500,000 for a corporate shell?</strong> Because it allows them to do something they cannot do otherwise: sell a hidden position.</p>
+  <p>If you hold 5 million shares of a private company worth nothing, you cannot sell them — there is no market. But if you buy a public shell that's already listed (or get one registered), you can "swap" your private shares into the public entity, then sell them into the market.</p>
+  <p>The shell seller (like Cane) benefits twice: they sell the shell for $250K–$500K cash, AND they retain their hidden stock position in the resulting public entity, which they later liquidates through offshore accounts.</p>
+  <p>Buyers benefit: they get instant public company status (saving years of IPO/listing processes), and they can now sell their private holdings to the public market. It's essentially a stock laundering service — turning private, illiquid, worthless stock into public, liquid, tradeable shares.</p>
+  <p><strong>Like an ICO:</strong> Just as ICOs turned digital tokens (often with no underlying value) into tradeable crypto assets, shell company fraud turns worthless private stock into tradeable public shares.</p>
+</div>
+
+<!-- ============ SECTION 1: ENTITY PIPELINE ============ -->
+<div class="section-intro" id="intro-transform">
+  <div class="section-intro__number">Section 01</div>
+  <h2 class="section-intro__title">The Transformation Pipeline</h2>
+  <p class="section-intro__desc">A masterclass in shell manufacturing — each corporate transformation serves a specific fraud purpose.</p>
+</div>
+
+<section id="section-transform" class="scroll-section">
+  <div class="scroll-section__graphic"><svg id="viz-transform" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="scroll-section__steps">
+    <div class="step" data-step="0">
+      <div class="step__label">Origin + Reverse Merger</div>
+      <div class="step__title">Tele-Lawyer <span style="font-size:0.85em;">→<sup style="font-size:0.65em;vertical-align:super;">May 1989</sup></span> Dynamic <span style="font-size:0.85em;">→<sup style="font-size:0.65em;vertical-align:super;">Jun 12, 2001</sup></span> LATI</div>
+      <div class="step__body">
+        <strong>Dynamic Associates, Inc. (DAI)</strong> — incorporated July 20, 1989 in Nevada — filed under <span class="mono">SIC Code 6770 (Blank Checks)</span>. Jan Wallace served as President from April 1995. DAI claimed $30M raised but documented only $8.6M; it filed 134 SEC documents while conducting no commercial operations — a parking structure waiting for a reverse merger.
+        <br><br>
+        On <strong>June 12, 2001</strong>, Tele-Lawyer, Inc. (Cane's private Nevada corporation) merged <em>into</em> DAI (<a href="https://www.sec.gov/Archives/edgar/data/878146/000107579301500140/0001075793-01-500140-index.htm" target="_blank" rel="noopener" class="mono" style="font-size:0.85em;">8-K: 0001075793-01-500140</a>).<sup><a class="fn-ref" href="#fn1" id="fnref1">[1]</a></sup> The entity was renamed Legal Access Technologies, Inc. (LATI). A <span class="red">153:1 reverse stock split</span> wiped out 99.35% of DAI's public float.<sup><a class="fn-ref" href="#fn2" id="fnref2">[2]</a></sup>
+        <br><br>
+        <strong>Family bloc concentration:</strong>
+        <div style="margin: 0.4em 0 0.4em 0.8em; font-size: 0.87em; line-height: 1.8;">
+          <span class="red" style="display:inline-block;min-width:9em;">Kyleen E. Cane</span> 48.7% · 2,871,051 shares<br>
+          <span class="gold" style="display:inline-block;min-width:9em;">Shirley Cane</span> ~5.35% · Cane's mother<br>
+          <span class="gold" style="display:inline-block;min-width:9em;">Mekelburg family</span> ~31.65% · extended family bloc<br>
+          <span style="display:inline-block;min-width:9em;border-top:1px solid var(--border-subtle);margin-top:0.3em;padding-top:0.3em;font-weight:600;">Total family</span> <strong>85.7%</strong> · coordinated, never aggregated in any SEC filing
+        </div>
+        <br>
+        <strong>Cane name change (backdated):</strong> The Form 5 filing (<a href="https://www.sec.gov/Archives/edgar/data/878146/000125529404000216/0001255294-04-000216-index.htm" target="_blank" rel="noopener" class="mono">Acc. 0001255294-04-000216</a>, filed July 22, 2004)<sup><a class="fn-ref" href="#fn10" id="fnref10">[10]</a></sup> reported the name change from Michael A. Cane to Kyleen E. Cane as occurring on <strong>June 28, 2001</strong> — 16 days after the reverse merger. However, a Clark County, Nevada quitclaim deed (#20040519-0004721) references a "court ordered change of name" recorded <strong>May 19, 2004</strong>. Cane continued signing SEC filings, SOX certifications, and corporate documents as "Michael A. Cane" through at least late 2003. The actual name change occurred approximately <span class="red">2.5 years after the date reported to the SEC</span>.
+        <br><br>
+        LATI retained the predecessor shell — no third party should have access to the entity or its shareholder list, otherwise the fraud scheme would be discoverable. Each subsequent transformation is structuring and layering to conceal the insider position.
+        <br><br>
+        <div style="font-size:0.82em;line-height:1.7;border-top:1px solid var(--border-subtle);padding-top:0.5em;margin-top:0.2em;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#dc2f3f;flex-shrink:0;"></span><span>Shell entity</span></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#5d7a94;flex-shrink:0;"></span><span>Operational entity</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e8a838;flex-shrink:0;"></span><span>Offshore nominee</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="step" data-step="1">
+      <div class="step__label">DAI / LATI Subsidiaries</div>
+      <div class="step__title">MW Medical Spin-Out &amp; Healthcare Operations</div>
+      <div class="step__body">
+        <strong>MW Medical, Inc.</strong> (CIK 1059577) was incorporated <strong>December 4, 1997</strong> and spun off from Dynamic on <strong>March 11, 1998</strong> (1:1 share distribution to existing Dynamic shareholders). CEO: Jan Wallace. Counsel: <em>Michael A. Cane</em> — the identity Kyleen E. Cane would report adopting in 2001.
+        <br><br>
+        DAI/LATI also operated multiple subsidiaries in the healthcare space — providing a commercial veneer and a federal revenue stream:
+        <div style="margin: 0.45em 0 0.45em 0.8em; font-size: 0.87em; line-height: 1.9;">
+          <span class="blue" style="display:inline-block;min-width:10.5em;">Genesis Health Mgmt</span> 32 rural hospitals · 7 states · <span class="mono">$49.3M Medicare billing</span><sup><a class="fn-ref" href="#fn3" id="fnref3">[3]</a></sup><br>
+          <span class="blue" style="display:inline-block;min-width:10.5em;">P&amp;H Industries</span> California · Manufacturing · sold for $5M<br>
+          <span class="blue" style="display:inline-block;min-width:10.5em;">Microthermia Inc.</span> San Jose, CA · Medical device technology
+        </div>
+        Genesis Health Management generated approximately <strong>$2 million per quarter</strong> in Medicare billings — 100% of Dynamic's operating revenue.<sup><a class="fn-ref" href="#fn4" id="fnref4">[4]</a></sup> Management fees from Genesis flowed directly to Cane-affiliated structuring entities — federal Medicare funds converted into private compensation while Cane built the corporate architecture.
+      </div>
+    </div>
+    <div class="step" data-step="2">
+      <div class="step__label">Transformation 2</div>
+      <div class="step__title">Bankruptcy Weaponization: MW Medical Ch.11</div>
+      <div class="step__body">
+        On <strong>January 22, 2002</strong>, MW Medical filed Chapter 11.<sup><a class="fn-ref" href="#fn5" id="fnref5">[5]</a></sup> Wallace held a <span class="mono">$615,871 promissory note</span> secured against ALL company assets — the sole secured creditor position was manufactured to control the outcome.<sup><a class="fn-ref" href="#fn6" id="fnref6">[6]</a></sup> CFO Munjit Johal signed filings without disclosing the conflict.
+        <br><br>
+        <strong>§ 1145 subsidiary distribution:</strong> As bankruptcy resolved, Wallace distributed MW Medical's subsidiaries to insiders — each <span class="gold">exempt from securities registration</span> under the Bankruptcy Code:
+        <div style="margin: 0.45em 0 0.45em 0.8em; font-size: 0.87em; line-height: 1.9;">
+          <span class="red" style="display:inline-block;min-width:10.5em;">MW Asia</span> 95% → Grace Sim (wage claims)<br>
+          <span class="red" style="display:inline-block;min-width:10.5em;">MW Europe</span> 95% → Dean Drummond (wage claims)<br>
+          <span class="red" style="display:inline-block;min-width:10.5em;">MW Fitness</span> 95% → Jan Wallace (unsecured portion)<br>
+          <span class="red" style="display:inline-block;min-width:10.5em;">MW S. America</span> 95% → Tyler Brown (wage claims)
+        </div>
+        <strong>Wallace share issuance:</strong> Wallace converted <span class="mono">$375,000</span> of her promissory note into <span class="red">74 million shares</span> at $0.005/share (77.4% of the reorganized entity), leaving a remaining convertible balance of <span class="mono">$570,775.30</span>.<sup><a class="fn-ref" href="#fn7" id="fnref7">[7]</a></sup> Tax-free shells transferred outside public scrutiny.
+      </div>
+    </div>
+    <div class="step" data-step="3">
+      <div class="step__label">Transformation 3</div>
+      <div class="step__title">The Thomas &amp; Wong / MW Asia Shell Branch</div>
+      <div class="step__body">
+        Following the bankruptcy, the enterprise ran a parallel <strong>shell sales operation</strong> through Thomas &amp; Wong and Wallace Black LLC — subsidiaries and affiliates used to sell pre-packaged Nevada shells to third-party buyers.
+        <br><br>
+        MW Asia (95% to Grace Sim) and the other §1145-exempt subsidiaries became <span class="gold">tax-free staging entities</span> — transferred to insiders, then sold to outside "victims" such as <strong>Beardmore</strong>. These buyers paid $250K–$500K for an entity they believed was a legitimate clean shell. In reality the shell carried hidden liabilities, affiliated persons in management, and undisclosed insider share positions.
+        <br><br>
+        <strong>The enterprise profits three ways:</strong> (1) Management fees paid by Medicare-funded healthcare operations; (2) Proceeds from shell sales to third-party buyers like Beardmore; (3) Hidden stock liquidation through offshore nominees. The entity churn creates a commercial narrative — it appears to be a normal law practice, not a fraud infrastructure.
+      </div>
+    </div>
+    <div class="step" data-step="4">
+      <div class="step__label">Transformation 4</div>
+      <div class="step__title">Rebranding: MW Medical → Davi Skin (1-for-500 Split)</div>
+      <div class="step__body">
+        On <strong>June 21, 2004</strong> (CIK 1059577 retained), the post-bankruptcy reorganized entity was renamed Davi Skin, Inc. The business was the vision and efforts of <strong>Parrish Medley</strong> and <strong>Carlo Mondavi</strong>, who brought investments and sweat equity into what they believed was a legitimate skincare venture. Wallace and Cane identified them as marks — outside investors whose capital and credibility would provide cover for the enterprise's real purpose: laundering money through a publicly traded shell.
+        <br><br>
+        Concurrent with the rebranding, a <span class="red">1-for-500 reverse stock split</span> was implemented — far more aggressive than the earlier 153:1. This eliminated fractional shareholders, reset the share price to create the appearance of value, and concentrated the remaining float in enterprise-controlled positions.
+        <br><br>
+        <strong>The Wallace promissory note fraud:</strong> Wallace defamed Parrish Medley by falsely claiming she still held a <span class="mono">$200,000 promissory note</span> against the entity — a falsehood documented by the MW Medical bankruptcy record, which resolved the original note through the $375,000 conversion leaving only the $570,775.30 convertible balance.<sup><a class="fn-ref" href="#fn7">[7]</a></sup> The fictitious debt served as a control instrument: a financial claim used to assert majority control over Davi Skin after destroying its share price prior to conversion. On <strong>April 3, 2007</strong>, Cane converted this fabricated $200K note into <span class="red">2,295,388 shares</span> distributed to four offshore "unrelated third parties" (<a href="https://www.sec.gov/Archives/edgar/data/1059577/000111776807000030/0001117768-07-000030-index.htm" target="_blank" rel="noopener" class="mono" style="font-size:0.85em;">10-KSB: 0001117768-07-000030</a>).<sup><a class="fn-ref" href="#fn8">[8]</a></sup>
+        <br><br>
+        Within <span class="red">four days</span> of rebranding, CEDE & CO. certificate deposits began (No. 2029). The pipeline was primed: CEO Wallace, Director Kyleen Cane, CFO Grace Sim — the same enterprise team that ran MW Medical — now operated Davi Skin.
+      </div>
+    </div>
+    <div class="step" data-step="5">
+      <div class="step__label">Transformation 5</div>
+      <div class="step__title">Offshore Liquidation: Named Bermuda Nominees</div>
+      <div class="step__body">
+        Between <strong>June 2004</strong> and <strong>June 2007</strong>, 36 sequential CEDE & CO. certificates (Nos. 2029–5323) deposited <span class="mono">2,249,825 shares</span> into DTC (domestic nominee layer).
+        <br><br>
+        On <strong>April 3, 2007</strong>, certificates 5309–5312 transferred <span class="gold">2,295,388 shares</span> to four named LOM Securities nominees in Bermuda:
+        <div style="margin: 0.5em 0 0.5em 0; font-size: 0.85em; line-height: 1.5;">
+          <table style="width:100%;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--border-subtle);">
+              <td style="padding:4px 8px;color:var(--text-dim);font-size:0.9em;">Date</td>
+              <td style="padding:4px 8px;color:var(--text-dim);font-size:0.9em;">Cert No.</td>
+              <td style="padding:4px 8px;color:var(--text-dim);font-size:0.9em;">Entity</td>
+              <td style="padding:4px 8px;text-align:right;color:var(--text-dim);font-size:0.9em;">Shares</td>
+              <td style="padding:4px 8px;text-align:right;color:var(--text-dim);font-size:0.9em;">%</td>
+            </tr>
+            <tr><td style="padding:3px 8px;white-space:nowrap;"><span class="mono">4/3/2007</span></td><td style="padding:3px 8px;"><span class="mono">5309</span></td><td style="padding:3px 8px;"><span class="gold">Arch Ltd.</span></td><td style="padding:3px 8px;text-align:right;"><span class="mono">573,847</span></td><td style="padding:3px 8px;text-align:right;">3.97%</td></tr>
+            <tr><td style="padding:3px 8px;white-space:nowrap;"><span class="mono">4/3/2007</span></td><td style="padding:3px 8px;"><span class="mono">5310</span></td><td style="padding:3px 8px;"><span class="gold">Hepburn Holdings Ltd.</span></td><td style="padding:3px 8px;text-align:right;"><span class="mono">573,847</span></td><td style="padding:3px 8px;text-align:right;">3.97%</td></tr>
+            <tr><td style="padding:3px 8px;white-space:nowrap;"><span class="mono">4/3/2007</span></td><td style="padding:3px 8px;"><span class="mono">5311</span></td><td style="padding:3px 8px;"><span class="gold">Sunshine Ltd.</span></td><td style="padding:3px 8px;text-align:right;"><span class="mono">573,847</span></td><td style="padding:3px 8px;text-align:right;">3.97%</td></tr>
+            <tr style="border-bottom:1px solid var(--border-subtle);"><td style="padding:3px 8px;white-space:nowrap;"><span class="mono">4/3/2007</span></td><td style="padding:3px 8px;"><span class="mono">5312</span></td><td style="padding:3px 8px;"><span class="gold">The Chloe Group</span></td><td style="padding:3px 8px;text-align:right;"><span class="mono">573,847</span></td><td style="padding:3px 8px;text-align:right;">3.97%</td></tr>
+            <tr><td colspan="3" style="padding:3px 8px;font-weight:600;">LOM Securities total</td><td style="padding:3px 8px;text-align:right;font-weight:600;"><span class="mono">2,295,388</span></td><td style="padding:3px 8px;text-align:right;font-weight:600;">15.88%</td></tr>
+          </table>
+        </div>
+        <div style="margin: 0.3em 0 0.5em 0; font-size: 0.85em; line-height: 1.5;">
+          <table style="width:100%;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--border-subtle);">
+              <td style="padding:4px 8px;color:var(--text-dim);font-size:0.9em;">Period</td>
+              <td style="padding:4px 8px;color:var(--text-dim);font-size:0.9em;">Cert Range</td>
+              <td style="padding:4px 8px;color:var(--text-dim);font-size:0.9em;">Entity</td>
+              <td style="padding:4px 8px;text-align:right;color:var(--text-dim);font-size:0.9em;">Shares</td>
+              <td style="padding:4px 8px;text-align:right;color:var(--text-dim);font-size:0.9em;">Certs</td>
+            </tr>
+            <tr><td style="padding:3px 8px;white-space:nowrap;"><span class="mono">6/2004 – 6/2007</span></td><td style="padding:3px 8px;"><span class="mono">2029–5323</span></td><td style="padding:3px 8px;">CEDE & CO. (DTC)</td><td style="padding:3px 8px;text-align:right;"><span class="mono">2,249,825</span></td><td style="padding:3px 8px;text-align:right;">36</td></tr>
+          </table>
+        </div>
+        Each LOM nominee received <strong>exactly 573,847 shares (3.97%)</strong> — deliberately below the <span class="red">5% Schedule 13D disclosure threshold</span>. Identical share counts across four separate foreign entities are statistically impossible through natural market activity.<sup><a class="fn-ref" href="#fn11" id="fnref11">[11]</a></sup>
+        <br><br>
+        Total liquidation proceeds: <span class="red">$6,385,033</span> into Bank of Bermuda (acct <span class="mono">1010-956504</span>) and NT Butterfield (acct <span class="mono">20.006.840.351501.100</span>).<sup><a class="fn-ref" href="#fn8" id="fnref8">[8]</a></sup> <strong>Zero FBARs filed</strong> for 21 consecutive years.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 2: TAX-FREE EXPLAINER ============ -->
+<div class="section-intro">
+  <div class="section-intro__number">Why Tax-Free?</div>
+  <h2 class="section-intro__title">The Offshore Money Machine</h2>
+  <p class="section-intro__desc">How the entire operation avoided any tax liability.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>How Cane Paid Zero Taxes on $6.4 Million</h3>
+  <p><strong>1. Offshore Accounts</strong> — Proceeds flowed directly to Bank of Bermuda and NT Butterfield in the Cayman Islands. The U.S. IRS has no jurisdiction and no visibility into these accounts.</p>
+  <p><strong>2. No FBAR Filings</strong> — U.S. persons must file a Report of Foreign Bank and Financial Accounts (FBAR) for any account exceeding $10,000. Cane and Wallace filed <span class="red">zero FBARs</span> for 21 years — from 2005 through present. Estimated civil penalties alone exceed <strong>$72 million</strong>.</p>
+  <p><strong>3. No Capital Gains Reporting</strong> — Because the accounts were offshore and the nominees were in Bermuda, there was no U.S. broker reporting to the IRS. The transaction simply never appeared on any U.S. tax return.</p>
+  <p><strong>4. Registration S Exemption</strong> — The original Reg S filing created a legal fiction that the shares were being sold to "foreign investors." Even if the IRS had discovered the accounts, the argument could be made that the gains belonged to foreign entities, not U.S. persons.</p>
+  <p><strong>5. § 1145 Tax-Free Spinouts</strong> — The Bankruptcy Code's § 1145 exemption allowed MW Medical's subsidiaries (MW Asia, MW Europe, MW South America, MW Fitness) to be distributed to insiders without SEC registration. These tax-free shells became the raw material for the shell sales branch: transferred at no cost, sold to buyers like Beardmore for $250K–$500K per entity, generating untaxed cash with no IRS visibility.</p>
+  <p><strong>6. Management Fee Laundering</strong> — Cane structured Genesis Health Management to bill Medicare for 32 rural hospital networks. Management fees paid from Genesis to Cane-affiliated structuring entities converted federal healthcare funds into private compensation — taxable in theory, but filed (if at all) under entity identities that obscure the true recipient.</p>
+  <p><strong>The result:</strong> $6.4 million in securities fraud proceeds, zero taxes paid, zero disclosure to any U.S. authority.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>Wallace Perjury: Bankruptcy Court Testimony, November 4, 2013</h3>
+  <p>In a sworn deposition during the Galaxy Gaming bankruptcy proceedings on <strong>November 4, 2013</strong>, Jan Wallace was directly examined about offshore accounts.</p>
+  <p><strong>Wallace's initial testimony:</strong> When asked whether she maintained any foreign bank accounts or held assets offshore, Wallace denied having any such accounts or interests.</p>
+  <p><strong>Minutes later in the same hearing:</strong> Under continued questioning about specific account numbers, Wallace admitted to being a signatory or beneficial holder on a <span class="gold">Bank of NT Butterfield custodian account</span> — one of the two accounts that received the $6,385,033 Davi Skin liquidation proceeds.</p>
+  <p>The contradiction — denial followed by admission in the same proceeding — is itself a federal crime (18 U.S.C. § 1621, perjury; § 1623, false declarations before a court). More importantly, it confirms that Wallace knew the offshore account existed and chose to initially conceal it from a federal judge.</p>
+  <p>This testimony is now part of the record in the qui tam complaint. It links Wallace directly to the offshore liquidation proceeds — and by extension, confirms the connection between the Davi Skin CEDE deposits, the LOM Bermuda nominees, and the NT Butterfield account that received the proceeds.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>Federal Laws, SEC Rules &amp; Crimes Committed</h3>
+  <p>The activity documented above implicates violations across federal criminal statutes, SEC regulations, and corporate governance obligations:</p>
+  <p><strong>Federal Criminal Statutes</strong></p>
+  <table class="statute-table">
+    <tr><td>15 U.S.C. § 78j(b) + SEC Rule 10b-5</td><td>Securities fraud — manipulation of Davi Skin shares, concealed beneficial ownership, fraudulent CEDE certificate deposits</td></tr>
+    <tr><td>18 U.S.C. § 1343</td><td>Wire fraud — electronic transfer of $6.4M to offshore accounts via DTC/CEDE nominee system</td></tr>
+    <tr><td>18 U.S.C. § 1341</td><td>Mail fraud — SEC filings containing material misrepresentations submitted through postal system</td></tr>
+    <tr><td>18 U.S.C. § 1956, § 1957</td><td>Money laundering — $6,385,033 routed through Bermuda nominees into Bank of Bermuda and NT Butterfield accounts</td></tr>
+    <tr><td>31 U.S.C. § 5324</td><td>Structuring — four LOM nominees each receiving exactly 573,847 shares (3.97%), deliberately calibrated below the 5% Schedule 13D disclosure threshold to avoid triggering mandatory reporting requirements</td></tr>
+    <tr><td>18 U.S.C. § 1962</td><td>RICO — pattern of racketeering activity through the Cane-Wallace enterprise spanning 1997–2012</td></tr>
+    <tr><td>18 U.S.C. § 152</td><td>Bankruptcy fraud — manufactured sole-secured-creditor position in MW Medical Ch.11; § 1145 abuse to distribute shells to insiders</td></tr>
+    <tr><td>18 U.S.C. § 1347</td><td>Healthcare fraud — $49.3M Medicare billing through Genesis Health Management, management fees diverted to structuring entities</td></tr>
+    <tr><td>18 U.S.C. § 1621, § 1623</td><td>Perjury / false declarations — Wallace testimony, Nov 4, 2013: denied then admitted offshore accounts in the same proceeding</td></tr>
+    <tr><td>26 U.S.C. § 7201</td><td>Tax evasion — $6.4M in unreported offshore proceeds, zero capital gains reporting for 21 years</td></tr>
+    <tr><td>31 U.S.C. § 5314 + 31 CFR § 1010.350</td><td>FBAR violations — zero foreign bank account reports filed 2005–present; estimated civil penalties exceed $72M</td></tr>
+  </table>
+  <p><strong>SEC Regulatory Violations</strong></p>
+  <p>
+    <strong>Regulation S abuse</strong> — Offshore share sales structured as "foreign investor" transactions to avoid domestic registration requirements<br>
+    <strong>Schedule 13D failures</strong> — Five coordinated family-bloc positions (85.7%) never aggregated or disclosed as a group; four LOM nominees each held at exactly 3.97% to avoid the 5% threshold<br>
+    <strong>SOX certification fraud</strong> — Cane signed Sarbanes-Oxley certifications under the name "Michael A. Cane" for ~2.5 years after reporting a name change to the SEC<br>
+    <strong>Form 5 misrepresentation</strong> — Backdated name change by approximately 2.5 years (reported June 28, 2001; actual May 19, 2004)
+  </p>
+  <p><strong>Corporate / Civil</strong></p>
+  <p>
+    <strong>Breach of fiduciary duty</strong> — Officers Wallace, Cane, Sim, and Johal operated entities for personal enrichment while owing duties to public shareholders<br>
+    <strong>Fraudulent conveyance</strong> — MW Medical assets distributed to insiders via manufactured bankruptcy, below fair value, to defeat creditor claims<br>
+    <strong>Unjust enrichment</strong> — $6.4M in securities proceeds, $49.3M in Medicare funds, and shell sale proceeds ($250K–$500K per entity) extracted through the enterprise structure
+  </p>
+</div>
+
+<!-- ============ SECTION 3: CONCEALED OWNERSHIP ============ -->
+<div class="section-intro" id="intro-ownership">
+  <div class="section-intro__number">Section 02</div>
+  <h2 class="section-intro__title">Concealed Ownership</h2>
+  <p class="section-intro__desc">Staying below every disclosure threshold — a system designed by an attorney.</p>
+</div>
+
+<section id="section-ownership" class="scroll-section">
+  <div class="scroll-section__graphic"><svg id="viz-ownership" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="scroll-section__steps">
+    <div class="step" data-step="0">
+      <div class="step__label">The SEC Filing</div>
+      <div class="step__title">What Regulators Saw: 48.7%</div>
+      <div class="step__body">
+        Cane reported <strong>48.7% individual ownership</strong> to the SEC — carefully calculated to stay below the 50% control threshold. To a regulator reviewing the filing, this looks like a large but non-controlling stake. No red flags.
+      </div>
+    </div>
+    <div class="step" data-step="1">
+      <div class="step__label">The Family Bloc</div>
+      <div class="step__title">Actual Family Control: 85.7%</div>
+      <div class="step__body">
+        Behind the 48.7% figure, <strong>four additional family members</strong> held coordinated positions documented in five Schedule 13G filings — all submitted on the same date.
+        <br><br>
+        The family bloc totaled <span class="red">85.7%</span> (5,008,551 shares). Cane controlled every vote in the bloc, but each filing appeared independent.
+      </div>
+    </div>
+    <div class="step" data-step="2">
+      <div class="step__label">Enterprise Control</div>
+      <div class="step__title">Total Insider Control: 89.9%</div>
+      <div class="step__body">
+        Including enterprise associates Wallace and Sim, the total insider-controlled position reached <span class="red">89.9%</span>. Public shareholders held just <strong>10.1%</strong> — with no meaningful voice or liquidity.
+      </div>
+    </div>
+    <div class="step" data-step="3">
+      <div class="step__label">Offshore Calibration</div>
+      <div class="step__title">Named Bermuda Nominees: 3.97% Each</div>
+      <div class="step__body">
+        Four named Bermuda entities at LOM Securities each received <strong>exactly 573,847 shares (3.97%)</strong>:
+        <br><br>
+        <span class="gold">Arch Ltd.</span> · <span class="gold">Hepburn Holdings Ltd.</span> · <span class="gold">Sunshine Ltd.</span> · <span class="gold">The Chloe Group</span>
+        <br><br>
+        Each position deliberately <span class="red">below the 5% Schedule 13D threshold</span> — combined 15.88% concealed beneficial ownership with zero mandatory disclosure. The identical share counts (to the unit) across four separate foreign entities is statistically impossible through natural market activity.
+        <br><br>
+        <div style="font-size:0.84em;line-height:1.8;border-top:1px solid var(--border-subtle);padding-top:0.6em;margin-top:0.2em;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="display:inline-block;width:11px;height:11px;border-radius:2px;background:#dc2f3f;flex-shrink:0;"></span><span>Kyleen Cane — 48.7%</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="display:inline-block;width:11px;height:11px;border-radius:2px;background:#e8a838;flex-shrink:0;"></span><span>Shirley Cane — 5.35%</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="display:inline-block;width:11px;height:11px;border-radius:2px;background:#b8862a;flex-shrink:0;"></span><span>Other Family — 31.65%</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="display:inline-block;width:11px;height:11px;border-radius:2px;background:#7c3aed;flex-shrink:0;"></span><span>Wallace / Sim — 4.2%</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:11px;height:11px;border-radius:2px;background:#e8a838;flex-shrink:0;"></span><span>Arch / Hepburn / Sunshine / Chloe (×4) — 3.97% each</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 4: CERTIFICATE TIMELINE ============ -->
+<div class="section-intro" id="intro-certs">
+  <div class="section-intro__number">Section 03</div>
+  <h2 class="section-intro__title">The Certificate Trail</h2>
+  <p class="section-intro__desc">36 sequential CEDE & CO. certificates deposited over three years.</p>
+</div>
+
+<section id="section-certs" class="scroll-section">
+  <div class="scroll-section__graphic"><svg id="viz-certs" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="scroll-section__steps">
+    <div class="step" data-step="0">
+      <div class="step__label">The Pattern</div>
+      <div class="step__title">36 Sequential Deposits</div>
+      <div class="step__body">
+        Between <strong>June 2004</strong> and <strong>June 2007</strong>, thirty-six CEDE & CO. certificates (Nos. 2029–5323) were deposited into DTC.
+        <br><br>
+        Together they totaled <span class="mono">2,249,825 shares</span>. The sequential certificate numbers reveal a <span class="red">single coordinated source</span> — the Cane family control bloc.
+      </div>
+    </div>
+    <div class="step" data-step="1">
+      <div class="step__label">The Smoking Gun</div>
+      <div class="step__title">Certificate No. 5304</div>
+      <div class="step__body">
+        On <strong>March 5, 2007</strong>, a single certificate — <span class="mono red">CEDE & CO. No. 5304</span> — deposited <span class="red">946,085 shares</span>.
+        <br><br>
+        That's <strong>16% of Davi Skin's total float</strong>. When added to the existing non-enterprise pool of 490,096 shares, the combined position represents <strong>almost triple</strong> (2.93×) the previous public float.
+        <br><br>
+        The only source with sufficient shares: the Cane family control bloc.
+      </div>
+    </div>
+    <div class="step" data-step="2">
+      <div class="step__label">Offshore Transfer</div>
+      <div class="step__title">The April 2007 Cluster</div>
+      <div class="step__body">
+        Just weeks later, on <strong>April 3, 2007</strong>, certificates <span class="gold mono">5309–5312</span> transferred <span class="gold">2,295,388 shares</span> to four LOM Securities nominees in Bermuda.
+        <br><br>
+        Combined with all prior CEDE deposits, the enterprise controlled <span class="red">76.69% of all free-trading stock</span> and dominated <span class="red">89% of trading volume</span>.
+        <br><br>
+        <div class="math-highlight math-stack">
+          <div class="math-row"><span class="math-op">&nbsp;</span><span class="math-num">2,249,825</span><span class="math-desc">CEDE &amp; CO. deposits (2004–2007)</span></div>
+          <div class="math-row"><span class="math-op">+</span><span class="math-num">2,295,388</span><span class="math-desc">LOM nominees, Apr 3 2007 (4 × 573,847)</span></div>
+          <hr class="math-hr">
+          <div class="math-row"><span class="math-op">&nbsp;</span><span class="math-num">4,545,213</span><span class="math-desc">enterprise shares total</span></div>
+          <div class="math-row"><span class="math-op">÷</span><span class="math-num">5,929,108</span><span class="math-desc">total outstanding shares</span></div>
+          <hr class="math-hr double">
+          <div class="math-row math-result"><span class="math-op">=</span><span class="math-num">76.69%</span><span class="math-desc">enterprise control of free float</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 5: MONEY FLOW ============ -->
+<div class="section-intro" id="intro-money">
+  <div class="section-intro__number">Section 04</div>
+  <h2 class="section-intro__title">Follow the Money</h2>
+  <p class="section-intro__desc">Federal funds flowed repeatedly through these corporate structures.</p>
+</div>
+
+<section id="section-money" class="scroll-section">
+  <div class="scroll-section__graphic"><svg id="viz-money" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="scroll-section__steps">
+    <div class="step" data-step="0">
+      <div class="step__label">Federal Sources</div>
+      <div class="step__title">$60+ Million in Federal Funds</div>
+      <div class="step__body">
+        The entity chains Cane constructed touched federal funds repeatedly:
+        <br><br>
+        • <strong>$49.3 million</strong> in Medicare billing<br>
+        • <strong>$6.4 million</strong> in securities liquidation<br>
+        • <strong>$4.8 million</strong> in pandemic relief<br>
+        • Plus undetermined Fannie Mae mortgage volume
+        <br><br>
+        All flowing through corporate structures built on <span class="red">1,335 false SEC filings</span> and <span class="red">21 false SOX certifications</span> across 5 CIKs.
+        <br><br>
+        <strong>Regulation S distribution:</strong> On February 25–26, 1998, Dynamic Associates distributed MW Medical as a separate public company via 1:1 share distribution to existing shareholders — with $2,170,000 in shareholder loans.<sup><a class="fn-ref" href="#fn9" id="fnref9">[9]</a></sup> This Reg S mechanism created the offshore pipeline used throughout the enterprise.
+      </div>
+    </div>
+    <div class="step" data-step="1">
+      <div class="step__label">Through The Shells</div>
+      <div class="step__title">Three Parallel Pipelines</div>
+      <div class="step__body">
+        Medicare flowed through <strong>LATI</strong> (Genesis Health management fees). Securities liquidation ran through <strong>Davi Skin</strong> (not MW Medical — Davi Skin was the CEDE/LOM terminal vehicle). Pandemic relief and Fannie Mae mortgage volume ran through <strong>SDI → Galaxy Gaming</strong> (CIK 13156), a separate fraud scheme executed by Cane into bankruptcy — but not before issuing <span class="red">15 million shares</span> used as underlying securities in Galaxy Gaming.
+        <br><br>
+        All entities were operated by <span class="red">OIG-excluded and federally indicted individuals</span>:
+        <div style="margin: 0.5em 0 0.5em 0.8em; font-size: 0.87em; line-height: 1.9;">
+          <span class="red" style="display:inline-block;min-width:11em;">Robert B. Spertell, M.D.</span> OIG-excluded Oct 9, 1991 · never reinstated · COO MW Medical<br>
+          <span class="red" style="display:inline-block;min-width:11em;">David Hunter</span> Indicted 19 counts Medicaid fraud · guilty plea Jan 1996 · OIG-excluded Oct 29, 1996 · imprisoned FCI Texarkana<br>
+          <span class="red" style="display:inline-block;min-width:11em;">David R. Yeaman</span> Convicted (E.D. Pa.) · manufactured 92 shells (1986–1991) incl. Dynamic Associates<br>
+          <span class="red" style="display:inline-block;min-width:11em;">Harry C. Moll</span> Vancouver Stock Exchange–blacklisted penny stock promoter
+        </div>
+        <div style="font-size:0.82em;margin-top:0.3em;">Search the <a href="https://exclusions.oig.hhs.gov/" target="_blank" rel="noopener" style="color:var(--accent-slate);text-decoration:underline;">OIG Exclusion Database (LEIE)</a> yourself — enter "Spertell" or "Hunter" to verify.</div>
+      </div>
+    </div>
+    <div class="step" data-step="2">
+      <div class="step__label">Offshore Destinations</div>
+      <div class="step__title">LOM Nominees + CEDE & BK</div>
+      <div class="step__body">
+        Davi Skin proceeds flowed to <span class="gold">Arch Ltd., Hepburn Holdings, Sunshine Ltd., The Chloe Group</span> (4 LOM nominees, each at 3.97%) and <span class="blue">CEDE & CO.</span> (DTC domestic layer). Accounts: Bank of Bermuda <span class="mono">1010-956504</span> and NT Butterfield <span class="mono">20.006.840.351501.100</span>.
+        <br><br>
+        SDI/Galaxy Gaming ended in <span class="red">involuntary BK (2008)</span> — assets stripped, $4.8M CARES Act pandemic relief captured in 2020 by the same enterprise. <span class="red">21 consecutive years of unfiled FBARs.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 6: DETECTION ============ -->
+<div class="section-intro">
+  <div class="section-intro__number">Detection</div>
+  <h2 class="section-intro__title">Finding Fraud in Plain Sight</h2>
+  <p class="section-intro__desc">How pattern recognition across 24 million SEC filings reveals what regulators missed.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>Software-Detectable Patterns</h3>
+  <p>Despite 21 years of apparent invisibility, Cane's fraud left distinctive fingerprints across the SEC's electronic filing system — visible to anyone who knew how to look.</p>
+  <p><strong>Key signatures identified:</strong></p>
+  <p>• <strong>Coordinated Schedule 13G filings</strong> — Multiple filings submitted on the same date, each reporting ownership just below thresholds, suggesting hidden coordination.</p>
+  <p>• <strong>Sequential certificate numbers</strong> — Physical certificates issued with sequential numbers indicate a single source, even when beneficial ownership is hidden.</p>
+  <p>• <strong>Mathematical calibration</strong> — Precisely identical share counts for different nominees (e.g., 573,847 shares × 4) is statistically impossible through natural market activity.</p>
+  <p>• <strong>Shell company lifecycles</strong> — Entities that exist only to transform and transfer, with no meaningful operations, revenue, or employees.</p>
+  <p>• <strong>Bankruptcy-to-trading pipelines</strong> — The specific pattern of manufacturing bankruptcy, eliminating outside equity, then immediately beginning stock deposits.</p>
+  <p style="text-align:right;font-size:1.5rem;margin-top:0.5rem;">&#x1F34C;</p>
+</div>
+
+<div class="explainer-box">
+  <h3>Scale of the Problem</h3>
+  <p>Analysis of <strong>24 million SEC filing accessions</strong> reveals Cane operates approximately <strong>650 similar entity clusters</strong> — each following the same shell manufacturing pattern.</p>
+  <p>These entities are not random. They form <strong>"cells"</strong> — groups of shells with identical signatures:</p>
+  <p>• Same attorney or registered agent<br>
+     • Same incorporator<br>
+     • Same address<br>
+     • Same bank accounts<br>
+     • Same nominee patterns<br>
+     • Same transformation sequences</p>
+  <p>The Cane case is not an anomaly — it's a template. The same patterns appear across hundreds of shell clusters, suggesting an organized infrastructure for stock laundering.</p>
+</div>
+
+<div class="explainer-box">
+  <h3>Why No Regulator Caught This</h3>
+  <p><strong>1. Institutional fragmentation</strong> — SEC, IRS, FinCEN, and state regulators each see pieces of the puzzle, but no single agency has visibility into the full picture.</p>
+  <p><strong>2. Filing volume</strong> — The SEC processes millions of filings annually. Without automated pattern detection, anomalies are invisible.</p>
+  <p><strong>3. Legal sophistication</strong> — Cane is an attorney who designed these structures specifically to exploit gaps between securities law, bankruptcy law, and tax law.</p>
+  <p><strong>4. Offshore routing</strong> — Even when suspicious activity is flagged domestically, offshore accounts and nominees provide a layer of legal obscurity.</p>
+  <p><strong>5. Criminal network connections</strong> — Cane appears in the Panama Papers connected to the President of Panama and associated with the largest criminal hidden asset networks. This suggests the shell manufacturing infrastructure serves purposes beyond individual fraud.</p>
+</div>
+
+<!-- ============ FOOTNOTES / CITATIONS ============ -->
+<div class="footnotes-section" id="footnotes">
+  <h3>Citations &amp; Source Documents</h3>
+  <ol>
+    <li id="fn1">Reverse merger 8-K: Legal Access Technologies, Inc. — <a href="https://www.sec.gov/Archives/edgar/data/878146/000107579301500140/0001075793-01-500140-index.htm" target="_blank" rel="noopener">Acc. 0001075793-01-500140</a> (filed Aug 13, 2001; period Jun 12, 2001). Amendment: <a href="https://www.sec.gov/Archives/edgar/data/878146/000107579301500172/formeightklatidealamendone.txt" target="_blank" rel="noopener">Acc. 0001075793-01-500172</a> (8-K/A, period Jun 12, 2001). <a href="#fnref1">↩</a></li>
+    <li id="fn2">Kyleen Cane Schedule 13D — LATI ownership filing: <a href="https://www.sec.gov/Archives/edgar/data/878146/000107579301500108/schthirteeddaonemac.txt" target="_blank" rel="noopener">Acc. 0001075793-01-500108</a> (filed Jul 5, 2001). Documents 48.7% individual ownership and 153:1 reverse split terms. <a href="#fnref2">↩</a></li>
+    <li id="fn3">LATI 10-KSB annual report (FY ending Apr 30, 2002): <a href="https://www.sec.gov/Archives/edgar/data/878146/000107579302000302/0001075793-02-000302-index.htm" target="_blank" rel="noopener">Acc. 0001075793-02-000302</a>. Documents Genesis Health Management operations and Medicare revenue. <a href="#fnref3">↩</a></li>
+    <li id="fn4">Dynamic Associates 10-KSB (FY ending Dec 31, 1999): <a href="https://www.sec.gov/Archives/edgar/data/878146/000101629500000063/" target="_blank" rel="noopener">Acc. 0001016295-00-000063</a>. Genesis Health Management Corp. operated 32 rural geropsychiatric hospital units across 7 states; 100% of operating revenue derived from Medicare billings. <a href="#fnref3">↩</a></li>
+    <li id="fn5">MW Medical 8-K — Chapter 11 bankruptcy filing (Jan 22, 2002): <a href="https://www.sec.gov/Archives/edgar/data/1059577/000107579302000009/" target="_blank" rel="noopener">Acc. 0001075793-02-000009</a>. <a href="#fnref5">↩</a></li>
+    <li id="fn6">MW Medical 8-K — Promissory note and loan agreements (Mar 15, 2003): <a href="https://www.sec.gov/Archives/edgar/data/1059577/000107579303000161/0001075793-03-000161-index.htm" target="_blank" rel="noopener">Acc. 0001075793-03-000161</a>. Contains <code>wallacepromissorynt.txt</code> and <code>simpromissorynote.txt</code> documenting the $615,871 secured position. <a href="#fnref5">↩</a></li>
+    <li id="fn7">MW Medical 10-KSB (FY ending Dec 31, 2002): <a href="https://www.sec.gov/Archives/edgar/data/1059577/000107579303000317/" target="_blank" rel="noopener">Acc. 0001075793-03-000317</a>. Documents Wallace's $375,000 debt-to-equity conversion at $0.005/share yielding 74M shares, remaining convertible balance $570,775.30. <a href="#fnref7">↩</a></li>
+    <li id="fn8">Davi Skin 10-KSB (FY ending Dec 31, 2006): <a href="https://www.sec.gov/Archives/edgar/data/1059577/000111776807000030/0001117768-07-000030-index.htm" target="_blank" rel="noopener">Acc. 0001117768-07-000030</a>. Includes SOX certifications (<code>ex311.htm</code>, <code>ex312.htm</code>) and financial statements documenting share structure during the CEDE deposit period. <a href="#fnref8">↩</a></li>
+    <li id="fn9">Dynamic Associates 8-K — MW Medical spin-off (Feb 25, 1998): <a href="https://www.sec.gov/Archives/edgar/data/878146/000102385698000005/" target="_blank" rel="noopener">Acc. 0001023856-98-000005</a>. Documents 1:1 share distribution and $2,170,000 shareholder loans. <a href="#fnref9">↩</a></li>
+    <li id="fn10">SOX certification under false identity — MW Medical 10-QSB (period Sep 30, 2002): <a href="https://www.sec.gov/Archives/edgar/data/1059577/000107579302000523/0001075793-02-000523-index.htm" target="_blank" rel="noopener">Acc. 0001075793-02-000523</a> (filed Nov 19, 2002). Contains <code>jancertification.txt</code> (Wallace) and <code>simcertification.txt</code> (Sim) — signed as "Michael A. Cane" 533 days after reported legal name change. <a href="#fnref10">↩</a></li>
+    <li id="fn11">Pacific Stock Transfer Company — DAVI SKIN Active Shareholder Report (Mar 10, 2006), CUSIP 238528103. Four LOM Securities nominees (Arch Ltd., Hepburn Holdings Ltd., Sunshine Ltd., The Chloe Group) each received exactly 573,847 shares (3.97%) via certificates 5309–5312 on April 3, 2007. Combined 15.88% concealed beneficial ownership with zero Schedule 13D disclosure. Source: forensic certificate register analysis. <a href="#fnref11">↩</a></li>
+  </ol>
+</div>
+
+<!-- ============ CLOSING ============ -->
+<section id="closing">
+  <h2>The Full Picture</h2>
+  <p>
+    What appears in SEC filings as routine corporate transactions was in fact a carefully engineered pipeline
+    to convert private stock into publicly tradeable shares, concentrate ownership while reporting the opposite,
+    extinguish outside shareholders through manufactured bankruptcy, and liquidate everything through
+    calibrated offshore nominees — all below every disclosure threshold that might have triggered scrutiny.
+  </p>
+  <p>
+    The mathematical precision — four nominees each at exactly 3.97%, a 153:1 split calibrated to produce
+    the exact desired ownership percentages, 36 sequential certificates from a single source — is not
+    the signature of coincidence. It is the signature of design.
+  </p>
+  <p>
+    This is how sophisticated criminals launder money. Cane is in the Panama Papers alongside the President of Panama —
+    the same leak that exposed the world's largest criminal hidden assets through trusts.
+  </p>
+  <p class="case-ref">
+    Source: Forensic Analysis of Certificate Register and Entity Transformation Chain<br>
+    Related case: United States v. Discala, 1:14-cr-00399, EDNY<br>
+    Panama Papers connection: FBI investigation of Martinelli transfer
+  </p>
+</section>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+function initHero() {
+  const isNarrowHero = window.innerWidth <= 900;
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  if (isNarrowHero) {
+    // Mobile: fade in only, no y-shift that causes visible jump
+    tl.to('.hero__label', { opacity: 1, duration: 0.6 }, 0.1)
+      .to('.hero__title', { opacity: 1, duration: 0.6 }, 0.3)
+      .to('.hero__subtitle', { opacity: 1, duration: 0.6 }, 0.5)
+      .to('.hero__stats', { opacity: 1, duration: 0.6 }, 0.7)
+      .to('.hero__scroll-hint', { opacity: 0.5, duration: 0.4 }, 1.0);
+  } else {
+    tl.fromTo('.hero__label', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8 }, 0.2)
+      .fromTo('.hero__title', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1 }, 0.5)
+      .fromTo('.hero__subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8 }, 0.9)
+      .fromTo('.hero__stats', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8 }, 1.3)
+      .to('.hero__scroll-hint', { opacity: 0.5, duration: 0.6 }, 1.8);
+  }
+}
+
+function setupScrollSection(sectionId, stepCallback) {
+  const section = document.querySelector(`#${sectionId}`);
+  if (!section) return;
+  const steps = section.querySelectorAll('.step');
+  steps.forEach((step, i) => {
+    ScrollTrigger.create({
+      trigger: step,
+      start: 'top 60%',
+      end: 'bottom 40%',
+      onEnter: () => { activateStep(steps, i); stepCallback(i); },
+      onEnterBack: () => { activateStep(steps, i); stepCallback(i); },
+    });
+  });
+}
+
+function activateStep(steps, index) {
+  steps.forEach((s, i) => s.classList.toggle('is-active', i === index));
+}
+
+// ============ SECTION 1: ENTITY PIPELINE ============
+function initPipeline() {
+  const svg = d3.select('#viz-transform');
+  const container = document.querySelector('#section-transform .scroll-section__graphic');
+  const W = container.clientWidth - 40;
+  const isMobilePipeline = W < 500;
+  // On mobile, use a taller aspect ratio to fit all rows with doubled offshore gap
+  const H = isMobilePipeline ? Math.max(container.clientHeight - 20, 780) : container.clientHeight - 40;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+  const nW = isMobilePipeline ? Math.max(90, Math.min(110, (W - 2 * 10) / 3.2)) : Math.max(115, Math.min(154, W * 0.289));
+  const nH = isMobilePipeline ? 62 : 78;
+  const pad = isMobilePipeline ? 8 : Math.max(14, Math.min(26, W * 0.05));
+  const smW = isMobilePipeline ? Math.max(62, (W - 4 * 5) / 5.2) : Math.max(88, Math.min(112, (W - 4 * 8) / 4.9));
+  const smPad = isMobilePipeline ? 4 : 8;
+  // Medium width for 4-node rows (BK subs)
+  const medW = isMobilePipeline ? Math.max(70, Math.floor((W - 3 * 6) / 4.2)) : Math.min(nW, Math.floor((W - 3 * 10) / 4));
+  const medPad = isMobilePipeline ? 5 : 10;
+
+  const entities = [
+    { name: 'Tele-Lawyer',   sub: 'Private NV Corp',      date: 'May 1989',        color: '#5d7a94', stat: 'Cane private entity' },
+    { name: 'Dynamic Assoc.', sub: 'CIK 878146 · Public', date: 'Jul 20, 1989',    color: '#5d7a94', stat: 'NV shell / CUSIP registered' },
+    { name: 'LATI',          sub: '153:1 reverse split',  date: 'Jun 12, 2001',    color: '#dc2f3f', stat: '85.7% Cane family bloc' },
+    { name: 'MW Medical',    sub: 'Ch.11 BK · §1145',     date: 'Dec 1997 / 2002', color: '#dc2f3f', stat: 'Wallace sole creditor' },
+    { name: 'Davi Skin',     sub: '1-for-500 split',      date: 'Jun 21, 2004',    color: '#dc2f3f', stat: 'CIK 1059577 · 36 CEDE certs' },
+    { name: 'Arch Ltd.',     sub: '3.97% · LOM',          date: 'Apr 3, 2007',     color: '#e8a838', stat: '573,847 shares' },
+    { name: 'Hepburn Hldgs', sub: '3.97% · LOM',          date: 'Apr 3, 2007',     color: '#e8a838', stat: '573,847 shares' },
+    { name: 'Sunshine Ltd.', sub: '3.97% · LOM',          date: 'Apr 3, 2007',     color: '#e8a838', stat: '573,847 shares' },
+    { name: 'The Chloe Grp', sub: '3.97% · LOM',          date: 'Apr 3, 2007',     color: '#e8a838', stat: '573,847 shares' },
+    { name: 'CEDE & CO.',    sub: 'DTC nominee',           date: '2004–2007',       color: '#5d7a94', stat: '2,249,825 shares' },
+  ];
+
+  // Step 0: TL+DAI+LATI. Step 1: +MWMed+healthSubs. Step 2: +BKsubs. Step 3: severed. Step 4: Davi. Step 5: offshore.
+  const stepToNodeIdx = [2, 3, 3, 3, 4, 9];
+
+  // ============ ROW POSITIONS ============
+  const row0TotalW = 3 * nW + 2 * pad;
+  const row0X = (W - row0TotalW) / 2;
+  const row0Y = isMobilePipeline ? 10 : H * 0.06;
+
+  // Row spacing: on mobile, uniform gap between major rows
+  // Row0 → (1) subs → (1) MW Med → (2) Davi → (4) Offshore
+  const rowGap = isMobilePipeline ? Math.max(nH + 20, (H - 5 * nH) / 10) : 0;
+
+  // MW Medical — directly under DAI (2 gaps from row0: subs sits at gap 1)
+  const row1X = row0X + (nW + pad);
+  const row1Y = isMobilePipeline ? row0Y + 2 * rowGap : H * 0.34;
+
+  // Subs row: health subs / BK subs — BETWEEN Row 0 and MW Medical
+  const subsRowY = isMobilePipeline ? row0Y + rowGap : row0Y + nH + Math.max(36, (row1Y - row0Y - nH - nH) / 2);
+
+  // Davi Skin — same 2-gap spacing from MW Medical
+  const row2X = row1X;
+  const row2Y = isMobilePipeline ? row1Y + 2 * rowGap : H * 0.58;
+
+  // Offshore — double gap from Davi Skin
+  const row3TotalW = 5 * smW + 4 * smPad;
+  const row3X = (W - row3TotalW) / 2;
+  const row3Y = isMobilePipeline ? row2Y + 4 * rowGap : H * 0.79;
+
+  const daiCx = row0X + nW + pad + nW / 2;
+
+  const nodePos = [
+    { x: row0X,                  y: row0Y },   // 0 Tele-Lawyer
+    { x: row0X + (nW + pad),     y: row0Y },   // 1 DAI
+    { x: row0X + 2*(nW + pad),   y: row0Y },   // 2 LATI
+    { x: row1X,                  y: row1Y },   // 3 MW Medical (under DAI)
+    { x: row2X,                  y: row2Y },   // 4 Davi Skin
+    { x: row3X,                  y: row3Y },   // 5 Arch
+    { x: row3X + (smW + smPad),  y: row3Y },   // 6 Hepburn
+    { x: row3X + 2*(smW+smPad),  y: row3Y },   // 7 Sunshine
+    { x: row3X + 3*(smW+smPad),  y: row3Y },   // 8 Chloe
+    { x: row3X + 4*(smW+smPad),  y: row3Y },   // 9 CEDE
+  ];
+
+  const defs = svg.append('defs');
+  ['arrowSlate', 'arrowAmber', 'arrowRed'].forEach((id, i) => {
+    const colors = ['#5d7a94', '#e8a838', '#dc2f3f'];
+    defs.append('marker').attr('id', id)
+      .attr('viewBox', '0 0 10 10').attr('refX', 8).attr('refY', 5)
+      .attr('markerWidth', 6).attr('markerHeight', 6).attr('orient', 'auto')
+      .append('path').attr('d', 'M 0 0 L 10 5 L 0 10 Z').attr('fill', colors[i]);
+  });
+
+  // ============ SUBS ROW: HEALTH SUBS (between Row 0 and MW Medical) ============
+  // 3 nodes at subsRowY, using same nW width and x-positions as Row 0 (TL, DAI, LATI slots)
+  const healthData = [
+    { name: 'P&H Industries', sub: 'CA · mfg · $5M',          date: 'Sold pre-2001', color: '#5d7a94' },
+    { name: 'Genesis Health',  sub: '32 hospitals · 7 states', date: '1999–2003',     color: '#7c3aed' },
+    { name: 'Microthermia',    sub: 'Med device tech',         date: 'San Jose, CA',  color: '#5d7a94' },
+  ];
+  const healthPos = [
+    { x: row0X,                  y: subsRowY },  // P&H — same x as Tele-Lawyer
+    { x: row0X + (nW + pad),     y: subsRowY },  // Genesis — same x as DAI
+    { x: row0X + 2*(nW + pad),   y: subsRowY },  // Microthermia — same x as LATI
+  ];
+
+  const healthSubsG = svg.append('g').attr('class', 'health-subs').attr('opacity', 0);
+
+  // DAI → subs trunk: vertical from DAI bottom center to junction, then branches
+  const daiBottomY = row0Y + nH;
+  const juncY = subsRowY - 8;
+  healthSubsG.append('path').attr('class', 'health-conn')
+    .attr('d', `M ${daiCx} ${daiBottomY} L ${daiCx} ${juncY}`)
+    .attr('stroke', '#5d7a94').attr('stroke-width', 1.2).attr('fill', 'none');
+
+  // L-shaped branches to each health sub
+  healthPos.forEach(p => {
+    const cx = p.x + nW / 2;
+    healthSubsG.append('path').attr('class', 'health-conn')
+      .attr('d', `M ${daiCx} ${juncY} L ${cx} ${juncY} L ${cx} ${subsRowY}`)
+      .attr('stroke', '#5d7a94').attr('stroke-width', 1.2).attr('fill', 'none');
+  });
+
+  // Draw 3 health sub boxes (nW × nH — same container shape as Row 0)
+  const healthNameFs = isMobilePipeline ? '9px' : '11.5px';
+  const healthSubFs = isMobilePipeline ? '8px' : '10px';
+  const healthDateFs = isMobilePipeline ? '7.5px' : '9px';
+  healthData.forEach((ent, i) => {
+    const pos = healthPos[i];
+    const g = healthSubsG.append('g').attr('transform', `translate(${pos.x}, ${pos.y})`);
+    g.append('rect').attr('width', nW).attr('height', nH).attr('rx', 4)
+      .attr('fill', ent.color).attr('opacity', 0.1);
+    g.append('rect').attr('width', nW).attr('height', nH).attr('rx', 4)
+      .attr('fill', '#13171f').attr('stroke', ent.color).attr('stroke-width', 1.5);
+    g.append('text').attr('x', nW/2).attr('y', nH/2 - 10)
+      .attr('text-anchor', 'middle').attr('fill', '#f4f6f9')
+      .attr('font-size', healthNameFs).attr('font-weight', '600').attr('font-family', 'DM Sans, sans-serif')
+      .text(ent.name);
+    g.append('text').attr('x', nW/2).attr('y', nH/2 + 6)
+      .attr('text-anchor', 'middle').attr('fill', '#6b7789')
+      .attr('font-size', healthSubFs).attr('font-family', 'DM Sans, sans-serif')
+      .text(ent.sub);
+    g.append('text').attr('x', nW/2).attr('y', nH + 15)
+      .attr('text-anchor', 'middle').attr('fill', '#6b7789')
+      .attr('font-size', healthDateFs).attr('font-family', 'JetBrains Mono, monospace')
+      .text(ent.date);
+  });
+
+  // Dotted line from DAI down to MW Medical (slate, not red — shows spin-out connection)
+  healthSubsG.append('path').attr('class', 'health-conn')
+    .attr('d', `M ${daiCx} ${juncY} L ${daiCx} ${row1Y}`)
+    .attr('stroke', '#5d7a94').attr('stroke-width', 1.2).attr('stroke-dasharray', '5 3').attr('fill', 'none');
+
+  // ============ BK SUBS: SAME ROW, REPLACE HEALTH SUBS ============
+  // 4 nodes at subsRowY (above MW Medical), fan arrows from MW Medical upward
+  const bkSubData = [
+    { name: 'MW Asia',       sub: '95% → G. Sim',    color: '#dc2f3f' },
+    { name: 'MW Europe',     sub: '95% → Drummond',  color: '#dc2f3f' },
+    { name: 'MW Fitness',    sub: '95% → Wallace',   color: '#dc2f3f' },
+    { name: 'MW S. America', sub: '95% → T. Brown',  color: '#dc2f3f' },
+  ];
+  const bk4TotalW = 4 * medW + 3 * medPad;
+  const bk4X0 = (W - bk4TotalW) / 2;
+  const bkPos = bkSubData.map((_, i) => ({ x: bk4X0 + i * (medW + medPad), y: subsRowY }));
+  const mwMedCx = row1X + nW / 2;
+
+  const mwSubsG = svg.append('g').attr('class', 'mw-subs').attr('opacity', 0);
+
+  // Fan arrows from MW Medical TOP center UPWARD to each BK sub bottom center (bezier)
+  bkPos.forEach(p => {
+    const targetCx = p.x + medW / 2;
+    const bkBottom = subsRowY + nH;
+    const cy = (row1Y + bkBottom) / 2;
+    mwSubsG.append('path').attr('class', 'bk-fan-arrow')
+      .attr('d', `M ${mwMedCx} ${row1Y} C ${mwMedCx} ${cy}, ${targetCx} ${cy}, ${targetCx} ${bkBottom}`)
+      .attr('stroke', '#dc2f3f').attr('stroke-width', 1.5)
+      .attr('fill', 'none').attr('marker-end', 'url(#arrowRed)');
+  });
+
+  // Draw 4 BK sub boxes (medW × nH — same container shape as health subs)
+  const bkNameFs = isMobilePipeline ? '8px' : '10px';
+  const bkSubFs = isMobilePipeline ? '7px' : '9px';
+  bkSubData.forEach((ent, i) => {
+    const pos = bkPos[i];
+    const g = mwSubsG.append('g').attr('transform', `translate(${pos.x}, ${pos.y})`);
+    g.append('rect').attr('width', medW).attr('height', nH).attr('rx', 4)
+      .attr('fill', ent.color).attr('opacity', 0.1);
+    g.append('rect').attr('width', medW).attr('height', nH).attr('rx', 4)
+      .attr('fill', '#13171f').attr('stroke', ent.color).attr('stroke-width', 1.5);
+    g.append('text').attr('x', medW/2).attr('y', nH/2 - 8)
+      .attr('text-anchor', 'middle').attr('fill', '#f4f6f9')
+      .attr('font-size', bkNameFs).attr('font-weight', '600').attr('font-family', 'DM Sans, sans-serif')
+      .text(ent.name);
+    g.append('text').attr('x', medW/2).attr('y', nH/2 + 6)
+      .attr('text-anchor', 'middle').attr('fill', '#6b7789')
+      .attr('font-size', bkSubFs).attr('font-family', 'DM Sans, sans-serif')
+      .text(ent.sub);
+  });
+
+  // ============ ARROW SPECS ============
+  const arrowSpecs = [
+    { from:0, to:1, color:'#5d7a94', marker:'arrowSlate', label:'May 1989 — Merger', type:'h', showAtStep:0 },
+    { from:1, to:2, color:'#dc2f3f', marker:'arrowSlate', label:'Jun 12, 2001 — 153:1', type:'h', showAtStep:0 },
+    { from:1, to:3, color:'#5d7a94', marker:'arrowSlate', label:'Spin-out Mar 1998', type:'spinout', showAtStep:2 },
+    { from:3, to:4, color:'#dc2f3f', marker:'arrowSlate', label:'1-for-500 Rebrand', type:'drop', showAtStep:4 },
+    { from:4, to:5, color:'#e8a838', marker:'arrowAmber', label:'', type:'fan', showAtStep:5 },
+    { from:4, to:6, color:'#e8a838', marker:'arrowAmber', label:'', type:'fan', showAtStep:5 },
+    { from:4, to:7, color:'#e8a838', marker:'arrowAmber', label:'', type:'fan', showAtStep:5 },
+    { from:4, to:8, color:'#e8a838', marker:'arrowAmber', label:'', type:'fan', showAtStep:5 },
+    { from:4, to:9, color:'#5d7a94', marker:'arrowSlate', label:'DTC Deposits', type:'fan', showAtStep:5 },
+  ];
+
+  function computePath(spec) {
+    const p0 = nodePos[spec.from], p1 = nodePos[spec.to];
+    if (spec.type === 'h') {
+      return `M ${p0.x + nW} ${p0.y + nH/2} L ${p1.x} ${p1.y + nH/2}`;
+    }
+    if (spec.type === 'spinout' || spec.type === 'drop') {
+      const x = p0.x + nW / 2;
+      return `M ${x} ${p0.y + nH} L ${x} ${p1.y}`;
+    }
+    if (spec.type === 'fan') {
+      const x0 = p0.x + nW / 2, y0 = p0.y + nH;
+      const x1 = p1.x + smW / 2, y1 = p1.y;
+      const cy = (y0 + y1) / 2;
+      return `M ${x0} ${y0} C ${x0} ${cy}, ${x1} ${cy}, ${x1} ${y1}`;
+    }
+    return '';
+  }
+
+  const arrowsG = svg.append('g').attr('class', 'arrows');
+  const arrowPaths = [], arrowLabels = [];
+
+  arrowSpecs.forEach((spec) => {
+    const d = computePath(spec);
+    const path = arrowsG.append('path').attr('d', d)
+      .attr('stroke', spec.color).attr('stroke-width', spec.type === 'spinout' ? 1.2 : 1.5)
+      .attr('fill', 'none').attr('marker-end', `url(#${spec.marker})`)
+      .attr('opacity', 0);
+    if (spec.type === 'spinout') {
+      path.attr('stroke-dasharray', '5 3');
+    } else {
+      const len = path.node().getTotalLength();
+      path.attr('stroke-dasharray', len).attr('stroke-dashoffset', len);
+    }
+    arrowPaths.push(path);
+
+    const labelG = svg.append('g').attr('opacity', 0);
+    if (spec.label) {
+      const p0 = nodePos[spec.from], p1 = nodePos[spec.to];
+      let lx, ly;
+      if (spec.type === 'h') { lx = (p0.x + nW + p1.x) / 2; ly = p0.y - 8; }
+      else if (spec.type === 'drop' || spec.type === 'spinout') { lx = p0.x + nW + 6; ly = (p0.y + nH + p1.y) / 2; }
+      else { lx = (p0.x + nW/2 + p1.x + smW/2) / 2; ly = (p0.y + nH + p1.y) / 2 - 4; }
+      labelG.append('text').attr('x', lx).attr('y', ly)
+        .attr('text-anchor', 'middle').attr('fill', spec.color)
+        .attr('font-size', '8.5px').attr('font-weight', '600')
+        .attr('font-family', 'DM Sans, sans-serif').text(spec.label);
+    }
+    arrowLabels.push(labelG);
+  });
+
+  arrowPaths.forEach(p => gsap.set(p.node(), { opacity: 0 }));
+  arrowLabels.forEach(l => gsap.set(l.node(), { opacity: 0 }));
+
+  // BK annotation
+  const bkAnnotation = svg.append('g').attr('opacity', 0);
+  const bkAnnX = row1X + nW / 2 - 40;
+  const bkAnnY = row1Y - 20;
+  bkAnnotation.append('rect').attr('x', bkAnnX).attr('y', bkAnnY)
+    .attr('width', 80).attr('height', 20).attr('rx', 3)
+    .attr('fill', '#dc2f3f').attr('opacity', 0.15);
+  bkAnnotation.append('text').attr('x', bkAnnX + 40).attr('y', bkAnnY + 13)
+    .attr('text-anchor', 'middle').attr('fill', '#dc2f3f')
+    .attr('font-size', '9px').attr('font-weight', '700')
+    .attr('font-family', 'JetBrains Mono, monospace').text('Ch.11 Jan 2002');
+
+  // ============ DRAW MAIN NODES ============
+  function makeNode(ent, i, pos, w, h) {
+    const g = svg.append('g').attr('transform', `translate(${pos.x}, ${pos.y})`).attr('opacity', 0);
+    g.append('rect').attr('width', w).attr('height', h).attr('rx', 4).attr('fill', ent.color).attr('opacity', 0.1);
+    g.append('rect').attr('width', w).attr('height', h).attr('rx', 4)
+      .attr('fill', '#13171f').attr('stroke', ent.color).attr('stroke-width', 1.5);
+    const fs = w < 80 ? '8.5px' : w < 95 ? '10px' : '11.5px';
+    const subFs = w < 80 ? '7.5px' : w < 95 ? '9px' : '10px';
+    g.append('text').attr('x', w/2).attr('y', h/2 - 10).attr('text-anchor', 'middle').attr('fill', '#f4f6f9')
+      .attr('font-size', fs).attr('font-weight', '600').attr('font-family', 'DM Sans, sans-serif').text(ent.name);
+    g.append('text').attr('x', w/2).attr('y', h/2 + 6).attr('text-anchor', 'middle').attr('fill', '#6b7789')
+      .attr('font-size', subFs).attr('font-family', 'DM Sans, sans-serif').text(ent.sub);
+    g.append('text').attr('x', w/2).attr('y', h + 15).attr('text-anchor', 'middle').attr('fill', '#6b7789')
+      .attr('font-size', '9px').attr('font-family', 'JetBrains Mono, monospace').text(ent.date);
+    g.append('text').attr('x', w/2).attr('y', h + 28).attr('text-anchor', 'middle').attr('fill', ent.color)
+      .attr('font-size', '9px').attr('font-weight', '600').attr('font-family', 'JetBrains Mono, monospace')
+      .attr('opacity', 0).attr('class', `node-stat-${i}`).text(ent.stat);
+    return g;
+  }
+
+  const nodeGroups = entities.map((ent, i) => {
+    const pos = nodePos[i];
+    const w = i >= 5 ? smW : nW;
+    const h = i >= 5 ? (nH - 8) : nH;
+    return makeNode(ent, i, pos, w, h);
+  });
+
+  function showStep(step) {
+    const revealUpTo = stepToNodeIdx[Math.min(step, stepToNodeIdx.length - 1)];
+
+    // Show/hide main entity nodes
+    nodeGroups.forEach((g, i) => {
+      if (i <= revealUpTo) {
+        gsap.to(g.node(), { opacity: 1, duration: 0.5, ease: 'power2.out' });
+        svg.selectAll(`.node-stat-${i}`)
+          .transition().duration(400).attr('opacity', i === revealUpTo ? 1 : 0.4);
+      } else {
+        gsap.to(g.node(), { opacity: 0, duration: 0.3 });
+        svg.selectAll(`.node-stat-${i}`).transition().duration(300).attr('opacity', 0);
+      }
+    });
+
+    // Health subs: hidden step 0, visible step 1, dim step 2 (defunct), hidden 3+
+    if (step === 1) {
+      gsap.to(healthSubsG.node(), { opacity: 1, duration: 0.6 });
+    } else if (step === 2) {
+      gsap.to(healthSubsG.node(), { opacity: 0.12, duration: 0.8 });
+    } else {
+      gsap.to(healthSubsG.node(), { opacity: 0, duration: 0.3 });
+    }
+
+    // BK subs + fan arrows: hidden 0–1, visible step 2, fan arrows gone step 3 (MW Asia stays), hidden 4+
+    if (step === 2) {
+      gsap.to(mwSubsG.node(), { opacity: 1, duration: 0.6, delay: 0.3 });
+      svg.selectAll('.bk-fan-arrow').each(function() { gsap.to(this, { opacity: 1, duration: 0.5 }); });
+    } else if (step === 3) {
+      // MW Asia (first child group) stays visible, others dim, fan arrows disappear
+      gsap.to(mwSubsG.node(), { opacity: 0.35, duration: 0.4 });
+      svg.selectAll('.bk-fan-arrow').each(function() { gsap.to(this, { opacity: 0, duration: 0.5 }); });
+      // Highlight MW Asia box — it's referenced in the Thomas & Wong caption
+      const bkBoxes = mwSubsG.selectAll('g > g').nodes();
+      if (bkBoxes[0]) gsap.to(bkBoxes[0], { opacity: 1, duration: 0.4 });
+    } else {
+      gsap.to(mwSubsG.node(), { opacity: 0, duration: 0.3 });
+    }
+
+    // Show/hide main arrows
+    arrowSpecs.forEach((spec, i) => {
+      const path = arrowPaths[i];
+      const labelG = arrowLabels[i];
+      if (step >= spec.showAtStep) {
+        if (spec.type === 'spinout') {
+          gsap.to(path.node(), { opacity: 0.5, duration: 0.6 });
+          gsap.to(path.node(), { opacity: 0.15, duration: 0.8, delay: 1.0 });
+          gsap.to(labelG.node(), { opacity: 0.5, duration: 0.4 });
+          gsap.to(labelG.node(), { opacity: 0.2, duration: 0.5, delay: 1.2 });
+        } else {
+          gsap.to(path.node(), { opacity: 1, strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut', delay: i * 0.05 });
+          gsap.to(labelG.node(), { opacity: 0.85, duration: 0.4 });
+        }
+      } else {
+        const len = path.node().getTotalLength ? path.node().getTotalLength() : 100;
+        gsap.to(path.node(), { opacity: 0, strokeDashoffset: len, duration: 0.3 });
+        gsap.to(labelG.node(), { opacity: 0, duration: 0.2 });
+      }
+    });
+
+    // BK annotation at steps 2–3
+    gsap.to(bkAnnotation.node(), { opacity: step >= 2 && step <= 3 ? 1 : 0, duration: 0.4 });
+  }
+
+  setupScrollSection('section-transform', showStep);
+  return showStep;
+}
+
+// ============ SECTION 2: OWNERSHIP CHART ============
+function initOwnership() {
+  const svg = d3.select('#viz-ownership');
+  const container = document.querySelector('#section-ownership .scroll-section__graphic');
+  const W = container.clientWidth - 40;
+  const H = container.clientHeight - 40;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+  const cx = W / 2, cy = H / 2;
+  const isMobileDonut = W < 500;
+  const outerR = isMobileDonut ? Math.min(W, H) * 0.42 : Math.min(W, H) * 0.35;
+  const innerR = outerR * 0.55;
+
+  const g = svg.append('g').attr('transform', `translate(${cx}, ${cy})`);
+
+  const centerLabel = g.append('g').attr('class', 'center-label');
+  const centerTitle = centerLabel.append('text')
+    .attr('y', -10).attr('text-anchor', 'middle')
+    .attr('fill', '#f4f6f9').attr('font-size', isMobileDonut ? '18px' : '22px').attr('font-weight', '600')
+    .attr('font-family', 'Cormorant Garamond, serif');
+  const centerSub = centerLabel.append('text')
+    .attr('y', 18).attr('text-anchor', 'middle')
+    .attr('fill', '#6b7789').attr('font-size', isMobileDonut ? '9px' : '11px')
+    .attr('font-family', 'DM Sans, sans-serif');
+
+  const arc = d3.arc().innerRadius(innerR).outerRadius(outerR).padAngle(0.02).cornerRadius(4);
+  const outerArc = d3.arc().innerRadius(outerR + 8).outerRadius(outerR + 24).padAngle(0.02).cornerRadius(3);
+
+  const states = [
+    { arcs: [{ value: 48.7, color: '#dc2f3f', label: 'Kyleen Cane' }, { value: 51.3, color: '#2a3140', label: 'Others' }], outer: [], center: { title: '48.7%', sub: 'Reported to SEC' } },
+    { arcs: [{ value: 48.7, color: '#dc2f3f', label: 'Kyleen Cane' }, { value: 5.35, color: '#e8a838', label: 'Shirley Cane' }, { value: 31.65, color: '#b8862a', label: 'Other Family' }, { value: 14.3, color: '#2a3140', label: 'Others' }], outer: [], center: { title: '85.7%', sub: 'Family Bloc Control' } },
+    { arcs: [{ value: 48.7, color: '#dc2f3f', label: 'Kyleen Cane' }, { value: 5.35, color: '#e8a838', label: 'Shirley Cane' }, { value: 31.65, color: '#b8862a', label: 'Other Family' }, { value: 4.2, color: '#7c3aed', label: 'Wallace/Sim' }, { value: 10.1, color: '#2a3140', label: 'Public' }], outer: [], center: { title: '89.9%', sub: 'Enterprise Insider Control' } },
+    { arcs: [{ value: 48.7, color: '#dc2f3f', label: 'Kyleen Cane' }, { value: 5.35, color: '#e8a838', label: 'Shirley Cane' }, { value: 31.65, color: '#b8862a', label: 'Other Family' }, { value: 4.2, color: '#7c3aed', label: 'Wallace/Sim' }, { value: 10.1, color: '#2a3140', label: 'Public' }], outer: [{ value: 3.97, color: '#e8a838', label: 'Arch Ltd.' }, { value: 3.97, color: '#e8a838', label: 'Hepburn Holdings' }, { value: 3.97, color: '#e8a838', label: 'Sunshine Ltd.' }, { value: 3.97, color: '#e8a838', label: 'The Chloe Group' }, { value: 84.12, color: 'transparent', label: '' }], center: { title: '3.97%', sub: 'Each Below 5% Threshold' } }
+  ];
+
+  const pie = d3.pie().value(d => d.value).sort(null);
+  const innerGroup = g.append('g').attr('class', 'inner-arcs');
+  const outerGroup = g.append('g').attr('class', 'outer-arcs');
+
+  const thresholdCircle = g.append('circle')
+    .attr('r', outerR + 16).attr('fill', 'none')
+    .attr('stroke', '#e8a838').attr('stroke-width', 1)
+    .attr('stroke-dasharray', '6 4').attr('opacity', 0);
+
+  const thresholdLabel = g.append('text')
+    .attr('x', 0).attr('y', -(outerR + 32))
+    .attr('text-anchor', 'middle').attr('fill', '#e8a838')
+    .attr('font-size', '10px').attr('font-family', 'JetBrains Mono, monospace')
+    .text('5% Disclosure Threshold').attr('opacity', 0);
+
+  let currentStep = -1;
+
+  function showStep(step) {
+    if (step === currentStep) return;
+    currentStep = step;
+    const state = states[step];
+
+    const pieData = pie(state.arcs);
+    const arcs = innerGroup.selectAll('path').data(pieData, (d, i) => i);
+
+    arcs.enter().append('path').attr('d', arc).attr('fill', d => d.data.color).attr('opacity', 0)
+      .merge(arcs)
+      .transition().duration(800).ease(d3.easeCubicInOut)
+      .attrTween('d', function(d) {
+        const prev = d3.select(this).datum() || d;
+        const interpolate = d3.interpolate(
+          { startAngle: prev.startAngle || 0, endAngle: prev.endAngle || 0 },
+          { startAngle: d.startAngle, endAngle: d.endAngle }
+        );
+        return t => arc(interpolate(t));
+      })
+      .attr('fill', d => d.data.color)
+      .attr('opacity', d => d.data.color === '#2a3140' ? 0.35 : 0.85);
+
+    arcs.exit().transition().duration(400).attr('opacity', 0).remove();
+
+    if (state.outer.length > 0) {
+      const outerPieData = pie(state.outer);
+      const oArcs = outerGroup.selectAll('path').data(outerPieData, (d, i) => i);
+
+      oArcs.enter().append('path').attr('d', outerArc).attr('fill', d => d.data.color).attr('opacity', 0)
+        .merge(oArcs)
+        .transition().duration(800).ease(d3.easeCubicInOut)
+        .attrTween('d', function(d) {
+          const prev = d3.select(this).datum() || d;
+          const interpolate = d3.interpolate(
+            { startAngle: prev.startAngle || 0, endAngle: prev.endAngle || 0 },
+            { startAngle: d.startAngle, endAngle: d.endAngle }
+          );
+          return t => outerArc(interpolate(t));
+        })
+        .attr('fill', d => d.data.color)
+        .attr('opacity', d => d.data.color === 'transparent' ? 0 : 0.9);
+
+      oArcs.exit().transition().duration(400).attr('opacity', 0).remove();
+    } else {
+      outerGroup.selectAll('path').transition().duration(400).attr('opacity', 0).remove();
+    }
+
+    gsap.to(thresholdCircle.node(), { opacity: step === 3 ? 0.6 : 0, duration: 0.5 });
+    gsap.to(thresholdLabel.node(), { opacity: step === 3 ? 0.8 : 0, duration: 0.5 });
+
+    centerTitle.transition().duration(400).attr('opacity', 0)
+      .on('end', function() { d3.select(this).text(state.center.title).transition().duration(400).attr('opacity', 1); });
+    centerSub.transition().duration(400).attr('opacity', 0)
+      .on('end', function() { d3.select(this).text(state.center.sub).transition().duration(400).attr('opacity', 1); });
+
+  }
+
+  setupScrollSection('section-ownership', showStep);
+  return showStep;
+}
+
+// ============ SECTION 3: CERTIFICATE TIMELINE ============
+function initCerts() {
+  const svg = d3.select('#viz-certs');
+  const container = document.querySelector('#section-certs .scroll-section__graphic');
+  const W = container.clientWidth - 40;
+  const H = container.clientHeight - 40;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+  const margin = { top: 40, right: 30, bottom: 60, left: 70 };
+  const w = W - margin.left - margin.right;
+  const h = H - margin.top - margin.bottom;
+  const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+  const certNos = [2029, 2030, 2105, 2230, 2350, 2480, 2610, 2750, 2890,
+    3020, 3150, 3300, 3450, 3580, 3700, 3830, 3960, 4090,
+    4220, 4350, 4480, 4610, 4740, 4870, 4950, 5010, 5080,
+    5126, 5150, 5200, 5250, 5280, 5304, 5309, 5310, 5311];
+
+  const shareAmounts = [45000, 50000, 35000, 60000, 42000, 55000, 38000, 48000, 52000,
+    40000, 58000, 43000, 62000, 47000, 56000, 39000, 51000, 44000,
+    60000, 53000, 46000, 57000, 41000, 49000, 10000, 55000, 63000,
+    10000, 45000, 58000, 52000, 48000, 946085, 573847, 573847, 573847];
+
+  const certs = [];
+  const startDate = new Date('2004-06-25');
+  const endDate = new Date('2007-06-15');
+  const totalRange = endDate - startDate;
+
+  certNos.forEach((no, i) => {
+    const t = i / (certNos.length - 1);
+    const date = new Date(startDate.getTime() + t * totalRange);
+    if (no === 5304) date.setTime(new Date('2007-03-05').getTime());
+    if (no >= 5309) date.setTime(new Date('2007-04-03').getTime());
+
+    certs.push({
+      certNo: no, date: date, shares: shareAmounts[i],
+      isKey: no === 5304, isOffshore: no >= 5309 && no <= 5312
+    });
+  });
+
+  const x = d3.scaleTime().domain([new Date('2004-06-01'), new Date('2007-07-01')]).range([0, w]);
+  const y = d3.scaleLinear().domain([0, 1000000]).range([h, 0]);
+
+  const xAxis = g.append('g').attr('transform', `translate(0, ${h})`)
+    .call(d3.axisBottom(x).ticks(6).tickFormat(d3.timeFormat('%b %Y')))
+    .attr('color', '#2a3140');
+  xAxis.selectAll('text').attr('fill', '#6b7789').attr('font-size', '10px');
+  xAxis.selectAll('line').attr('stroke', '#2a3140');
+  xAxis.select('.domain').attr('stroke', '#2a3140');
+
+  const yAxis = g.append('g')
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d => d >= 1000 ? d3.format(',.0f')(d / 1000) + 'K' : d))
+    .attr('color', '#2a3140');
+  yAxis.selectAll('text').attr('fill', '#6b7789').attr('font-size', '10px');
+  yAxis.selectAll('line').attr('stroke', '#2a3140');
+  yAxis.select('.domain').attr('stroke', '#2a3140');
+
+  g.append('text').attr('transform', 'rotate(-90)').attr('x', -h / 2).attr('y', -50)
+    .attr('text-anchor', 'middle').attr('fill', '#6b7789').attr('font-size', '11px').text('Shares');
+
+  g.append('g').selectAll('line').data(y.ticks(5)).enter().append('line')
+    .attr('x1', 0).attr('x2', w).attr('y1', d => y(d)).attr('y2', d => y(d))
+    .attr('stroke', '#1a1f29').attr('stroke-dasharray', '3 3');
+
+  const barWidth = Math.max(6, Math.min(14, w / certs.length - 2));
+  const bars = g.selectAll('.cert-bar').data(certs).enter().append('rect')
+    .attr('class', 'cert-bar')
+    .attr('x', d => x(d.date) - barWidth / 2)
+    .attr('y', h).attr('width', barWidth).attr('height', 0).attr('rx', 2)
+    .attr('fill', d => d.isKey ? '#dc2f3f' : d.isOffshore ? '#e8a838' : '#5d7a94')
+    .attr('opacity', 0.7);
+
+  const label5304 = g.append('g').attr('opacity', 0);
+  const cert5304 = certs.find(c => c.certNo === 5304);
+  label5304.append('line')
+    .attr('x1', x(cert5304.date)).attr('x2', x(cert5304.date))
+    .attr('y1', y(cert5304.shares) - 10).attr('y2', y(cert5304.shares) - 50)
+    .attr('stroke', '#dc2f3f').attr('stroke-width', 1);
+  label5304.append('rect')
+    .attr('x', x(cert5304.date) - 70).attr('y', y(cert5304.shares) - 80)
+    .attr('width', 140).attr('height', 26).attr('rx', 3)
+    .attr('fill', '#dc2f3f').attr('opacity', 0.12);
+  label5304.append('text')
+    .attr('x', x(cert5304.date)).attr('y', y(cert5304.shares) - 64)
+    .attr('text-anchor', 'middle').attr('fill', '#dc2f3f')
+    .attr('font-size', '10.5px').attr('font-weight', '600')
+    .attr('font-family', 'JetBrains Mono, monospace')
+    .text('Cert #5304: 946K shares');
+
+  const offshoreLabel = g.append('g').attr('opacity', 0);
+  const offshoreStart = certs.find(c => c.certNo === 5309);
+  const offshoreEnd = certs.find(c => c.certNo === 5311);
+  const bx1 = x(offshoreStart.date) - barWidth;
+  const bx2 = x(offshoreEnd.date) + barWidth;
+  const by = y(offshoreStart.shares) - 10;
+
+  offshoreLabel.append('path')
+    .attr('d', `M ${bx1} ${by + 15} L ${bx1} ${by} L ${bx2} ${by} L ${bx2} ${by + 15}`)
+    .attr('stroke', '#e8a838').attr('stroke-width', 1.5).attr('fill', 'none');
+  offshoreLabel.append('rect')
+    .attr('x', (bx1 + bx2) / 2 - 90).attr('y', by - 32)
+    .attr('width', 180).attr('height', 26).attr('rx', 3)
+    .attr('fill', '#e8a838').attr('opacity', 0.1);
+  offshoreLabel.append('text')
+    .attr('x', (bx1 + bx2) / 2).attr('y', by - 15)
+    .attr('text-anchor', 'middle').attr('fill', '#e8a838')
+    .attr('font-size', '10.5px').attr('font-weight', '600')
+    .attr('font-family', 'JetBrains Mono, monospace')
+    .text('4 × 573,847 = 76.69% control');
+
+  let cumulative = 0;
+  const cumData = certs.map(c => { cumulative += c.shares; return { date: c.date, total: cumulative }; });
+  const yCum = d3.scaleLinear().domain([0, cumulative]).range([h, 0]);
+  const line = d3.line().x(d => x(d.date)).y(d => yCum(d.total)).curve(d3.curveMonotoneX);
+
+  const cumLine = g.append('path').datum(cumData).attr('d', line)
+    .attr('fill', 'none').attr('stroke', '#6b7789').attr('stroke-width', 1.5)
+    .attr('stroke-dasharray', '4 3').attr('opacity', 0);
+
+  // Ensure bars are drawn at full height (needed for mobile end-state and step transitions)
+  function ensureBarsDrawn() {
+    bars.each(function(d) {
+      const bar = d3.select(this);
+      if (+bar.attr('height') === 0) {
+        bar.attr('y', y(d.shares)).attr('height', h - y(d.shares)).attr('opacity', 0.7);
+      }
+    });
+    cumLine.attr('opacity', 0.4);
+  }
+
+  function showStep(step) {
+
+    if (step === 0) {
+      // Reset bars to baseline then animate up — RAF ensures DOM is ready
+      bars.interrupt().attr('y', h).attr('height', 0).attr('opacity', 0);
+      requestAnimationFrame(() => {
+        bars.transition().duration(800).delay((d, i) => i * 20)
+          .attr('y', d => y(d.shares)).attr('height', d => h - y(d.shares)).attr('opacity', 0.7);
+      });
+      gsap.to(label5304.node(), { opacity: 0, duration: 0.3 });
+      gsap.to(offshoreLabel.node(), { opacity: 0, duration: 0.3 });
+      gsap.to(cumLine.node(), { opacity: 0.4, duration: 0.6, delay: 0.5 });
+    } else if (step === 1) {
+      ensureBarsDrawn();
+      bars.transition().duration(400).attr('opacity', d => d.isKey ? 1 : 0.2);
+      gsap.to(label5304.node(), { opacity: 1, duration: 0.5 });
+      gsap.to(offshoreLabel.node(), { opacity: 0, duration: 0.3 });
+    } else if (step === 2) {
+      ensureBarsDrawn();
+      bars.transition().duration(400)
+        .attr('opacity', d => d.isOffshore ? 1 : d.isKey ? 0.6 : 0.15);
+      gsap.to(label5304.node(), { opacity: 0.5, duration: 0.3 });
+      gsap.to(offshoreLabel.node(), { opacity: 1, duration: 0.5 });
+    }
+  }
+
+  setupScrollSection('section-certs', showStep);
+  return showStep;
+}
+
+// ============ SECTION 4: MONEY FLOW ============
+function initSankey() {
+  const svg = d3.select('#viz-money');
+  const container = document.querySelector('#section-money .scroll-section__graphic');
+  const W = container.clientWidth - 40;
+  const isMobile = W < 500;
+  const H = isMobile ? Math.max(container.clientHeight - 20, 380) : container.clientHeight - 40;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  // Shift diagram right — larger left margin to give source labels space
+  const margin = { top: 40, right: isMobile ? 14 : 18, bottom: 50, left: isMobile ? 72 : 115 };
+  const w = W - margin.left - margin.right;
+  const h = H - margin.top - margin.bottom;
+  const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+  // Column positions — shifted right overall
+  const col1X = w * 0.03;   // sources (with label space to the left)
+  const col2X = isMobile ? w * 0.40 : w * 0.44;   // shell entities (centre-right)
+  const col3X = isMobile ? w * 0.72 : w * 0.80;   // destinations (labels to the right)
+  const nW    = isMobile ? 14 : 18;
+  const gap   = isMobile ? 5 : 7;
+  const labelFs = isMobile ? '9px' : '10.5px';
+  const subFs   = isMobile ? '7.5px' : '8.5px';
+
+  // ============ NODES ============
+  const sources = [
+    { label: 'Medicare',       value: 49.3, color: '#5d7a94' },
+    { label: 'Securities',     value: 6.4,  color: '#dc2f3f' },
+    { label: 'Pandemic Relief',value: 4.8,  color: '#e8a838' },
+    { label: 'Fannie Mae',     value: 3.0,  color: '#7c3aed' },
+  ];
+  const shells = [
+    { label: 'DAI / LATI',     color: '#5d7a94' },
+    { label: 'Davi Skin',      color: '#dc2f3f' },  // FIXED: Securities → Davi Skin
+    { label: 'SDI',            color: '#e8a838' },  // Secure Diversified Investments
+  ];
+  const destinations = [
+    { label: 'Arch Ltd.',      sub: 'LOM · 3.97%', color: '#e8a838' },
+    { label: 'Hepburn Hldgs', sub: 'LOM · 3.97%', color: '#e8a838' },
+    { label: 'Sunshine Ltd.',  sub: 'LOM · 3.97%', color: '#e8a838' },
+    { label: 'The Chloe Grp', sub: 'LOM · 3.97%', color: '#e8a838' },
+    { label: 'CEDE & CO.',     sub: 'DTC · 2.25M', color: '#5d7a94' },
+    { label: 'Galaxy Gaming',  sub: 'BK + 15M sh.', color: '#dc2f3f' },
+  ];
+
+  // Height layout
+  const totalValue = sources.reduce((s, v) => s + v.value, 0);
+  const srcScale = (h - sources.length * 10) / totalValue;
+  let yOff = 0;
+  sources.forEach(s => { s.h = s.value * srcScale; s.y = yOff; yOff += s.h + 10; });
+
+  const shellH = (h - shells.length * 10) / shells.length;
+  shells.forEach((s, i) => { s.y = i * (shellH + 10); s.h = shellH; });
+
+  const destH = (h - 50 - destinations.length * 8) / destinations.length;
+  destinations.forEach((d, i) => { d.y = i * (destH + 8) + 25; d.h = destH; });
+
+  // ============ DRAW NODE ============
+  function drawNode(group, x, node, opacity = 0) {
+    const ng = group.append('g').attr('opacity', opacity);
+    ng.append('rect').attr('x', x).attr('y', node.y).attr('width', nW).attr('height', node.h)
+      .attr('rx', 3).attr('fill', node.color).attr('opacity', 0.75);
+    const isLeft = x < col3X;
+    const lx = isLeft ? x - gap : x + nW + gap;
+    const anchor = isLeft ? 'end' : 'start';
+    ng.append('text').attr('x', lx).attr('y', node.y + node.h / 2 + (node.value ? -8 : node.sub ? -5 : 4))
+      .attr('text-anchor', anchor).attr('fill', '#b8c2d1')
+      .attr('font-size', labelFs).attr('font-weight', '500')
+      .attr('font-family', 'DM Sans, sans-serif').text(node.label);
+    if (node.value) {
+      ng.append('text').attr('x', lx).attr('y', node.y + node.h / 2 + 11)
+        .attr('text-anchor', anchor).attr('fill', '#6b7789')
+        .attr('font-size', subFs).attr('font-family', 'JetBrains Mono, monospace')
+        .text(`$${node.value}M`);
+    }
+    if (node.sub) {
+      ng.append('text').attr('x', lx).attr('y', node.y + node.h / 2 + 9)
+        .attr('text-anchor', anchor).attr('fill', '#6b7789')
+        .attr('font-size', subFs).attr('font-family', 'JetBrains Mono, monospace').text(node.sub);
+    }
+    return ng;
+  }
+
+  function bezier(x0, y0, x1, y1) {
+    const mid = (x0 + x1) / 2;
+    return `M ${x0} ${y0} C ${mid} ${y0}, ${mid} ${y1}, ${x1} ${y1}`;
+  }
+
+  // Column headers
+  [{ x: col1X + nW / 2, t: 'FEDERAL SOURCES' },
+   { x: col2X + nW / 2, t: 'SHELL ENTITIES' },
+   { x: col3X + nW / 2, t: 'DESTINATIONS' }
+  ].forEach(cl => {
+    g.append('text').attr('x', cl.x).attr('y', -20).attr('text-anchor', 'middle')
+      .attr('fill', '#6b7789').attr('font-size', '8.5px').attr('letter-spacing', '0.14em')
+      .attr('font-family', 'JetBrains Mono, monospace').text(cl.t);
+  });
+
+  const sourceGroup  = g.append('g');
+  const shellGroup   = g.append('g');
+  const destGroup    = g.append('g');
+  const links1Group  = g.append('g');
+  const links2Group  = g.append('g');
+
+  const sourceNodes = sources.map(s => drawNode(sourceGroup, col1X, s, 0));
+  const shellNodes  = shells.map(s  => drawNode(shellGroup,  col2X, s, 0));
+  const destNodes   = destinations.map(d => drawNode(destGroup, col3X, d, 0));
+
+  // Specific source→shell mappings (corrected):
+  // Medicare(0)→LATI(0), Securities(1)→DaviSkin(1), Pandemic(2)→SDI(2), FannieMae(3)→SDI(2)
+  const src2shell = [ [0,0], [1,1], [2,2], [3,2] ];
+  const links1 = src2shell.map(([si, shi]) => {
+    const s = sources[si], sh = shells[shi];
+    const d = bezier(col1X + nW, s.y + s.h / 2, col2X, sh.y + sh.h / 2);
+    const p = links1Group.append('path').attr('d', d).attr('fill', 'none')
+      .attr('stroke', s.color).attr('stroke-width', Math.max(1.5, s.value * srcScale * 0.28))
+      .attr('opacity', 0);
+    const len = p.node().getTotalLength();
+    return p.attr('stroke-dasharray', len).attr('stroke-dashoffset', len);
+  });
+
+  // Specific shell→destination mappings:
+  // LATI(0)→CEDE(4), DaviSkin(1)→Arch(0), Davi(1)→Hepburn(1), Davi(1)→Sunshine(2), Davi(1)→Chloe(3), SDI(2)→Galaxy(5)
+  const shell2dest = [ [0,4], [1,0], [1,1], [1,2], [1,3], [2,5] ];
+  const links2 = shell2dest.map(([shi, di]) => {
+    const sh = shells[shi], dest = destinations[di];
+    const swAmt = shi === 1 ? Math.max(1.5, 6.4 * srcScale * 0.07) :
+                  shi === 0 ? Math.max(1.5, 49.3 * srcScale * 0.05) :
+                              Math.max(1.5, 7.8 * srcScale * 0.12);
+    const color = shi === 0 ? '#5d7a94' : shi === 1 ? '#e8a838' : '#e8a838';
+    const d = bezier(col2X + nW, sh.y + sh.h / 2, col3X, dest.y + dest.h / 2);
+    const p = links2Group.append('path').attr('d', d).attr('fill', 'none')
+      .attr('stroke', color).attr('stroke-width', swAmt).attr('opacity', 0);
+    const len = p.node().getTotalLength();
+    return p.attr('stroke-dasharray', len).attr('stroke-dashoffset', len);
+  });
+
+  // FBAR banner
+  const fbarY = h + 8;
+  const fbarW = Math.min(w * 0.92, isMobile ? 220 : 300);
+  const fbar = g.append('g').attr('opacity', 0);
+  fbar.append('rect').attr('x', w / 2 - fbarW / 2).attr('y', fbarY)
+    .attr('width', fbarW).attr('height', 28).attr('rx', 3)
+    .attr('fill', '#dc2f3f').attr('opacity', 0.1).attr('stroke', '#dc2f3f').attr('stroke-width', 1);
+  fbar.append('text').attr('x', w / 2).attr('y', fbarY + 17)
+    .attr('text-anchor', 'middle').attr('fill', '#dc2f3f')
+    .attr('font-size', isMobile ? '9px' : '10.5px').attr('font-weight', '700')
+    .attr('font-family', 'JetBrains Mono, monospace').text('21 CONSECUTIVE YEARS — UNFILED FBARs');
+
+  let currentStep = -1;
+
+  function showStep(step) {
+    if (step === currentStep) return;
+    const prev = currentStep;
+    currentStep = step;
+
+    // When skipping ahead, instantly show prerequisite layers so they don't animate alongside the current step
+    if (step >= 0) {
+      const instant = prev < 0 && step > 0;
+      sourceNodes.forEach((n, i) => gsap.to(n.node(), { opacity: 1, duration: instant ? 0 : 0.4, delay: instant ? 0 : i * 0.08 }));
+    }
+
+    if (step >= 1) {
+      const instant = prev < 1 && step > 1;
+      shellNodes.forEach((n, i) => gsap.to(n.node(), { opacity: 1, duration: instant ? 0 : 0.4, delay: instant ? 0 : i * 0.1 }));
+      links1.forEach((p, i) => gsap.to(p.node(), { opacity: 0.45, strokeDashoffset: 0, duration: instant ? 0 : 1, delay: instant ? 0 : i * 0.12, ease: 'power2.inOut' }));
+    } else {
+      shellNodes.forEach(n => gsap.to(n.node(), { opacity: 0, duration: 0.3 }));
+      links1.forEach(p => { const l = p.node().getTotalLength(); gsap.to(p.node(), { opacity: 0, strokeDashoffset: l, duration: 0.3 }); });
+    }
+
+    if (step >= 2) {
+      destNodes.forEach((n, i) => gsap.to(n.node(), { opacity: 1, duration: 0.4, delay: i * 0.08 }));
+      links2.forEach((p, i) => gsap.to(p.node(), { opacity: 0.45, strokeDashoffset: 0, duration: 1, delay: i * 0.1, ease: 'power2.inOut' }));
+      gsap.to(fbar.node(), { opacity: 1, duration: 0.5, delay: 0.7 });
+    } else {
+      destNodes.forEach(n => gsap.to(n.node(), { opacity: 0, duration: 0.3 }));
+      links2.forEach(p => { const l = p.node().getTotalLength(); gsap.to(p.node(), { opacity: 0, strokeDashoffset: l, duration: 0.3 }); });
+      gsap.to(fbar.node(), { opacity: 0, duration: 0.3 });
+    }
+  }
+
+  setupScrollSection('section-money', showStep);
+  return showStep;
+}
+
+function initIntroAnimations() {
+  document.querySelectorAll('.section-intro, .explainer-box').forEach(el => {
+    gsap.from(el.children, {
+      scrollTrigger: { trigger: el, start: 'top 80%' },
+      y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out'
+    });
+  });
+}
+
+// ============ THEME TOGGLE ============
+const colorMap = {
+  dark: {
+    textBright: '#f4f6f9',
+    text: '#b8c2d1',
+    textDim: '#6b7789',
+    nodeBg: '#13171f',
+    grid: '#1a1f29',
+    axis: '#2a3140',
+    slate: '#5d7a94',
+    crimson: '#dc2f3f',
+    amber: '#e8a838',
+    amberDim: '#b8862a',
+    blue: '#5d7a94',
+    orange: '#e8a838',
+    darkOrange: '#b8862a',
+    purple: '#7c3aed',
+    darkSlate: '#2a3140',
+    crimsonDim: '#a6232f',
+    slateDim: '#4a6177',
+  },
+  light: {
+    textBright: '#0d1016',
+    text: '#2d3140',
+    textDim: '#6b7789',
+    nodeBg: '#ffffff',
+    grid: '#e5e4e0',
+    axis: '#ccc5b9',
+    slate: '#5d7a94',
+    crimson: '#c01c28',
+    amber: '#b8860b',
+    amberDim: '#946b08',
+    blue: '#5d7a94',
+    orange: '#b8860b',
+    darkOrange: '#946b08',
+    purple: '#7c3aed',
+    darkSlate: '#9ca3af',
+    crimsonDim: '#9a1820',
+    slateDim: '#4a6177',
+  }
+};
+
+function updateSVGTheme() {
+  const theme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  const c = colorMap[theme];
+  const o = colorMap[theme === 'light' ? 'dark' : 'light'];
+
+  document.querySelectorAll('svg text').forEach(t => {
+    const fill = t.getAttribute('fill');
+    const map = {
+      [o.textBright]: c.textBright,
+      '#fff': c.textBright,
+      [o.text]: c.text,
+      [o.textDim]: c.textDim,
+      [o.slate]: c.slate,
+      [o.crimson]: c.crimson,
+      [o.amber]: c.amber,
+      [o.blue]: c.blue,
+    };
+    if (map[fill]) t.setAttribute('fill', map[fill]);
+  });
+
+  document.querySelectorAll('svg rect').forEach(r => {
+    const fill = r.getAttribute('fill');
+    if (fill === o.nodeBg) r.setAttribute('fill', c.nodeBg);
+    const op = parseFloat(r.getAttribute('opacity'));
+    if (op && op <= 0.2 && (fill === o.crimson || fill === o.crimsonDim)) {
+      r.setAttribute('fill', c.crimson);
+    }
+  });
+
+  document.querySelectorAll('svg line').forEach(l => {
+    const stroke = l.getAttribute('stroke');
+    if (stroke === o.axis) l.setAttribute('stroke', c.axis);
+    if (stroke === o.grid) l.setAttribute('stroke', c.grid);
+  });
+
+  document.querySelectorAll('svg .domain').forEach(d => {
+    d.setAttribute('stroke', c.axis);
+  });
+
+  document.querySelectorAll('svg path').forEach(p => {
+    const stroke = p.getAttribute('stroke');
+    const map = {
+      [o.slate]: c.slate,
+      [o.crimson]: c.crimson,
+      [o.amber]: c.amber,
+      [o.blue]: c.blue,
+      [o.textDim]: c.textDim,
+    };
+    if (map[stroke]) p.setAttribute('stroke', map[stroke]);
+    const fill = p.getAttribute('fill');
+    if (fill && map[fill]) p.setAttribute('fill', map[fill]);
+  });
+
+  document.querySelectorAll('svg circle').forEach(el => {
+    const stroke = el.getAttribute('stroke');
+    if (stroke === o.amber) el.setAttribute('stroke', c.amber);
+  });
+
+  document.querySelectorAll('.cert-bar').forEach(b => {
+    const fill = b.getAttribute('fill');
+    const map = {
+      [o.slate]: c.slate,
+      [o.crimson]: c.crimson,
+      [o.amber]: c.amber,
+    };
+    if (map[fill]) b.setAttribute('fill', map[fill]);
+  });
+
+  document.querySelectorAll('#arrowhead2 path').forEach(p => {
+    p.setAttribute('fill', c.slate);
+  });
+
+  document.querySelectorAll('svg rect').forEach(r => {
+    const stroke = r.getAttribute('stroke');
+    if (!stroke) return;
+    const map = {
+      [o.slate]: c.slate,
+      [o.crimson]: c.crimson,
+      [o.amber]: c.amber,
+      [o.blue]: c.blue,
+      [o.crimsonDim]: c.crimsonDim,
+    };
+    if (map[stroke]) r.setAttribute('stroke', map[stroke]);
+  });
+
+  const arcColorMap = {
+    [o.crimson]: c.crimson,
+    [o.amber]: c.amber,
+    [o.darkSlate]: c.darkSlate,
+    [o.orange]: c.orange,
+    [o.darkOrange]: c.darkOrange,
+    [o.purple]: c.purple,
+  };
+  document.querySelectorAll('.inner-arcs path, .outer-arcs path').forEach(p => {
+    const fill = p.getAttribute('fill');
+    if (arcColorMap[fill]) p.setAttribute('fill', arcColorMap[fill]);
+  });
+
+  document.querySelectorAll('.sources rect, .shells rect, .dests rect').forEach(r => {
+    const fill = r.getAttribute('fill');
+    const map = {
+      [o.blue]: c.blue,
+      [o.crimson]: c.crimson,
+      [o.crimsonDim]: c.crimsonDim,
+      [o.orange]: c.orange,
+      [o.purple]: c.purple,
+      [o.amber]: c.amber,
+    };
+    if (map[fill]) r.setAttribute('fill', map[fill]);
+  });
+
+  document.querySelectorAll('.links1 path, .links2 path').forEach(p => {
+    const stroke = p.getAttribute('stroke');
+    const map = {
+      [o.blue]: c.blue,
+      [o.crimson]: c.crimson,
+      [o.orange]: c.orange,
+      [o.purple]: c.purple,
+      [o.amber]: c.amber,
+    };
+    if (map[stroke]) p.setAttribute('stroke', map[stroke]);
+  });
+
+  document.querySelectorAll('svg text').forEach(t => {
+    const fill = t.getAttribute('fill');
+    if (fill === o.crimson || fill === o.crimsonDim) {
+      t.setAttribute('fill', c.crimson);
+    }
+  });
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.dataset.theme || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.dataset.theme = next;
+  localStorage.setItem('theme-v2', next);
+  updateSVGTheme();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('theme-v2');
+  if (saved) document.documentElement.dataset.theme = saved;
+  // Default to light if no preference saved
+  if (!saved) document.documentElement.dataset.theme = 'light';
+
+  // On narrow screens, show all steps visible and trigger final diagram state
+  const isNarrow = window.innerWidth <= 900;
+
+  initHero();
+  const pipelineStep = initPipeline();
+  const ownershipStep = initOwnership();
+  const certsStep = initCerts();
+  const sankeyStep = initSankey();
+  // Desktop: staggered fade-in on scroll. Mobile: skip entirely (no scroll triggers fire)
+  if (!isNarrow) {
+    initIntroAnimations();
+  }
+
+  // Refresh ScrollTrigger after all sections initialized — fixes first-run animation timing
+  setTimeout(() => ScrollTrigger.refresh(), 250);
+
+  // On narrow screens, show diagrams in their final end-state
+  if (isNarrow) {
+    setTimeout(() => {
+      // Mark all step cards as active
+      document.querySelectorAll('.scroll-section').forEach(section => {
+        const steps = section.querySelectorAll('.step');
+        steps.forEach(s => s.classList.add('is-active'));
+      });
+      // Trigger final D3 state for each diagram
+      if (pipelineStep) pipelineStep(5);   // step 5 = offshore (final)
+      if (ownershipStep) ownershipStep(3); // step 3 = offshore nominees (final)
+      if (certsStep) certsStep(2);         // step 2 = offshore certs (final)
+      if (sankeyStep) sankeyStep(2);       // step 2 = destinations + FBAR (final)
+    }, 500);
+  }
+
+  if (document.documentElement.dataset.theme === 'light') {
+    requestAnimationFrame(() => updateSVGTheme());
+  }
+
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+});
+</script>
+</body>
+</html>
+

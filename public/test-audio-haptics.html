@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Audio + Haptics Test v4</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, monospace;
+      margin: 0; padding: 16px;
+      background: #f7f7f7;
+      font-size: 13px;
+    }
+    h2 { font-size: 14px; margin: 16px 0 8px; }
+    .section { margin-bottom: 20px; }
+    .log {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    button {
+      font-family: monospace;
+      font-size: 11px;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #e8e8e8;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    button:active { background: #ccc; }
+    .status {
+      padding: 6px 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+    .status.ok { background: #dfd; border: 1px solid #4a4; }
+    .status.warn { background: #ffd; border: 1px solid #aa4; }
+    .status.err { background: #fdd; border: 1px solid #a44; }
+    .info { color: #666; font-size: 10px; margin-bottom: 8px; }
+    .ios-btn { background: #e0e8ff; border-color: #88a; }
+  </style>
+</head>
+<body>
+  <h1 style="font-size:16px;margin:0 0 4px">Audio + Haptics Test v4</h1>
+  <p class="info">All audio uses HTML Audio WAV generation (proven to work on Safari). Haptics use &lt;input switch&gt; for iOS.</p>
+
+  <div class="section">
+    <h2>Device Info</h2>
+    <div class="log" id="device-info"></div>
+  </div>
+
+  <div class="section">
+    <h2>1. Haptics (auto-detect platform)</h2>
+    <div id="haptic-status"></div>
+    <div class="btn-grid">
+      <button onclick="testHaptic('success')">Success</button>
+      <button onclick="testHaptic('nudge')">Nudge</button>
+      <button onclick="testHaptic('error')">Error</button>
+      <button onclick="testHaptic('buzz')">Buzz</button>
+      <button onclick="testHaptic('warning')">Warning</button>
+      <button onclick="testHaptic('light')">Light</button>
+      <button onclick="testHaptic('medium')">Medium</button>
+      <button onclick="testHaptic('heavy')">Heavy</button>
+      <button onclick="testHaptic('soft')">Soft</button>
+      <button onclick="testHaptic('rigid')">Rigid</button>
+      <button onclick="testHaptic('selection')">Selection</button>
+    </div>
+    <div class="btn-grid">
+      <button class="ios-btn" onclick="testSingleClick()">Single Click</button>
+      <button class="ios-btn" onclick="testRapidClicks(5)">5 Rapid Clicks</button>
+      <button class="ios-btn" onclick="testRapidClicks(15)">15 Rapid Clicks</button>
+    </div>
+    <div class="log" id="haptic-log"></div>
+  </div>
+
+  <div class="section">
+    <h2>2. Audio (HTML Audio WAV)</h2>
+    <div id="audio-status"></div>
+    <p class="info">Generates WAV beeps in-memory at different frequencies. No Web Audio API oscillators (Safari doesn't play those).</p>
+    <div class="btn-grid">
+      <button onclick="playTone(440, 0.2)">440Hz beep</button>
+      <button onclick="playTone(880, 0.15)">880Hz beep</button>
+      <button onclick="playTone(220, 0.3)">220Hz beep</button>
+      <button onclick="playTone(523, 0.1)">523Hz short</button>
+      <button onclick="playTone(659, 0.08)">659Hz short</button>
+      <button onclick="playTone(200, 0.3)">200Hz low</button>
+    </div>
+    <div class="log" id="audio-log"></div>
+  </div>
+
+  <div class="section">
+    <h2>3. Combined: Haptic + Audio</h2>
+    <p class="info">Tests haptic and audio firing together, including delayed sequences.</p>
+    <div class="btn-grid">
+      <button onclick="testCombined()" style="background:#ffe0e8;border-color:#a88">Haptic + Tone</button>
+      <button onclick="testGameSequence()" style="background:#ffe0e8;border-color:#a88">Game Sequence (3s)</button>
+    </div>
+    <div class="log" id="combined-log"></div>
+  </div>
+
+  <div class="section">
+    <h2>4. Format Support</h2>
+    <div class="btn-grid">
+      <button onclick="testFormats()">Check audio formats</button>
+    </div>
+    <div class="log" id="format-log"></div>
+  </div>
+
+  <script>
+    // ================================================================
+    // DEVICE INFO
+    // ================================================================
+    var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var _isAndroid = /Android/.test(navigator.userAgent);
+
+    var di = document.getElementById('device-info');
+    var lines = [];
+    lines.push('UA: ' + navigator.userAgent);
+    lines.push('Platform: ' + (navigator.platform || 'unknown'));
+    lines.push('Touch: ' + ('ontouchstart' in window));
+    lines.push('maxTouchPoints: ' + navigator.maxTouchPoints);
+    lines.push('Vibrate API: ' + (typeof navigator.vibrate === 'function'));
+    lines.push('Detected iOS: ' + _isIOS);
+    lines.push('Detected Android: ' + _isAndroid);
+    lines.push('DPR: ' + window.devicePixelRatio);
+    di.textContent = lines.join('\n');
+
+    function log(id, msg) {
+      var el = document.getElementById(id);
+      var ts = new Date().toLocaleTimeString();
+      el.textContent = '[' + ts + '] ' + msg + '\n' + el.textContent;
+    }
+
+    // ================================================================
+    // HAPTICS ENGINE
+    // Uses <label> wrapping <input type="checkbox" switch> for iOS
+    // Uses navigator.vibrate() with PWM modulation for Android
+    // Matches https://github.com/lochie/web-haptics
+    // ================================================================
+    var TOGGLE_MIN = 16;
+    var TOGGLE_MAX = 184;
+    var PWM_CYCLE = 20;
+    var _hapticLabel = null;
+    var _hapticEl = null;
+    // Track active rAF patterns so multiple can run concurrently
+    var _hapticPatterns = [];
+
+    var HAPTIC_PRESETS = {
+      success:   { pattern: [{ duration: 30, intensity: 0.5 }, { delay: 60, duration: 40, intensity: 1.0 }] },
+      nudge:     { pattern: [{ duration: 80, intensity: 0.8 }, { delay: 80, duration: 50, intensity: 0.3 }] },
+      error:     { pattern: [{ duration: 40, intensity: 0.9 }, { delay: 40, duration: 40, intensity: 0.9 }, { delay: 40, duration: 40, intensity: 0.9 }] },
+      buzz:      { pattern: [{ duration: 1000, intensity: 1.0 }] },
+      warning:   { pattern: [{ duration: 40, intensity: 0.8 }, { delay: 100, duration: 40, intensity: 0.6 }] },
+      light:     { pattern: [{ duration: 15, intensity: 0.4 }] },
+      medium:    { pattern: [{ duration: 25, intensity: 0.7 }] },
+      heavy:     { pattern: [{ duration: 35, intensity: 1.0 }] },
+      soft:      { pattern: [{ duration: 40, intensity: 0.5 }] },
+      rigid:     { pattern: [{ duration: 10, intensity: 1.0 }] },
+      selection: { pattern: [{ duration: 8, intensity: 0.3 }] }
+    };
+
+    function ensureHapticElement() {
+      if (_hapticLabel) return;
+      var label = document.createElement('label');
+      label.style.display = 'none';
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.setAttribute('switch', '');
+      cb.style.all = 'initial';
+      cb.style.appearance = 'auto';
+      cb.style.display = 'none';
+      label.appendChild(cb);
+      document.body.appendChild(label);
+      _hapticLabel = label;
+      _hapticEl = cb;
+    }
+
+    function runIOSHapticPattern(vibrations) {
+      ensureHapticElement();
+
+      // Build phases
+      var phases = [];
+      var offset = 0;
+      for (var i = 0; i < vibrations.length; i++) {
+        var v = vibrations[i];
+        var delay = v.delay || 0;
+        var intensity = typeof v.intensity === 'number' ? Math.max(0, Math.min(1, v.intensity)) : 0.5;
+        var duration = v.duration || 50;
+        if (delay > 0) {
+          phases.push({ start: offset, end: offset + delay, type: 'pause' });
+          offset += delay;
+        }
+        phases.push({ start: offset, end: offset + duration, type: 'vibrate', intensity: intensity });
+        offset += duration;
+      }
+
+      var startTime = null;
+      var lastToggleTime = 0;
+      var totalDuration = offset;
+      var rafId = null;
+
+      function runPattern(time) {
+        if (!startTime) startTime = time;
+        var elapsed = time - startTime;
+
+        if (elapsed >= totalDuration) {
+          // Remove from active patterns
+          var idx = _hapticPatterns.indexOf(rafId);
+          if (idx !== -1) _hapticPatterns.splice(idx, 1);
+          return;
+        }
+
+        var currentPhase = null;
+        for (var p = 0; p < phases.length; p++) {
+          if (elapsed >= phases[p].start && elapsed < phases[p].end) {
+            currentPhase = phases[p];
+            break;
+          }
+        }
+
+        if (currentPhase && currentPhase.type === 'vibrate') {
+          var toggleInterval = TOGGLE_MIN + TOGGLE_MAX * (1 - currentPhase.intensity);
+          if (time - lastToggleTime >= toggleInterval || lastToggleTime === 0) {
+            _hapticLabel.click();
+            lastToggleTime = time;
+          }
+        }
+
+        rafId = requestAnimationFrame(runPattern);
+        // Update tracked ID
+        var oldIdx = _hapticPatterns.indexOf(rafId - 1);
+        if (oldIdx !== -1) _hapticPatterns[oldIdx] = rafId;
+      }
+
+      // Initial click in user gesture context
+      _hapticLabel.click();
+      lastToggleTime = performance.now();
+      rafId = requestAnimationFrame(runPattern);
+      _hapticPatterns.push(rafId);
+    }
+
+    function modulateVibration(duration, intensity) {
+      if (intensity >= 1) return [duration];
+      if (intensity <= 0) return [];
+      var onTime = Math.max(1, Math.round(PWM_CYCLE * intensity));
+      var offTime = PWM_CYCLE - onTime;
+      var result = [];
+      var remaining = duration;
+      while (remaining >= PWM_CYCLE) {
+        result.push(onTime);
+        result.push(offTime);
+        remaining -= PWM_CYCLE;
+      }
+      if (remaining > 0) {
+        var remOn = Math.max(1, Math.round(remaining * intensity));
+        result.push(remOn);
+        var remOff = remaining - remOn;
+        if (remOff > 0) result.push(remOff);
+      }
+      return result;
+    }
+
+    function toVibratePattern(vibrations) {
+      var result = [];
+      for (var i = 0; i < vibrations.length; i++) {
+        var v = vibrations[i];
+        var intensity = Math.max(0, Math.min(1, typeof v.intensity === 'number' ? v.intensity : 0.5));
+        var delay = v.delay || 0;
+        if (delay > 0) {
+          if (result.length > 0 && result.length % 2 === 0) {
+            result[result.length - 1] += delay;
+          } else {
+            if (result.length === 0) result.push(0);
+            result.push(delay);
+          }
+        }
+        var modulated = modulateVibration(v.duration, intensity);
+        for (var m = 0; m < modulated.length; m++) {
+          result.push(modulated[m]);
+        }
+      }
+      return result;
+    }
+
+    function triggerHapticDirect(vibrations) {
+      if (!vibrations || vibrations.length === 0) return;
+      if (_isIOS) {
+        runIOSHapticPattern(vibrations);
+      } else if (navigator.vibrate) {
+        navigator.vibrate(toVibratePattern(vibrations));
+      }
+    }
+
+    // ================================================================
+    // AUDIO ENGINE - HTML Audio WAV generation
+    // Generates WAV beeps in-memory. Works on Safari.
+    // ================================================================
+    function writeString(view, offset, string) {
+      for (var i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    }
+
+    function generateWavBlob(freq, duration, volume) {
+      var sampleRate = 22050;
+      var numSamples = Math.floor(sampleRate * duration);
+      var dataSize = numSamples * 2;
+      var buffer = new ArrayBuffer(44 + dataSize);
+      var view = new DataView(buffer);
+
+      writeString(view, 0, 'RIFF');
+      view.setUint32(4, 36 + dataSize, true);
+      writeString(view, 8, 'WAVE');
+      writeString(view, 12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeString(view, 36, 'data');
+      view.setUint32(40, dataSize, true);
+
+      var vol = (volume || 0.3) * 32767;
+      for (var i = 0; i < numSamples; i++) {
+        // Apply fade out in last 20% to avoid click
+        var envelope = 1.0;
+        var fadeStart = numSamples * 0.8;
+        if (i > fadeStart) {
+          envelope = 1.0 - (i - fadeStart) / (numSamples - fadeStart);
+        }
+        var sample = Math.sin(2 * Math.PI * freq * i / sampleRate) * vol * envelope;
+        view.setInt16(44 + i * 2, sample, true);
+      }
+
+      return new Blob([buffer], { type: 'audio/wav' });
+    }
+
+    function playTone(freq, duration) {
+      try {
+        var blob = generateWavBlob(freq, duration, 0.3);
+        var url = URL.createObjectURL(blob);
+        var audio = new Audio(url);
+        audio.play().then(function() {
+          log('audio-log', 'Played ' + freq + 'Hz for ' + duration + 's');
+          URL.revokeObjectURL(url);
+        }).catch(function(e) {
+          log('audio-log', 'FAILED ' + freq + 'Hz: ' + e.message);
+          URL.revokeObjectURL(url);
+        });
+      } catch(e) {
+        log('audio-log', 'ERROR: ' + e.message);
+      }
+    }
+
+    // Delayed tone playback (for sequences - pre-generate the audio element)
+    function playToneDelayed(freq, duration, delayMs) {
+      try {
+        var blob = generateWavBlob(freq, duration, 0.3);
+        var url = URL.createObjectURL(blob);
+        var audio = new Audio(url);
+        // Pre-load the audio
+        audio.load();
+        setTimeout(function() {
+          audio.play().then(function() {
+            log('combined-log', 'Played ' + freq + 'Hz (delayed ' + delayMs + 'ms)');
+            URL.revokeObjectURL(url);
+          }).catch(function(e) {
+            log('combined-log', 'FAILED delayed ' + freq + 'Hz: ' + e.message);
+            URL.revokeObjectURL(url);
+          });
+        }, delayMs);
+      } catch(e) {
+        log('combined-log', 'ERROR: ' + e.message);
+      }
+    }
+
+    // ================================================================
+    // STATUS
+    // ================================================================
+    var hs = document.getElementById('haptic-status');
+    if (_isIOS) {
+      hs.className = 'status ok';
+      hs.textContent = 'iOS: using <input switch> label click for haptics';
+    } else if (navigator.vibrate) {
+      hs.className = 'status ok';
+      hs.textContent = 'Android: using navigator.vibrate() with PWM modulation';
+    } else {
+      hs.className = 'status err';
+      hs.textContent = 'No haptic method available';
+    }
+
+    var as = document.getElementById('audio-status');
+    as.className = 'status ok';
+    as.textContent = 'Using HTML Audio with in-memory WAV generation';
+
+    // ================================================================
+    // TEST FUNCTIONS
+    // ================================================================
+    function testHaptic(presetName) {
+      var preset = HAPTIC_PRESETS[presetName];
+      if (!preset) { log('haptic-log', 'Unknown: ' + presetName); return; }
+      var method = _isIOS ? 'iOS switch' : (navigator.vibrate ? 'vibrate()' : 'none');
+      log('haptic-log', presetName + ' via ' + method);
+      triggerHapticDirect(preset.pattern);
+    }
+
+    function testSingleClick() {
+      ensureHapticElement();
+      _hapticLabel.click();
+      log('haptic-log', 'Single click. Checked: ' + _hapticEl.checked);
+    }
+
+    function testRapidClicks(count) {
+      ensureHapticElement();
+      _hapticLabel.click();
+      log('haptic-log', 'Starting ' + count + ' clicks at 16ms intervals');
+      for (var i = 1; i < count; i++) {
+        (function(idx) {
+          setTimeout(function() { _hapticLabel.click(); }, idx * 16);
+        })(i);
+      }
+    }
+
+    function testCombined() {
+      log('combined-log', 'Haptic (nudge) + Tone (440Hz) together...');
+      triggerHapticDirect(HAPTIC_PRESETS.nudge.pattern);
+      playTone(440, 0.2);
+    }
+
+    function testGameSequence() {
+      log('combined-log', '--- Game Sequence Start ---');
+
+      // 0ms: Game start
+      log('combined-log', '[0ms] Game Start: success haptic + 523Hz');
+      triggerHapticDirect(HAPTIC_PRESETS.success.pattern);
+      playTone(523, 0.1);
+
+      // 500ms: Jump
+      setTimeout(function() {
+        log('combined-log', '[500ms] Jump: nudge haptic + 659Hz');
+        triggerHapticDirect(HAPTIC_PRESETS.nudge.pattern);
+      }, 500);
+      playToneDelayed(659, 0.08, 500);
+
+      // 1200ms: Duck warning
+      setTimeout(function() {
+        log('combined-log', '[1200ms] Duck warning: error haptic');
+        triggerHapticDirect(HAPTIC_PRESETS.error.pattern);
+      }, 1200);
+
+      // 2000ms: Death
+      setTimeout(function() {
+        log('combined-log', '[2000ms] Death: buzz haptic + 200Hz');
+        triggerHapticDirect(HAPTIC_PRESETS.buzz.pattern);
+      }, 2000);
+      playToneDelayed(200, 0.3, 2000);
+
+      // 3000ms: Game end
+      setTimeout(function() {
+        log('combined-log', '[3000ms] Game End: success haptic');
+        triggerHapticDirect(HAPTIC_PRESETS.success.pattern);
+        log('combined-log', '--- Game Sequence End ---');
+      }, 3000);
+    }
+
+    function testFormats() {
+      var audio = new Audio();
+      log('format-log', 'WAV: ' + (audio.canPlayType('audio/wav') || 'no'));
+      log('format-log', 'MP3: ' + (audio.canPlayType('audio/mpeg') || 'no'));
+      log('format-log', 'AAC: ' + (audio.canPlayType('audio/aac') || 'no'));
+      log('format-log', 'MP4: ' + (audio.canPlayType('audio/mp4') || 'no'));
+      log('format-log', 'OGG: ' + (audio.canPlayType('audio/ogg') || 'no'));
+      log('format-log', 'WEBM: ' + (audio.canPlayType('audio/webm') || 'no'));
+    }
+
+    // Pre-create haptic element
+    ensureHapticElement();
+  </script>
+</body>
+</html>

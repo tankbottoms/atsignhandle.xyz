@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-03-03T23:15:21.232Z",
+  "folderName": "public",
+  "cids": {
+    "folder": "bafybeibo3jaenyc4oeu5k6dux62spt4mhwzzlv5ys5mqoyad7ts7vlhehi",
+    "zip": "bafybeihy7eafqy25o6q4w4yhgv6ckjwarcl2an3a3pcrnycekav6k6fkmu"
+  },
+  "ipns": {
+    "keyName": "push-public",
+    "name": "k51qzi5uqu5dhqezt23inmcfhvt2pyhf6oghpv8kioeyu0ztgg9wcgwl8xzaf4"
+  },
+  "urls": {
+    "ipfs": "https://ipfs.io/ipfs/bafybeibo3jaenyc4oeu5k6dux62spt4mhwzzlv5ys5mqoyad7ts7vlhehi/",
+    "zip": "https://ipfs.io/ipfs/bafybeihy7eafqy25o6q4w4yhgv6ckjwarcl2an3a3pcrnycekav6k6fkmu",
+    "ipns": "https://ipfs.io/ipns/k51qzi5uqu5dhqezt23inmcfhvt2pyhf6oghpv8kioeyu0ztgg9wcgwl8xzaf4/"
+  },
+  "server": "http://localhost:5001",
+  "gateway": "https://ipfs.io",
+  "stats": {
+    "fileCount": 41,
+    "folderSize": 4400552,
+    "zipSize": 2852010
+  }
+}

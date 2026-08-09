@@ -1,11 +1,5 @@
-node_modules/
-.wrangler/
-.omc/
+.claude
+.github-commit-messages
 .DS_Store
-.env
-.env.*
-dist/
-*.zip
-.claude/
-*-report.json
-public/test-*.html
+node_modules
+.wrangler
