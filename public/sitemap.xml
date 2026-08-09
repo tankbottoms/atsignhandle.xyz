@@ -4,9 +4,11 @@
   being served was Cloudflare's managed AI-content-signals commentary, which contains
   no Sitemap: line. Nothing pointed a crawler anywhere.
 
-  Two URLs. The root is the game. /products is the entity's product and services page —
+  Four URLs. The root is the game. /products is the entity's product and services page —
   the destination a payment receipt or a card statement lookup lands on, so it has to be
-  indexable and reachable without going through the game.
+  indexable and reachable without going through the game. /privacy-policy and
+  /terms-of-service back it: Stripe requires both to be publicly reachable without a login
+  for account activation, and a cardholder disputing a charge should find them without help.
 
   Still not listed: spec.html (a sprite spec) and test-audio-haptics.html (a test harness),
   which both return 307 in production and are development artifacts, not content.
@@ -30,5 +32,15 @@
     <loc>https://atsignhandle.xyz/products</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://atsignhandle.xyz/privacy-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://atsignhandle.xyz/terms-of-service</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>
