@@ -4,11 +4,15 @@
   being served was Cloudflare's managed AI-content-signals commentary, which contains
   no Sitemap: line. Nothing pointed a crawler anywhere.
 
-  Five URLs. The root is the game. /products is the entity's product and services page —
+  Seven URLs. The root is the game. /products is the entity's product page —
   the destination a payment receipt or a card statement lookup lands on, so it has to be
   indexable and reachable without going through the game. /support, /privacy-policy and
   /terms-of-service back it: Stripe requires all three to be publicly reachable without a login
   for account activation, and a cardholder disputing a charge should find them without help.
+
+  /services and /projects were split out of /products so that page could be only the things
+  that can be bought. They are listed because they are the two pages a prospective client
+  actually wants, and because /projects is the portfolio — it is the page worth ranking.
 
   Deliberately NOT listed: /customer-support. It is a byte-identical copy of /support that
   exists only because the two Stripe accounts stored two different support URLs, and the
@@ -38,6 +42,16 @@
     <loc>https://atsignhandle.xyz/products</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://atsignhandle.xyz/projects</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://atsignhandle.xyz/services</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://atsignhandle.xyz/support</loc>

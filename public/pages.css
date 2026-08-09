@@ -1,0 +1,146 @@
+/*
+  Shared tokens for the non-game pages: /products, /services, /projects, /support,
+  /privacy-policy, /terms-of-service.
+  Previously each page carried its own copy of this block. Six copies is five too many --
+  the measure changed by 25% and it had to be edited in six places to stay consistent.
+
+  The root (the game) deliberately does NOT load this: it sets overflow:hidden on body
+  for the canvas, and these pages scroll.
+*/
+
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f7f7;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+  margin: 0;
+  padding: 0 16px 96px;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 900px, widened from 720. At the 11px monospace body size this runs ~110 characters,
+   which is past the classic 75-character ideal -- but these are reference pages that get
+   scanned for a specific fact, not read start to finish, and the tables and product rows
+   were the constraint, not the prose. */
+.wrap { max-width: 900px; margin: 0 auto; padding-top: 48px; }
+
+a { color: #555; }
+a:hover { color: #333; }
+
+h1 {
+  font-family: monospace; font-size: 15px; font-weight: bold;
+  letter-spacing: 0.04em; margin: 0 0 4px; color: #333;
+}
+
+.entity { font-family: monospace; font-size: 10px; color: #888; margin: 0 0 18px; line-height: 1.6; }
+
+h2 {
+  font-family: monospace; font-size: 8px; font-weight: bold; text-transform: uppercase;
+  letter-spacing: 0.12em; color: #888; margin: 32px 0 12px;
+}
+
+p, li { font-family: monospace; font-size: 11px; line-height: 1.7; color: #666; }
+ul { padding-left: 18px; margin: 0 0 12px; }
+strong { color: #444; }
+em { color: #666; }
+
+hr.section-rule { border: none; border-top: 1px solid #e0e0e0; margin: 8px 0; }
+
+.callout {
+  border: 1px solid #e0e0e0; background: #fff; border-radius: 4px;
+  padding: 12px 16px; margin: 0 0 10px;
+}
+.callout p:first-child { margin-top: 0; }
+.callout p:last-child { margin-bottom: 0; }
+
+table { border-collapse: collapse; width: 100%; font-family: monospace; font-size: 10px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e0e0e0; color: #666; vertical-align: top; }
+th { color: #888; text-transform: uppercase; font-size: 8px; letter-spacing: 0.08em; }
+
+code.descriptor {
+  font-family: monospace; font-size: 10px; background: #f0f0f0; border: 1px solid #ddd;
+  border-radius: 3px; padding: 1px 5px; color: #333; white-space: nowrap;
+}
+
+/* Email addresses are written as "rooot [@] atsignhandle [dot] xyz" and are never
+   mailto: links. A harvester scraping this site gets a string that does not parse as an
+   address; a human retypes it in two seconds. */
+.email {
+  font-family: monospace; font-size: 11px; color: #333;
+  background: #f0f0f0; border: 1px solid #ddd; border-radius: 3px;
+  padding: 1px 6px; white-space: nowrap;
+}
+
+/* Product and project rows */
+.product {
+  border: 1px solid #e0e0e0; background: #fff; border-radius: 4px;
+  padding: 14px 16px; margin: 0 0 10px;
+}
+.product-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.product-name {
+  font-family: monospace; font-size: 12px; font-weight: bold; color: #333;
+  letter-spacing: 0.02em;
+}
+.product-name i { color: #aaa; margin-right: 6px; font-size: 11px; }
+.product-price { font-family: monospace; font-size: 10px; color: #888; white-space: nowrap; }
+.product-desc { margin: 8px 0 0; }
+.product-meta { margin-top: 8px; font-family: monospace; font-size: 10px; line-height: 1.8; color: #666; }
+.product-meta .k {
+  color: #999; text-transform: uppercase; font-size: 8px; letter-spacing: 0.08em;
+  display: inline-block; min-width: 76px;
+}
+.links a { font-family: monospace; font-size: 10px; color: #777; margin-right: 14px; text-decoration: none; border-bottom: 1px solid #ddd; }
+.links a:hover { color: #333; }
+
+/* Section teaser -- a short block that hands off to a dedicated page */
+.teaser { border: 1px solid #e0e0e0; background: #fff; border-radius: 4px; padding: 14px 16px; margin: 0 0 10px; }
+.teaser p { margin: 0 0 10px; }
+.teaser p:last-child { margin-bottom: 0; }
+.go {
+  font-family: monospace; font-size: 10px; color: #555; text-decoration: none;
+  border: 1px solid #ddd; border-radius: 3px; padding: 5px 10px; display: inline-block; background: #fafafa;
+}
+.go:hover { color: #333; border-color: #bbb; background: #fff; }
+.go i { margin-left: 5px; color: #aaa; }
+
+/* Badges */
+.badge {
+  font-family: monospace; font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em;
+  border: 1px solid #ddd; border-radius: 3px; padding: 2px 6px; color: #888; background: #fafafa;
+  white-space: nowrap; display: inline-block; vertical-align: middle;
+}
+.badge-private { color: #a06a00; border-color: #e4d3ac; background: #fdf8ee; }
+.badge-live { color: #3a7a4a; border-color: #c3ddc8; background: #f2f9f3; }
+.badge-archived { color: #999; }
+
+/* Screenshots */
+.shot { display: block; margin: 10px 0 0; border: 1px solid #e0e0e0; border-radius: 3px; overflow: hidden; background: #fff; }
+.shot img { display: block; width: 100%; height: auto; }
+.shot-cap { font-family: monospace; font-size: 9px; color: #999; padding: 5px 8px; border-top: 1px solid #eee; }
+
+/* Thumbs-up interest vote on unreleased projects */
+.vote {
+  font-family: monospace; font-size: 10px; color: #777; background: #fafafa;
+  border: 1px solid #ddd; border-radius: 3px; padding: 4px 9px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.vote:hover:not([disabled]) { color: #333; border-color: #bbb; background: #fff; }
+.vote[disabled] { cursor: default; color: #3a7a4a; border-color: #c3ddc8; background: #f2f9f3; }
+.vote i { color: #aaa; }
+.vote[disabled] i { color: #3a7a4a; }
+.vote-n { font-variant-numeric: tabular-nums; }
+
+.site-footer { font-family: monospace; font-size: 10px; color: #999; line-height: 1.9; margin-top: 12px; }
+.site-footer a { color: #999; text-decoration: none; border-bottom: 1px solid #ddd; }
+.site-footer a:hover { color: #555; }
+.footer-sep { color: #ccc; margin: 0 6px; }
+
+.nav-back { font-family: monospace; font-size: 10px; color: #999; margin: 0 0 18px; }
+.nav-back a { color: #777; text-decoration: none; border-bottom: 1px solid #ddd; }
+.nav-back a:hover { color: #333; }
+
+@media (max-width: 480px) {
+  .wrap { padding-top: 32px; }
+  .product-meta .k { display: block; min-width: 0; }
+}

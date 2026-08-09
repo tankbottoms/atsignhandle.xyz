@@ -13,6 +13,13 @@ routes = [
 [assets]
 directory = "./public"
 
+# Interest votes on unreleased projects (/projects). One counter per project id, nothing
+# about the voter is stored -- the only per-person state is a localStorage flag in their
+# own browser, which is why this needs no privacy-policy entry.
+[[kv_namespaces]]
+binding = "VOTES"
+id = "d8598957ab1847559d2e7638cc4591cc"
+
 [observability.logs]
 enabled = true
 invocation_logs = true

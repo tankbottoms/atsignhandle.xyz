@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Development Projects &mdash; ATSIGNHANDLE, LLC</title>
+  <meta name="description" content="Side projects from ATSIGNHANDLE, LLC — iOS and macOS applications, developer tooling, embedded audio codecs, semantic search, on-chain art, and internal dashboards. Newest first.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://atsignhandle.xyz/projects">
+  <meta property="og:title" content="Development Projects — ATSIGNHANDLE, LLC">
+  <meta property="og:description" content="Side projects: iOS and macOS apps, developer tooling, embedded audio codecs, semantic search, on-chain art.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://atsignhandle.xyz/projects">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F34C;</text></svg>">
+  <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+  <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+  <link rel="stylesheet" href="/pages.css">
+</head>
+<body>
+<div class="wrap">
+
+  <p class="nav-back"><a href="/products"><i class="fas fa-arrow-left"></i> Products &amp; services</a></p>
+
+  <h1>Development Projects</h1>
+  <p class="entity">
+    Side projects, newest first. None of these are for sale &mdash; the things you can buy are on the
+    <a href="/products">products page</a>. Published work links to its source; unpublished work is listed
+    by name with a badge and nothing to click.<br>
+    If an unreleased project interests you, the thumbs-up is the signal we go by when deciding what to
+    finish and open.
+  </p>
+
+  <hr class="section-rule">
+
+  <h2>Applications and tooling</h2>
+
+  <div class="product" id="bikecontrol">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-bicycle"></i>BikeControl</span>
+      <span class="badge badge-private">Private &mdash; unpublished</span>
+    </div>
+    <p class="product-desc">
+      Control and telemetry for e-bike motor controllers, running locally against the bike rather than
+      through a vendor cloud. Built on the OpenBikeControl protocol work, kept private because it ships
+      no binaries and carries a non-commercial licence upstream.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> Dart</div>
+      <div><span class="k">Last worked</span> August 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <button class="vote" data-project="bikecontrol"><i class="fas fa-thumbs-up"></i> Interested <span class="vote-n"></span></button>
+    </p>
+  </div>
+
+  <div class="product" id="cb-mpc-ios">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-shield-halved"></i>cb&#8209;mpc for iOS</span>
+      <span class="badge badge-private">Private &mdash; unpublished</span>
+    </div>
+    <p class="product-desc">
+      A native SwiftUI iOS app over Coinbase's cb&#8209;mpc library: two-party ECDSA, threshold signing,
+      HD key derivation, key transfer by QR code, and iCloud backup. The cryptography is multi-party
+      computation, so a signing key is never assembled in one place &mdash; not even on the phone.
+    </p>
+    <p class="product-desc">
+      The app repository is private. The protocol walkthrough that came out of building it is public, and
+      it is the more useful half if you are trying to understand MPC signing.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> C and Swift, tracking upstream v0.2.1</div>
+      <div><span class="k">Last worked</span> April 2026</div>
+    </div>
+    <a class="shot" href="https://cb-mpc-visual-guide.atsignhandle.workers.dev" target="_blank" rel="noopener">
+      <img src="/shots/cb-mpc-guide.jpg" alt="cb-mpc visual guide — an illustrated walkthrough of multi-party computation signing" loading="lazy">
+      <span class="shot-cap">cb-mpc-visual-guide.atsignhandle.workers.dev</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://cb-mpc-visual-guide.atsignhandle.workers.dev" target="_blank" rel="noopener">Open the visual guide <i class="fas fa-arrow-right"></i></a>
+      <button class="vote" data-project="cb-mpc-ios"><i class="fas fa-thumbs-up"></i> Interested <span class="vote-n"></span></button>
+    </p>
+  </div>
+
+  <div class="product" id="terse">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-compress"></i>terse</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      Token-efficient communication patterns for Claude Code. A small set of prompts and rules that cut
+      an assistant's output down to the part that carries information, with intensity levels so you can
+      pick how far it goes.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> TypeScript</div>
+      <div><span class="k">Last worked</span> April 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/terse" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="vecgrep">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-magnifying-glass"></i>vecgrep</span>
+      <span class="badge badge-private">Private &mdash; unpublished</span>
+    </div>
+    <p class="product-desc">
+      Semantic code search. Indexes a repository into vector embeddings so you can search for what code
+      <em>does</em> rather than for a string it happens to contain &mdash; useful in a codebase where the
+      thing you are looking for was named something you would never guess.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> TypeScript</div>
+      <div><span class="k">Last worked</span> April 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <button class="vote" data-project="vecgrep"><i class="fas fa-thumbs-up"></i> Interested <span class="vote-n"></span></button>
+    </p>
+  </div>
+
+  <div class="product" id="kokoro">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-comment-dots"></i>Kokoro TTS for iOS</span>
+      <span class="badge badge-private">Private &mdash; unpublished</span>
+    </div>
+    <p class="product-desc">
+      Text to speech running entirely on the phone, using the Kokoro 82M model with MLX and Metal GPU
+      inference. No network call, no per-character billing, and nothing you type leaves the device.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> C and Swift</div>
+      <div><span class="k">Last worked</span> April 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <button class="vote" data-project="ios-kokoro82m"><i class="fas fa-thumbs-up"></i> Interested <span class="vote-n"></span></button>
+    </p>
+  </div>
+
+  <div class="product" id="bonsai">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-seedling"></i>BonsaiChat</span>
+      <span class="badge badge-private">Private &mdash; unpublished</span>
+    </div>
+    <p class="product-desc">
+      On-device LLM chat for iOS built on PrismML 1-bit Bonsai models with Metal GPU acceleration. The
+      point of a 1-bit model is that it fits and runs on a phone at usable speed, so the conversation
+      never has to reach a server.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> Swift</div>
+      <div><span class="k">Last worked</span> April 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <button class="vote" data-project="ios-bonsai"><i class="fas fa-thumbs-up"></i> Interested <span class="vote-n"></span></button>
+    </p>
+  </div>
+
+  <div class="product" id="voice-transcriber">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-microphone"></i>Voice Transcriber X</span>
+      <span class="badge badge-private">Private &mdash; unpublished</span>
+    </div>
+    <p class="product-desc">
+      A privacy-first voice recorder for iPhone and Apple Watch. Transcription runs on the device, with
+      AI summaries, WAV / MP3 / FLAC output, and semantic search across everything you have recorded.
+      Built for iOS 26 and watchOS 26 in Swift 6.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> Swift</div>
+      <div><span class="k">Last worked</span> April 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <button class="vote" data-project="voice-transcriber-x"><i class="fas fa-thumbs-up"></i> Interested <span class="vote-n"></span></button>
+    </p>
+  </div>
+
+  <div class="product" id="blink">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-terminal"></i>Blink Shell</span>
+      <span class="badge">Fork &mdash; not our project</span>
+    </div>
+    <p class="product-desc">
+      A fork of Blink Mobile Shell, the Mosh-based terminal for iOS. Listed for completeness because the
+      repository is public under our account, but the application is other people's work and the fork
+      exists only to carry local changes. Credit and upstream belong to the Blink authors.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> Swift</div>
+      <div><span class="k">Last worked</span> April 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/blinksh/blink" target="_blank" rel="noopener">Upstream project <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="font-awesome">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-icons"></i>Font Awesome Icon Explorer</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      Search 3,860 icons by name or by meaning. Combines SQLite full-text search with semantic search, so
+      &ldquo;something for deleting a record&rdquo; finds the trash can even though nothing is called that.
+      A neo-brutalist PWA running on Cloudflare Workers.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> HTML and TypeScript</div>
+      <div><span class="k">Last worked</span> March 2026</div>
+    </div>
+    <a class="shot" href="https://fontawesome-explorer.atsignhandle.workers.dev" target="_blank" rel="noopener">
+      <img src="/shots/fa-explorer.jpg" alt="Font Awesome Icon Explorer — a searchable grid of icons" loading="lazy">
+      <span class="shot-cap">fontawesome-explorer.atsignhandle.workers.dev</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://fontawesome-explorer.atsignhandle.workers.dev" target="_blank" rel="noopener">Open the explorer <i class="fas fa-arrow-right"></i></a>
+      <a href="https://github.com/tankbottoms/font-awesome" target="_blank" rel="noopener">Source</a>
+    </p>
+  </div>
+
+  <div class="product" id="claude-code-proxy">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-diagram-project"></i>Claude Code proxy</span>
+      <span class="badge badge-private">Internal tool &mdash; not published</span>
+    </div>
+    <p class="product-desc">
+      A local reverse proxy that sits in front of the Anthropic API: rotates between accounts, switches
+      automatically when one hits a limit, logs every request to SQLite, and pushes a notification when
+      something needs attention. A dashboard on top charts token spend, request volume, and which model
+      handled what.
+    </p>
+    <p class="product-desc">
+      It runs on one machine on a private network and is not published &mdash; it is scaffolding for our
+      own work rather than a product, and it holds credentials by design.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> TypeScript on Bun, with a D3 dashboard</div>
+      <div><span class="k">Last worked</span> March 2026</div>
+    </div>
+  </div>
+
+  <div class="product" id="cik-oig">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-building-columns"></i>CIK / OIG entity search</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      Search SEC EDGAR for a company and cross-reference it against the HHS Office of Inspector General
+      exclusion list in the same query. Two public datasets that are individually searchable and, until
+      you join them, awkward to check together.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> Svelte</div>
+      <div><span class="k">Last worked</span> March 2026</div>
+    </div>
+    <a class="shot" href="https://cik-oig.vercel.app" target="_blank" rel="noopener">
+      <img src="/shots/cik-oig.jpg" alt="CIK/OIG entity search — SEC EDGAR lookup with exclusion-list cross-reference" loading="lazy">
+      <span class="shot-cap">cik-oig.vercel.app</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://cik-oig.vercel.app" target="_blank" rel="noopener">Open the search <i class="fas fa-arrow-right"></i></a>
+      <a href="https://github.com/tankbottoms/cik-oig" target="_blank" rel="noopener">Source</a>
+    </p>
+  </div>
+
+  <div class="product" id="courtlistener-cli">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-gavel"></i>courtlistener&#8209;cli</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      Search federal court records from the terminal via the CourtListener API. Works out what you meant
+      from a plain-English query rather than making you assemble the flags yourself.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> TypeScript</div>
+      <div><span class="k">Last worked</span> February 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/courtlistener-cli" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="clippy">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-clipboard"></i>clippy</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      A clipboard security monitor for macOS. Keeps an encrypted history, wipes entries automatically on a
+      timer, and lives in the menu bar. Written because the clipboard is where passwords and keys spend
+      more time than anyone intends.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> TypeScript</div>
+      <div><span class="k">Last worked</span> February 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/clippy" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="copilot-tools-sdk">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-wallet"></i>copilot&#8209;tools&#8209;sdk</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      A JavaScript SDK for managing Copilot.money transactions, categories, tags, and recurring rules
+      programmatically &mdash; bulk recategorisation and cleanup that the app itself expects you to do one
+      row at a time.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> JavaScript</div>
+      <div><span class="k">Last worked</span> January 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/copilot-tools-sdk" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <h2>Signal processing and search</h2>
+
+  <div class="product" id="mp3-fixed-encoder">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-file-audio"></i>mp3&#8209;fixed&#8209;encoder</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      A fixed-point MPEG&#8209;1 Layer III encoder for embedded systems &mdash; CBR, VBR, and ABR, quality
+      presets, ID3 tags, and no floating-point unit required. Originally written for ARM7 portable media
+      players between 1998 and 2002, cleaned up and published.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> C</div>
+      <div><span class="k">Last worked</span> January 2026</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/mp3-fixed-encoder" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="mp3-fixed">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-headphones"></i>mp3_fixed</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      The decoder half: a fixed-point MP3 decoder originally tuned for ARM, MIPS, and SH3 around 1997,
+      updated to build and run on Linux and macOS. Real-time decoding in a very small footprint, with a
+      test suite and audio-quality analysis tooling.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> C</div>
+      <div><span class="k">Last worked</span> December 2025</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/mp3_fixed" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="inception-search">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-file-magnifying-glass"></i>inception&#8209;search&#8209;demo</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      Semantic document search over PDFs: Mistral OCR to get the text out, Inception embeddings to index
+      it, then search by meaning instead of keyword. Ships as Docker with optional GPU support, plus CLI
+      tools for indexing and retrieval.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> TypeScript</div>
+      <div><span class="k">Last worked</span> December 2025</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/inception-search-demo" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="modernbert-benchmark">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-gauge-high"></i>ModernBERT embedding benchmark</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      Measures Transformers.js under ONNX against Python sentence-transformers on legal text, because the
+      received wisdom that you must run embeddings in Python deserved a number attached to it. Includes
+      Triple2Vec knowledge-graph tests, automatic ONNX conversion, and ARM64 and x86 runs.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> TypeScript on Bun</div>
+      <div><span class="k">Last worked</span> December 2025</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/modernbert-embedding-benchmark" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <h2>On-chain</h2>
+
+  <div class="product" id="onchain-rickroll">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-music"></i>onchain&#8209;rickroll</span>
+      <span class="badge badge-live">Open source</span>
+    </div>
+    <p class="product-desc">
+      An ERC&#8209;721 that stores its own compressed SVG <em>and</em> its own MP3 on chain, so the joke
+      survives without a server, an IPFS pin, or anyone paying a hosting bill. Comes with a hot-reloading
+      contract development environment, which was most of the actual work.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> Solidity</div>
+      <div><span class="k">Last worked</span> December 2025</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/onchain-rickroll" target="_blank" rel="noopener">Source <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="tiles">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-table-cells"></i>Infinite Tiles v2</span>
+      <span class="badge badge-live">Open source</span>
+      <span class="badge badge-archived">2022</span>
+    </div>
+    <p class="product-desc">
+      Generative tile art computed on chain: the SVG is produced by the contract, not fetched from
+      anywhere, with mint proceeds streaming to a Juicebox v2 treasury. Three repositories &mdash; the
+      contracts, the minter and gallery front end, and the earlier fully-on-chain port of the original
+      Tiles.art project.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Language</span> Solidity and TypeScript</div>
+      <div><span class="k">Last worked</span> 2022 &mdash; archived, not maintained</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://github.com/tankbottoms/tiles-on-chain" target="_blank" rel="noopener">Contracts <i class="fas fa-arrow-right"></i></a>
+      <a href="https://github.com/tankbottoms/tiles-wtf-gallery" target="_blank" rel="noopener">Minter and gallery</a>
+      <span class="badge badge-private" style="margin-left:4px">tiles-onchain &mdash; private</span>
+    </p>
+  </div>
+
+  <h2>Live demos and dashboards</h2>
+  <p>
+    Small things that exist as a running page rather than as a repository. Some are experiments, some are
+    internal instruments we left switched on.
+  </p>
+
+  <div class="product" id="millions-of-cats">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-cat"></i>Millions of Cats</span>
+      <span class="badge badge-live">Live</span>
+    </div>
+    <p class="product-desc">
+      A browser toy, and an excuse to find out how many independently animated things a page can carry
+      before the frame rate gives up.
+    </p>
+    <a class="shot" href="https://millions-of-cats.atsignhandle.xyz" target="_blank" rel="noopener">
+      <img src="/shots/millions-of-cats.jpg" alt="Millions of Cats — a browser animation experiment" loading="lazy">
+      <span class="shot-cap">millions-of-cats.atsignhandle.xyz</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://millions-of-cats.atsignhandle.xyz" target="_blank" rel="noopener">Open <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="gpumon">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-microchip"></i>gpumon</span>
+      <span class="badge badge-live">Live</span>
+    </div>
+    <p class="product-desc">
+      Monitoring for a small fleet of GPU machines &mdash; utilisation, memory, thermals, and which model
+      is loaded where &mdash; so inference work can be routed to whichever node is actually free.
+    </p>
+    <a class="shot" href="https://gpu.atsignhandle.xyz" target="_blank" rel="noopener">
+      <img src="/shots/gpumon-public.jpg" alt="gpumon — GPU fleet utilisation and thermal dashboard" loading="lazy">
+      <span class="shot-cap">gpu.atsignhandle.xyz</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://gpu.atsignhandle.xyz" target="_blank" rel="noopener">Open <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="stocks">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-chart-line"></i>stocks</span>
+      <span class="badge badge-live">Live</span>
+    </div>
+    <p class="product-desc">
+      A market dashboard built to try out a charting approach, kept because it turned out to be the one
+      we actually look at.
+    </p>
+    <a class="shot" href="https://stocks.atsignhandle.xyz" target="_blank" rel="noopener">
+      <img src="/shots/stocks.jpg" alt="stocks — a market charting dashboard" loading="lazy">
+      <span class="shot-cap">stocks.atsignhandle.xyz</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://stocks.atsignhandle.xyz" target="_blank" rel="noopener">Open <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="postcrime">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-map-location-dot"></i>postcrime</span>
+      <span class="badge badge-live">Live</span>
+    </div>
+    <p class="product-desc">
+      Public crime-report data rendered as something you can actually read &mdash; the records are already
+      published, but not in a shape that answers a question.
+    </p>
+    <a class="shot" href="https://postcrime.atsignhandle.xyz" target="_blank" rel="noopener">
+      <img src="/shots/postcrime.jpg" alt="postcrime — public crime report data visualisation" loading="lazy">
+      <span class="shot-cap">postcrime.atsignhandle.xyz</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://postcrime.atsignhandle.xyz" target="_blank" rel="noopener">Open <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="interface-components">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-shapes"></i>Interface components</span>
+      <span class="badge badge-live">Live</span>
+    </div>
+    <p class="product-desc">
+      A working gallery of the UI components used across these projects &mdash; the reference we build
+      against, published so a client can see the vocabulary before we start.
+    </p>
+    <a class="shot" href="https://interface-components.tankbottoms.workers.dev" target="_blank" rel="noopener">
+      <img src="/shots/interface-components.jpg" alt="Interface components — a gallery of reusable UI elements" loading="lazy">
+      <span class="shot-cap">interface-components.tankbottoms.workers.dev</span>
+    </a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://interface-components.tankbottoms.workers.dev" target="_blank" rel="noopener">Open <i class="fas fa-arrow-right"></i></a>
+    </p>
+  </div>
+
+  <div class="product" id="tesla-dash">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-car-side"></i>Tesla fleet dashboard</span>
+      <span class="badge badge-private">Private &mdash; sign-in required</span>
+    </div>
+    <p class="product-desc">
+      Charge history, range over time, and trip logging for a vehicle, pulled from the Tesla API and
+      charted. It sits behind an access gate because the data is one person's movements, so there is
+      nothing public to link to.
+    </p>
+    <p class="links" style="margin-top:10px">
+      <button class="vote" data-project="tesla-dash"><i class="fas fa-thumbs-up"></i> Interested <span class="vote-n"></span></button>
+    </p>
+  </div>
+
+  <hr class="section-rule">
+
+  <p>
+    Something here worth building on? Bespoke work is on the
+    <a href="/services">services page</a>, and
+    <span class="email">rooot [@] atsignhandle [dot] xyz</span> reaches a person.
+  </p>
+
+  <footer class="site-footer">
+    <span><a href="/">atsignhandle.xyz</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="/products">Products</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="/services">Services</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="/support">Support</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="/privacy-policy">Privacy Policy</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="/terms-of-service">Terms of Service</a></span>
+    <br>
+    <span>&copy; ATSIGNHANDLE, LLC</span>
+  </footer>
+
+</div>
+
+<script>
+// Interest votes. The counter lives in Workers KV behind /api/vote; localStorage only stops the
+// same browser from voting twice, which is all the enforcement a "would you like this released"
+// signal warrants. If the endpoint is unavailable the button still latches locally -- degrading to
+// a broken button would be worse than degrading to an uncounted one.
+(function () {
+  var VOTED = 'ah_voted_';
+  var buttons = document.querySelectorAll('.vote');
+
+  function latch(btn, n) {
+    btn.disabled = true;
+    btn.querySelector('i').className = 'fas fa-check';
+    btn.childNodes[1].nodeValue = ' Noted ';
+    if (typeof n === 'number') btn.querySelector('.vote-n').textContent = n;
+  }
+
+  var ids = [];
+  buttons.forEach(function (btn) { ids.push(btn.dataset.project); });
+
+  fetch('/api/vote?projects=' + encodeURIComponent(ids.join(',')))
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (counts) {
+      if (!counts) return;
+      buttons.forEach(function (btn) {
+        var n = counts[btn.dataset.project];
+        if (n) btn.querySelector('.vote-n').textContent = n;
+      });
+    })
+    .catch(function () { /* counts are decoration; the button works without them */ });
+
+  buttons.forEach(function (btn) {
+    var id = btn.dataset.project;
+    if (localStorage.getItem(VOTED + id)) { latch(btn); return; }
+
+    btn.addEventListener('click', function () {
+      localStorage.setItem(VOTED + id, '1');
+      latch(btn);
+      fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ project: id })
+      })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d && typeof d.count === 'number') latch(btn, d.count); })
+        .catch(function () { /* already latched; the vote is simply not counted */ });
+    });
+  });
+})();
+</script>
+</body>
+</html>

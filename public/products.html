@@ -4,166 +4,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Products &amp; Services &mdash; ATSIGNHANDLE, LLC</title>
-  <meta name="description" content="Products and services sold by ATSIGNHANDLE, LLC: Natasha Pankina Illustrations, n-of-m, FinderPasskey, and custom engineering services. Pricing, delivery, refunds, and support.">
+  <meta name="description" content="What ATSIGNHANDLE, LLC sells: illustration licences, applications, and bespoke software and design work. Prices, delivery, refunds, and how to identify a charge.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://atsignhandle.xyz/products">
-  <meta property="og:title" content="Products &amp; Services — ATSIGNHANDLE, LLC">
-  <meta property="og:description" content="What ATSIGNHANDLE, LLC sells, what it costs, how it is delivered, and how to reach support.">
+  <meta property="og:title" content="Products & Services — ATSIGNHANDLE, LLC">
+  <meta property="og:description" content="Illustration licences, applications, and bespoke software and design work.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://atsignhandle.xyz/products">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F34C;</text></svg>">
   <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
   <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
-  <style>
-    /* Tokens lifted from the site root: flat grayscale, monospace-dominant, no gradients.
-       The root page sets overflow:hidden for the game canvas; this page must scroll. */
-    * { box-sizing: border-box; }
-    body {
-      background: #f7f7f7;
-      color: #333;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
-      margin: 0;
-      padding: 0 16px 96px;
-      -webkit-text-size-adjust: 100%;
-    }
-    .wrap { max-width: 720px; margin: 0 auto; padding-top: 48px; }
-
-    a { color: #555; }
-    a:hover { color: #333; }
-
-    h1 {
-      font-family: monospace;
-      font-size: 15px;
-      font-weight: bold;
-      letter-spacing: 0.04em;
-      margin: 0 0 4px;
-      color: #333;
-    }
-    .entity {
-      font-family: monospace;
-      font-size: 10px;
-      color: #888;
-      margin: 0 0 18px;
-      line-height: 1.6;
-    }
-    h2 {
-      font-family: monospace;
-      font-size: 8px;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #888;
-      margin: 32px 0 12px;
-    }
-    p, li { font-family: monospace; font-size: 11px; line-height: 1.7; color: #666; }
-    hr.section-rule { border: none; border-top: 1px solid #e0e0e0; margin: 8px 0; }
-
-    /* Product entries. Someone lands here from a card statement or a receipt and needs
-       to identify a charge in a few seconds, so the statement descriptor is given the
-       same visual weight as the product name. */
-    .product {
-      border: 1px solid #e0e0e0;
-      background: #fff;
-      border-radius: 4px;
-      padding: 14px 16px;
-      margin: 0 0 10px;
-    }
-    .product-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 6px;
-    }
-    .product-name {
-      font-family: monospace;
-      font-size: 12px;
-      font-weight: bold;
-      color: #333;
-    }
-    .product-name i { color: #aaa; margin-right: 6px; font-size: 11px; }
-    .product-price { font-family: monospace; font-size: 11px; color: #555; white-space: nowrap; }
-    .product-desc { font-family: monospace; font-size: 11px; color: #666; line-height: 1.6; margin: 0 0 8px; }
-    .product-meta { font-family: monospace; font-size: 10px; color: #888; line-height: 1.8; }
-    .product-meta .k {
-      display: inline-block;
-      min-width: 82px;
-      color: #aaa;
-      text-transform: uppercase;
-      font-size: 8px;
-      font-weight: bold;
-      letter-spacing: 0.08em;
-    }
-    code.descriptor {
-      font-family: monospace;
-      font-size: 10px;
-      background: #f0f0f0;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      padding: 1px 5px;
-      color: #333;
-      white-space: nowrap;
-    }
-    .links a {
-      font-family: monospace;
-      font-size: 10px;
-      color: #777;
-      text-decoration: none;
-      border-bottom: 1px solid #ddd;
-      margin-right: 14px;
-    }
-    .links a:hover { color: #333; border-bottom-color: #999; }
-
-    table { border-collapse: collapse; width: 100%; font-family: monospace; font-size: 10px; }
-    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e0e0e0; color: #666; vertical-align: top; }
-    th { color: #888; text-transform: uppercase; font-size: 8px; letter-spacing: 0.08em; }
-
-    .callout {
-      border: 1px solid #e0e0e0;
-      border-left: 3px solid #ccc;
-      background: #fff;
-      padding: 12px 14px;
-      margin: 0 0 10px;
-    }
-    .callout p { margin: 0 0 6px; }
-    .callout p:last-child { margin: 0; }
-
-    .site-footer {
-      text-align: center;
-      padding: 24px 12px 8px;
-      font-family: monospace;
-      font-size: 9px;
-      color: #999;
-      line-height: 1.6;
-    }
-    .site-footer a { color: #777; text-decoration: none; }
-    .site-footer a:hover { text-decoration: underline; color: #333; }
-    .footer-sep { margin: 0 4px; color: #ccc; }
-
-    @media (max-width: 480px) {
-      .wrap { padding-top: 32px; }
-      .product-meta .k { display: block; min-width: 0; }
-    }
-  </style>
+  <link rel="stylesheet" href="/pages.css">
 </head>
 <body>
 <div class="wrap">
 
   <h1>Products &amp; Services</h1>
   <p class="entity">
-    ATSIGNHANDLE, LLC &mdash; Snohomish, Washington, United States<br>
-    ATSIGNHANDLE, LLC is the merchant of record for every product listed below. Charges from any of
-    them appear on your card statement under an ATSIGNHANDLE-operated descriptor shown with each entry.
+    ATSIGNHANDLE, LLC &mdash; a small software and design studio. We license hand-drawn vector
+    illustrations, publish a handful of privacy-first applications, and take on bespoke engineering and
+    illustration work.<br>
+    ATSIGNHANDLE, LLC is the merchant of record for everything listed here. Charges appear on your card
+    statement under one of the descriptors below.
   </p>
 
   <hr class="section-rule">
 
   <h2>Recognize a charge?</h2>
   <p>
-    Match the text on your statement to the table below, then use that product's support link.
-    If nothing matches, contact us before disputing &mdash; we would rather refund you than have you
-    spend a month in a chargeback process.
+    Match the text on your statement to the table below. If nothing matches, contact us before disputing
+    &mdash; we would rather refund you than have you spend a month in a chargeback process.
   </p>
   <table>
     <thead>
@@ -171,7 +41,7 @@
     </thead>
     <tbody>
       <tr><td><code class="descriptor">NATASHA-PANKINA.COM</code></td><td>A vector illustration license from natasha-pankina.com</td></tr>
-      <tr><td><code class="descriptor">ATSIGNHANDLE.XYZ</code></td><td>A custom services engagement, invoiced directly</td></tr>
+      <tr><td><code class="descriptor">ATSIGNHANDLE.XYZ</code></td><td>An application purchase, or a bespoke services engagement invoiced directly</td></tr>
     </tbody>
   </table>
 
@@ -194,17 +64,17 @@
       <div><span class="k">Delivery</span> Immediate download link on the confirmation page and by email. Re-downloadable indefinitely.</div>
       <div><span class="k">Refunds</span> Within 1 hour of purchase, and on request where the file was not usable.</div>
     </div>
-    <p class="links" style="margin-top:8px">
-      <a href="https://natasha-pankina.com/">Store</a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://natasha-pankina.com">Visit the store <i class="fas fa-arrow-right"></i></a>
       <a href="https://natasha-pankina.com/licensing">License tiers</a>
       <a href="https://natasha-pankina.com/licensing/terms">License terms</a>
-      <a href="https://natasha-pankina.com/about#commission">Contact the artist</a>
+      <a href="https://natasha-pankina.com/contact">Contact the artist</a>
     </p>
   </div>
 
   <div class="product">
     <div class="product-head">
-      <span class="product-name"><i class="fas fa-key"></i>n-of-m</span>
+      <span class="product-name"><i class="fas fa-key"></i>n&#8209;of&#8209;m</span>
       <span class="product-price">Free</span>
     </div>
     <p class="product-desc">
@@ -217,8 +87,29 @@
       <div><span class="k">Price</span> Free. No account, no subscription, nothing to charge.</div>
       <div><span class="k">Platforms</span> iOS app and browser</div>
     </div>
-    <p class="links" style="margin-top:8px">
-      <a href="https://n-of-m.atsignhandle.xyz/">Web app</a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://n-of-m.atsignhandle.xyz/">Open the web app <i class="fas fa-arrow-right"></i></a>
+      <a href="https://github.com/tankbottoms/n-of-m">Source</a>
+    </p>
+  </div>
+
+  <div class="product">
+    <div class="product-head">
+      <span class="product-name"><i class="fas fa-heart-pulse"></i>HeartRate Broadcaster</span>
+      <span class="product-price">See product site</span>
+    </div>
+    <p class="product-desc">
+      Turns an Apple Watch and AirPods Pro into a standard Bluetooth heart rate strap, so gym equipment,
+      cycling computers, and training apps that expect a chest strap can read from hardware you already
+      wear. Broadcasts over the standard BLE heart rate profile, so nothing needs to know it is an Apple
+      device on the other end.
+    </p>
+    <div class="product-meta">
+      <div><span class="k">Platforms</span> iOS and watchOS</div>
+      <div><span class="k">Availability</span> Current price and download route are on the product site.</div>
+    </div>
+    <p class="links" style="margin-top:10px">
+      <a href="https://heart-rate.atsignhandle.xyz/">Product site <i class="fas fa-arrow-right"></i></a>
     </p>
   </div>
 
@@ -230,32 +121,45 @@
     <p class="product-desc">
       macOS app that encrypts files and folders from the Finder and unlocks them with a passkey &mdash;
       Touch ID or your device credential &mdash; instead of a password you have to remember.
-      AES-256-GCM, encrypted locally, keys never leave the machine.
+      AES&#8209;256&#8209;GCM, encrypted locally, keys never leave the machine.
     </p>
     <div class="product-meta">
       <div><span class="k">Price</span> Free during beta. Paid tiers are not yet on sale; this page will list the price before any charge exists.</div>
       <div><span class="k">Platforms</span> macOS</div>
     </div>
-    <p class="links" style="margin-top:8px">
-      <a href="https://finder.atsignhandle.xyz/">Product site</a>
+    <p class="links" style="margin-top:10px">
+      <a href="https://finder.atsignhandle.xyz/">Product site <i class="fas fa-arrow-right"></i></a>
     </p>
   </div>
 
-  <div class="product">
-    <div class="product-head">
-      <span class="product-name"><i class="fas fa-screwdriver-wrench"></i>Custom services</span>
-      <span class="product-price">Quoted per engagement</span>
-    </div>
-    <p class="product-desc">
-      Software engineering and design work on contract &mdash; web applications, data pipelines,
-      document and media processing, and deployment on Cloudflare infrastructure. Scoped and quoted
-      before work begins; there is no self-serve checkout and no charge occurs without a signed quote.
+  <h2>Bespoke services</h2>
+  <div class="teaser">
+    <p>
+      Two kinds of commissioned work, both booked hourly against a written scope: <strong>illustration</strong>
+      by Natasha Pankina, and <strong>software engineering</strong> &mdash; web applications, data pipelines,
+      document and media processing, on-device machine learning, and deployment on Cloudflare
+      infrastructure.
     </p>
-    <div class="product-meta">
-      <div><span class="k">Statement</span> <code class="descriptor">ATSIGNHANDLE.XYZ</code></div>
-      <div><span class="k">Billing</span> Stripe invoice against an agreed quote. Milestone or on completion, as scoped.</div>
-      <div><span class="k">Refunds</span> Governed by the engagement's quote.</div>
-    </div>
+    <p>
+      There is no self-serve checkout for either. Work is scoped and quoted first, and no charge exists
+      until a quote is agreed. Rates, how an engagement runs, and how to book time are on the services page.
+    </p>
+    <p><a class="go" href="/services">Bespoke services and rates <i class="fas fa-arrow-right"></i></a></p>
+  </div>
+
+  <h2>Development &amp; open source</h2>
+  <div class="teaser">
+    <p>
+      Roughly thirty side projects &mdash; iOS and macOS applications, developer tooling, embedded audio
+      codecs, semantic search, on-chain art, and a set of internal dashboards. Some are published and
+      open source, some are still private, and none of them are for sale.
+    </p>
+    <p>
+      They are listed newest first, with screenshots where there is something to look at. Unpublished
+      projects carry a badge and a thumbs-up button &mdash; if you want one released, that vote is the
+      signal we go by.
+    </p>
+    <p><a class="go" href="/projects">Development projects <i class="fas fa-arrow-right"></i></a></p>
   </div>
 
   <h2>Payment, delivery, and refunds</h2>
@@ -267,21 +171,21 @@
       the confirmation page and a copy by email. Nothing physical is shipped.</p>
     <p><strong>Refunds and cancellations.</strong> Digital purchases may be cancelled and refunded in full
       within one hour of purchase. Past that window we will still refund any customer who is not happy
-      with what they received; email us and say so. Refunds return to the original payment method and
+      with what they received; write to us and say so. Refunds return to the original payment method and
       typically appear within 5&ndash;10 business days.</p>
     <p><strong>Taxes.</strong> Sales tax is applied at checkout where required by the buyer's jurisdiction.</p>
   </div>
 
   <h2 id="support">Support</h2>
-  <p>
-    One inbox covers every product above. Include the product name, the date and amount of the charge,
-    and the email address used at purchase &mdash; that is enough to find any order.
-  </p>
-  <p>
-    <i class="fas fa-envelope" style="color:#aaa"></i>
-    <a href="mailto:rooot@atsignhandle.xyz">rooot@atsignhandle.xyz</a>
-    &nbsp;&mdash;&nbsp; replies within one business day.
-  </p>
+  <div class="teaser">
+    <p>
+      One inbox covers every product above. Include the product name, the date and amount of the charge,
+      and the email address used at purchase &mdash; that is enough to find any order. Replies come within
+      one business day.
+    </p>
+    <p><span class="email">rooot [@] atsignhandle [dot] xyz</span></p>
+    <p><a class="go" href="/support">Support, charges, and refunds <i class="fas fa-arrow-right"></i></a></p>
+  </div>
 
   <hr class="section-rule">
 
@@ -289,6 +193,10 @@
     <span><a href="/">atsignhandle.xyz</a></span>
     <span class="footer-sep">&middot;</span>
     <span><a href="https://atsignhandle.eth.limo" target="_blank" rel="noopener">atsignhandle.eth</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="/services">Services</a></span>
+    <span class="footer-sep">&middot;</span>
+    <span><a href="/projects">Projects</a></span>
     <span class="footer-sep">&middot;</span>
     <span><a href="/support">Support</a></span>
     <span class="footer-sep">&middot;</span>
