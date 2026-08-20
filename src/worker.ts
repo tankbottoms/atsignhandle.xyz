@@ -9,6 +9,19 @@
 //
 // Matched by shape rather than by an explicit list: a 12-hex-character path segment is
 // the build-hash format, and no real asset on this site uses one.
+// Hosted services that live off-site get a redirect here rather than a reverse proxy.
+// DocuSeal is a Rails app with no base-path support: mounted under a subpath its assets,
+// signing links and ActionCable socket would all resolve against the wrong origin, so the
+// only correct treatment of a /services/<name> URL is to send the browser to the real one.
+//
+// Keys are compared with the trailing slash already stripped, so both /services/docseal
+// and /services/docseal/ land on the same entry. "docuseal" is carried alongside the
+// shorter spelling because the product's own name is the one people will type.
+const SERVICE_REDIRECTS: Record<string, string> = {
+  "/services/docseal": "https://docusign.atsignhandle.xyz/",
+  "/services/docuseal": "https://docusign.atsignhandle.xyz/",
+};
+
 const RETIRED_BUILD_PATH = /^\/[0-9a-f]{12}(\/|$)/;
 
 interface Env {
@@ -98,6 +111,11 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/vote") return handleVote(request, env, url);
+
+    // 302, not 301: the destination is a self-hosted service that may move between
+    // hosts, and a cached-forever redirect would outlive the decision.
+    const target = SERVICE_REDIRECTS[url.pathname.replace(/\/+$/, "")];
+    if (target) return Response.redirect(target, 302);
 
     // Static assets are served automatically by the [assets] binding.
     // This worker only handles requests that don't match a static file.
